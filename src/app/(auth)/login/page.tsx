@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, startTransition } from 'react';
+import { useState, startTransition, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import Link from 'next/link';
@@ -12,6 +12,14 @@ import { loginSchema, type LoginInput } from '@/lib/validations/auth';
 import { loginAction } from '@/actions/auth';
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 min-h-[300px]" />}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
   const searchParams = useSearchParams();
   const isDeactivated = searchParams.get('deactivated') === '1';
 
