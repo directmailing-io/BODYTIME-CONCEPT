@@ -25,7 +25,7 @@ const ALL_LOCATIONS = [
     desc: 'Kein Gym im Hotel? Kein Problem. Mit dem EMS-Suit trainierst du auf jedem Quadratmeter.',
   },
   {
-    image: '/locations/raststätte.jpg',
+    image: '/locations/raststaette.jpg',
     imageAlt: 'EMS Training an der Raststätte',
     title: 'Pause an der Raststätte',
     desc: 'Lange Fahrt? 20 Minuten Pause clever nutzen und erfrischt weiterfahren.',
