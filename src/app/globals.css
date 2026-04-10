@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1d1d1f;
+  --brand-cyan: #25A8E0;
+  --brand-blue: #2563EB;
+  --brand-dark: #1E293B;
+  --nav-height: 72px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --nav-height: 80px;
+  }
+}
+
+/* ── Apple-style system font stack ── */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ── Animated gradient (hero headline — fast) ── */
+@keyframes gradientFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+.gradient-text-animated {
+  background: linear-gradient(90deg, #25A8E0, #2563EB, #60C8F0, #1E88E5, #25A8E0);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientFlow 6s ease-in-out infinite;
+}
+
+/* ── ProductSection scroll height: shorter on mobile ── */
+#produkt {
+  height: 220vh;
+}
+@media (min-width: 1024px) {
+  #produkt {
+    height: 400vh;
+  }
+}
+
+/* ── Spinning ring for cycle diagram ── */
+@keyframes spinRing {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -942; }
+}
+
+/* ── Landscape mobile: reduce hero vertical padding ── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-content {
+    padding-top: 5rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* ── Animated gradient (bento numbers — slow & smooth) ── */
+.gradient-text-slow {
+  background: linear-gradient(90deg, #25A8E0, #2563EB, #60C8F0, #1E88E5, #25A8E0);
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientFlow 16s ease-in-out infinite;
+}

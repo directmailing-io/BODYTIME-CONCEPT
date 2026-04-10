@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BODYTIME concept – Kundenanalyse</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #111827;
+      color: #fff;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+    header .label {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── Section ── */
+    section {
+      margin-bottom: 40px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+    }
+    .card p {
+      font-size: 14px;
+      color: #374151;
+    }
+
+    /* ── Two columns ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* ── Target group cards ── */
+    .audience-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+    }
+    .audience-card .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .badge-b2c { background: #dbeafe; color: #1d4ed8; }
+    .badge-b2b { background: #d1fae5; color: #065f46; }
+    .audience-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .audience-card p  { font-size: 14px; color: #4b5563; }
+
+    /* ── Pricing ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+    .pricing-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+    }
+    .pricing-card .badge { margin-bottom: 20px; }
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .price-amount {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #111827;
+    }
+    .price-unit {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+    .price-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 16px;
+    }
+    .price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .price-features li {
+      font-size: 13px;
+      color: #4b5563;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .price-features li::before {
+      content: '✓';
+      color: #10b981;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── USP Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      padding: 0 16px 12px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    tbody tr:not(:last-child) td {
+      border-bottom: 1px solid #f3f4f6;
+    }
+    tbody td {
+      padding: 14px 16px;
+      color: #374151;
+      vertical-align: top;
+    }
+    tbody td:first-child {
+      font-weight: 600;
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    /* ── Transformation ── */
+    .transform-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .transform-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 18px;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .transform-item span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #25A8E0;
+      flex-shrink: 0;
+    }
+
+    /* ── FAQ ── */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid #e5e7eb;
+    }
+    .faq-item .q {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+    .faq-item .a {
+      font-size: 13px;
+      color: #4b5563;
+    }
+
+    /* ── Highlight box ── */
+    .highlight {
+      background: #111827;
+      color: #fff;
+      border-radius: 16px;
+      padding: 28px 28px;
+    }
+    .highlight h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .highlight p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+    }
+
+    /* ── CTA tag ── */
+    .cta-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .cta-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .cta-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .cta-card p  { font-size: 13px; color: #4b5563; }
+
+    /* ── Divider ── */
+    hr {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 8px 0 28px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="label">Kundenanalyse · April 2026</div>
+    <h1>BODYTIME concept</h1>
+    <p>Auswertung des transkribierten Interviews – Angebot, Zielgruppe & Positionierung</p>
+  </header>
+
+  <div class="container">
+
+    <!-- ── 1. Zielgruppen ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">🎯</div>
+        <h2>Zielgruppen</h2>
+      </div>
+      <div class="grid-2">
+        <div class="audience-card">
+          <span class="badge badge-b2c">B2C · Endkunden</span>
+          <h3>Gesundheits- & Fitnessorientierte</h3>
+          <p>Jeder, der etwas für seine Gesundheit, Fitness und sein Wohlbefinden tun möchte – und das auf die <strong>smarteste, zeitsparendste Art</strong>. Insbesondere Menschen, die Schwierigkeiten haben, Training regelmäßig in den Alltag zu integrieren.</p>
+        </div>
+        <div class="audience-card">
+          <span class="badge badge-b2b">B2B · Lizenzpartner</span>
+          <h3>Sportaffine Selbstständige</h3>
+          <p>Personen, die anderen Menschen Nutzen stiften möchten und sich mit <strong>geringem Kapital und minimalem Aufwand</strong> ein eigenes Business im Fitnessbereich aufbauen wollen.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 2. Probleme & Lösungen ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">💡</div>
+        <h2>Probleme & Lösungen</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <p style="font-weight:700;margin-bottom:10px;color:#1d4ed8;">B2C – Problem</p>
+          <p>Training lässt sich im Alltag kaum nachhaltig als Routine etablieren. Zeitdruck, fehlende Motivation und logistische Hürden (Anfahrt, Terminplanung) verhindern regelmäßiges Training.</p>
+          <hr style="margin:16px 0 12px;" />
+          <p style="font-weight:700;margin-bottom:10px;color:#065f46;">B2C – Lösung</p>
+          <p>EMS-Training zu Hause, mit einfachstem Handling (Shirt + Hose anziehen), kombinierbar mit Alltagsaktivitäten – wird dadurch zur nachhaltigen Routine.</p>
+        </div>
+        <div class="card">
+          <p style="font-weight:700;margin-bottom:10px;color:#1d4ed8;">B2B – Problem</p>
+          <p>Wer ein Trainings-Business starten möchte, benötigt sonst hohe Investitionen, komplizierte Franchise-Strukturen und viel Vorwissen.</p>
+          <hr style="margin:16px 0 12px;" />
+          <p style="font-weight:700;margin-bottom:10px;color:#065f46;">B2B – Lösung</p>
+          <p>Schlüsselfertiges Konzept via Smart Lizenz – mit geringen Kosten, direktem Know-how-Transfer und voller Unterstützung vom ersten Tag an.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 3. Das Produkt ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">⚡</div>
+        <h2>Das Produkt – EMS-Gerät „Entelops" von Bora</h2>
+      </div>
+      <div class="card">
+        <p style="margin-bottom:16px;">Das Herzstück des Angebots ist das EMS-System <strong>„Entelops"</strong> des Herstellers <strong>Bora</strong>. Es handelt sich um das <strong>einzige textile EMS-Gerät im Segment</strong>, das mit Shirt <em>und</em> Hose arbeitet – also Ober- und Unterkörper gleichzeitig trainiert. Das ermöglicht besonders einfaches Handling ohne kompliziertes Anlegen von Elektroden.</p>
+        <div class="grid-2">
+          <div style="background:#f9fafb;border-radius:12px;padding:16px;">
+            <p style="font-weight:700;font-size:13px;margin-bottom:8px;">Mietmodell (PUT)</p>
+            <p style="font-size:13px;color:#4b5563;">Das Gerät wird nicht gekauft, sondern über Bora gemietet. Das senkt die finanzielle Einstiegshürde auf ein Minimum. Kunden haben immer neue Hardware, aktuelle Software und sind stets auf dem neuesten Stand der Technik.</p>
+          </div>
+          <div style="background:#f9fafb;border-radius:12px;padding:16px;">
+            <p style="font-weight:700;font-size:13px;margin-bottom:8px;">Technologie</p>
+            <p style="font-size:13px;color:#4b5563;">EMS erzeugt über elektrische Impulse einen gezielten Trainingsreiz, der bis zu 90 % aller Muskeln gleichzeitig aktiviert – über normale Bewegung hinaus. Bekannt seit den alten Ägyptern, heute in Physiotherapie und Leistungssport etabliert.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4. Preise ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">💰</div>
+        <h2>Angebot & Preismodell</h2>
+      </div>
+      <div class="pricing-grid">
+
+        <div class="pricing-card">
+          <span class="badge badge-b2c">B2C · Endkunden</span>
+          <div class="price-row">
+            <span class="price-amount">139 €</span>
+            <span class="price-unit">einmalig</span>
+          </div>
+          <p class="price-label">Onboarding-Paket</p>
+          <ul class="price-features">
+            <li>Persönliches, bedarfsspezifisches Setup</li>
+            <li>Erklärung des Geräts, Trainingsparameter & Programme</li>
+            <li>Alltagsintegration individuell besprochen</li>
+            <li>Dauerhafter Ansprechpartner & Schnittstelle zu Bora</li>
+            <li>Regelmäßige Calls & Anpassung bei Zieländerungen</li>
+            <li>14 Tage Widerrufsfrist, 30 Tage Umtauschrecht</li>
+          </ul>
+        </div>
+
+        <div class="pricing-card">
+          <span class="badge badge-b2b">B2B · Lizenzpartner</span>
+          <div class="price-row">
+            <span class="price-amount">299 €</span>
+            <span class="price-unit">einmalig</span>
+          </div>
+          <p class="price-label">Onboarding-Paket</p>
+          <div class="price-row" style="margin-top:16px;">
+            <span class="price-amount">139 €</span>
+            <span class="price-unit">/ Monat netto</span>
+          </div>
+          <p class="price-label">Smart Lizenz (laufend)</p>
+          <div class="price-row" style="margin-top:16px;">
+            <span class="price-amount">11 €</span>
+            <span class="price-unit">/ Endkunde</span>
+          </div>
+          <p class="price-label">Pro betreutem Kunden</p>
+          <ul class="price-features" style="margin-top:16px;">
+            <li>Komplett schlüsselfertiges Business-Konzept</li>
+            <li>Know-how-Transfer der Gründer</li>
+            <li>Direkte Schnittstelle zu Hersteller Bora</li>
+            <li>Verdienst ab dem ersten Tag möglich</li>
+            <li>Kein Franchise, keine komplexe Lizenz</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── 5. Transformation ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">🔄</div>
+        <h2>Was verändert sich beim Kunden?</h2>
+      </div>
+      <div class="card" style="margin-bottom:16px;">
+        <p>EMS lässt sich mit alltäglichen Aktivitäten kombinieren – man muss nichts extra tun. Dadurch entsteht eine nachhaltige Trainingsroutine. Sobald Training zur Gewohnheit wird, ist der Erfolg laut Aussage der Gründer „nicht zu verhindern".</p>
+        <p style="margin-top:12px;"><strong>Praxisbeispiel:</strong> Bei Rückenschmerzen muss der Kunde nicht wochenlang auf einen Physiotherapeuten warten – er zieht das EMS-Suit an und kann sofort zu Hause trainieren und Beschwerden lindern.</p>
+      </div>
+      <div class="transform-grid">
+        <div class="transform-item"><span class="dot"></span>Regeneration</div>
+        <div class="transform-item"><span class="dot"></span>Stoffwechselanregung</div>
+        <div class="transform-item"><span class="dot"></span>Figurformung & Straffung</div>
+        <div class="transform-item"><span class="dot"></span>Muskelaufbau</div>
+        <div class="transform-item"><span class="dot"></span>Rückenschmerzen lindern</div>
+        <div class="transform-item"><span class="dot"></span>Passiven Bewegungsapparat schützen</div>
+        <div class="transform-item"><span class="dot"></span>Training als Alltags-Routine</div>
+        <div class="transform-item"><span class="dot"></span>Leistungssport-Unterstützung</div>
+      </div>
+    </section>
+
+    <!-- ── 6. USPs ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">🏆</div>
+        <h2>Alleinstellungsmerkmale (USPs)</h2>
+      </div>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Merkmal</th>
+              <th>BODYTIME concept</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Expertise</td>
+              <td>Über 20 Jahre EMS-Erfahrung beider Gründer – haben den EMS-Markt mit aufgebaut. Keine zweite vergleichbare Expertise am Markt.</td>
+            </tr>
+            <tr>
+              <td>Einzigartiges Tool</td>
+              <td>Entelops ist das einzige textile EMS-System mit Shirt + Hose (Ober- und Unterkörper) – einfachstes Handling im Segment.</td>
+            </tr>
+            <tr>
+              <td>Mietmodell</td>
+              <td>Keine Kaufverpflichtung – minimale Einstiegshürde. Immer aktuelle Hardware & Software inklusive.</td>
+            </tr>
+            <tr>
+              <td>Kein Franchise</td>
+              <td>Schlankes B2B-Modell (Smart Lizenz) statt aufwendiger Franchise-Struktur – sofort umsetzbar, geringer Kostenaufwand.</td>
+            </tr>
+            <tr>
+              <td>Komplettservice</td>
+              <td>Dauerhafter Ansprechpartner, Schnittstelle zu Bora, individuelle Betreuung – kein Kunde bleibt mit dem Werkzeug allein.</td>
+            </tr>
+            <tr>
+              <td>Risikofrei</td>
+              <td>14 Tage Widerruf, 30 Tage Umtausch bei Größenproblemen – kein Risiko für den Endkunden.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── 7. FAQ ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">❓</div>
+        <h2>Häufig gestellte Fragen</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <p class="q">Ist EMS sicher?</p>
+          <p class="a">Ja. EMS gibt es seit den alten Ägyptern, wird in der Physiotherapie und im Leistungssport eingesetzt und ist seit vielen Jahren als Trainingsmethode etabliert. BODYTIME concept nutzt diese Technologie auf die effizienteste Art und Weise.</p>
+        </div>
+        <div class="faq-item">
+          <p class="q">Muss ich das Gerät kaufen?</p>
+          <p class="a">Nein. Das EMS-Gerät (Entelops von Bora) kann über ein Mietmodell (PUT) genutzt werden. Das hält die finanzielle Einstiegshürde so niedrig wie möglich.</p>
+        </div>
+        <div class="faq-item">
+          <p class="q">Wie lange sind die Laufzeiten?</p>
+          <p class="a">Empfohlen werden 12 Monate. Die genaue Laufzeit ist individuell besprechbar.</p>
+        </div>
+        <div class="faq-item">
+          <p class="q">Wie gehe ich mit dem Gerät um – ich kenne mich nicht aus?</p>
+          <p class="a">Kein Problem. Im Rahmen eines persönlichen Onboardings wird jeder Kunde individuell eingeführt. Das Ziel ist explizit, dass niemand mit einem Werkzeug allein gelassen wird, das er nicht benutzen kann.</p>
+        </div>
+        <div class="faq-item">
+          <p class="q">Was, wenn mir das Gerät nicht passt oder gefällt?</p>
+          <p class="a">Es gibt 14 Tage Widerrufsfrist sowie 30 Tage Umtauschrecht bei Größenproblemen. Der Kunde geht kein Risiko ein.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 8. Website-Ziel ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">🌐</div>
+        <h2>Website-Ziel & Call-to-Action</h2>
+      </div>
+      <div class="grid-2">
+        <div class="cta-card">
+          <span class="cta-icon">💬</span>
+          <div>
+            <h3>Gespräch initiieren</h3>
+            <p>Primäres Ziel der Website ist es, Besucher in ein persönliches Gespräch zu bringen – keine reine Informationsseite. Individuelle Beratung steht im Vordergrund.</p>
+          </div>
+        </div>
+        <div class="cta-card">
+          <span class="cta-icon">📅</span>
+          <div>
+            <h3>Termin buchen / Online kaufen</h3>
+            <p>Handlungsaufforderungen: persönlicher Beratungstermin (vor Ort oder online) oder Kauf/Mietanfrage über einen Onlineshop.</p>
+          </div>
+        </div>
+        <div class="cta-card">
+          <span class="cta-icon">👤</span>
+          <div>
+            <h3>Gründer vorstellen</h3>
+            <p>Beide Gründer sollen sich persönlich auf der Website vorstellen – im B2C- und B2B-Kontext – um Vertrauen durch Expertise aufzubauen.</p>
+          </div>
+        </div>
+        <div class="cta-card">
+          <span class="cta-icon">🤝</span>
+          <div>
+            <h3>Individuelle Beratung ermöglichen</h3>
+            <p>Kunden dort abholen, wo sie stehen. Kein Einheitsangebot – sondern Beratung auf den persönlichen Bedarf zugeschnitten.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 9. Fazit ── -->
+    <section>
+      <div class="section-header">
+        <div class="section-icon">📌</div>
+        <h2>Fazit & Kernbotschaft</h2>
+      </div>
+      <div class="highlight">
+        <h3>Die übergeordnete Botschaft</h3>
+        <p>BODYTIME concept ist kein klassisches EMS-Studio. Es ist ein <strong style="color:#fff;">persönlicher, kompetenter Begleitservice</strong> rund um ein smartes Heimtrainingsgerät. Die Stärke liegt in der Kombination aus tiefem Expertenwissen (20+ Jahre), einem niedrigschwelligen Einstieg durch das Mietmodell und einem schlanken, sofort profitablen B2B-Lizenzmodell für Partner.</p>
+        <p style="margin-top:12px;">Das übergeordnete Versprechen an beide Zielgruppen: <strong style="color:#fff;">Training soll einfach, alltagstauglich und nachhaltig erfolgreich sein</strong> – für Endkunden und Partner gleichermaßen. Wer sich für BODYTIME concept entscheidet, wird nicht allein gelassen.</p>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
