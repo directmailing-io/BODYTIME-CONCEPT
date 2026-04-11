@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Plus, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Plus, Eye, EyeOff, Loader2, Mail, KeyRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -96,9 +96,10 @@ export default function CreatePartnerDialog() {
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5 mt-2">
-            {/* Name row */}
-            <div className="grid grid-cols-2 gap-3">
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 mt-1">
+
+            {/* Name — stacked on mobile, side-by-side on sm+ */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <label htmlFor="first_name" className="text-sm font-medium text-gray-700">
                   Vorname <span className="text-red-500">*</span>
@@ -150,45 +151,73 @@ export default function CreatePartnerDialog() {
               )}
             </div>
 
-            {/* Method selection */}
+            {/* Method selection — touch-friendly cards */}
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-700">Zugangsmethode</p>
-              <div className="space-y-2">
-                <label className="flex items-start gap-3 cursor-pointer group">
-                  <input
-                    type="radio"
-                    checked={sendInvite === true}
-                    onChange={() => setValue('send_invite', true)}
-                    className="mt-0.5 accent-gray-900"
-                  />
-                  <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
-                    <span className="font-medium">Einladungslink senden</span>
-                    <br />
-                    <span className="text-xs text-gray-500">
-                      Der Partner erhält eine E-Mail und setzt sein Passwort selbst.
-                    </span>
-                  </span>
-                </label>
+              <div className="grid grid-cols-1 gap-2">
 
-                <label className="flex items-start gap-3 cursor-pointer group">
-                  <input
-                    type="radio"
-                    checked={sendInvite === false}
-                    onChange={() => setValue('send_invite', false)}
-                    className="mt-0.5 accent-gray-900"
-                  />
-                  <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
-                    <span className="font-medium">Passwort direkt vergeben</span>
-                    <br />
-                    <span className="text-xs text-gray-500">
+                <button
+                  type="button"
+                  onClick={() => setValue('send_invite', true)}
+                  className={[
+                    'flex items-start gap-3 w-full text-left p-4 rounded-2xl border-2 transition-all',
+                    sendInvite === true
+                      ? 'border-gray-900 bg-gray-50'
+                      : 'border-gray-200 hover:border-gray-300 bg-white',
+                  ].join(' ')}
+                >
+                  <div className={[
+                    'w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all',
+                    sendInvite === true ? 'border-gray-900' : 'border-gray-300',
+                  ].join(' ')}>
+                    {sendInvite === true && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <Mail className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-sm font-semibold text-gray-900">Einladungslink senden</span>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      Der Partner erhält eine E-Mail und setzt sein Passwort selbst.
+                    </p>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setValue('send_invite', false)}
+                  className={[
+                    'flex items-start gap-3 w-full text-left p-4 rounded-2xl border-2 transition-all',
+                    sendInvite === false
+                      ? 'border-gray-900 bg-gray-50'
+                      : 'border-gray-200 hover:border-gray-300 bg-white',
+                  ].join(' ')}
+                >
+                  <div className={[
+                    'w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all',
+                    sendInvite === false ? 'border-gray-900' : 'border-gray-300',
+                  ].join(' ')}>
+                    {sendInvite === false && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <KeyRound className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                      <span className="text-sm font-semibold text-gray-900">Passwort direkt vergeben</span>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-relaxed">
                       Passwort wird jetzt festgelegt und dem Partner mitgeteilt.
-                    </span>
-                  </span>
-                </label>
+                    </p>
+                  </div>
+                </button>
+
               </div>
             </div>
 
-            {/* Password field — only shown when send_invite is false */}
+            {/* Password — only if send_invite is false */}
             {sendInvite === false && (
               <div className="space-y-1.5">
                 <label htmlFor="password" className="text-sm font-medium text-gray-700">
@@ -200,28 +229,24 @@ export default function CreatePartnerDialog() {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Sicheres Passwort eingeben"
                     autoComplete="new-password"
-                    className="pr-10"
+                    className="pr-11"
                     {...register('password')}
                     aria-invalid={!!errors.password}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
                     aria-label={showPassword ? 'Passwort verbergen' : 'Passwort anzeigen'}
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {errors.password ? (
                   <p className="text-xs text-red-600">{errors.password.message}</p>
                 ) : (
-                  <p className="text-xs text-gray-500">
-                    Mindestens 8 Zeichen, ein Großbuchstabe, ein Kleinbuchstabe und eine Zahl.
+                  <p className="text-xs text-gray-400">
+                    Mind. 8 Zeichen, Groß- & Kleinbuchstabe, eine Zahl.
                   </p>
                 )}
               </div>
@@ -229,19 +254,23 @@ export default function CreatePartnerDialog() {
 
             {/* Server error */}
             {serverError && (
-              <div className="rounded-lg bg-red-50 border border-red-100 px-4 py-3">
+              <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
                 <p className="text-sm text-red-700">{serverError}</p>
               </div>
             )}
 
             {/* Actions */}
-            <div className="flex justify-end gap-3 pt-1">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
               <DialogClose asChild>
-                <Button type="button" variant="outline" disabled={isSubmitting}>
+                <Button type="button" variant="outline" disabled={isSubmitting} className="w-full sm:w-auto">
                   Abbrechen
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={isSubmitting} className="gap-2 min-w-[130px]">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="gap-2 w-full sm:w-auto sm:min-w-[130px]"
+              >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -252,6 +281,7 @@ export default function CreatePartnerDialog() {
                 )}
               </Button>
             </div>
+
           </form>
         </DialogContent>
       </Dialog>

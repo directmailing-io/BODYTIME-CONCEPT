@@ -35,15 +35,29 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%]',
-        'bg-white rounded-2xl shadow-2xl border border-gray-100 p-6',
-        'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]',
-        'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
-        'max-h-[90vh] overflow-y-auto',
+        // Mobile: bottom sheet
+        'fixed bottom-0 left-0 right-0 z-50 w-full',
+        'bg-white rounded-t-3xl shadow-2xl border-t border-gray-100 p-5 pb-8',
+        'max-h-[92dvh] overflow-y-auto',
+        // Desktop: centered modal
+        'sm:bottom-auto sm:left-[50%] sm:top-[50%] sm:max-w-lg',
+        'sm:translate-x-[-50%] sm:translate-y-[-50%]',
+        'sm:rounded-2xl sm:border sm:p-6 sm:pb-6 sm:shadow-2xl',
+        // Animations
+        'data-[state=open]:animate-in data-[state=open]:fade-in-0',
+        'data-[state=open]:slide-in-from-bottom sm:data-[state=open]:slide-in-from-bottom-0',
+        'sm:data-[state=open]:zoom-in-95 sm:data-[state=open]:slide-in-from-top-[48%]',
+        'data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
+        'data-[state=closed]:slide-out-to-bottom sm:data-[state=closed]:slide-out-to-bottom-0',
+        'sm:data-[state=closed]:zoom-out-95',
         className,
       )}
       {...props}
     >
+      {/* Drag handle — mobile only */}
+      <div className="sm:hidden flex justify-center mb-4 -mt-1">
+        <div className="w-10 h-1 rounded-full bg-gray-200" />
+      </div>
       {children}
       <DialogPrimitive.Close className="absolute right-4 top-4 rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900">
         <X className="h-4 w-4" />
