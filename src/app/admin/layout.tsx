@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="flex h-screen bg-[#f5f5f7] overflow-hidden">
       <AdminSidebar profile={profile} newReferralCount={newReferralCount ?? 0} />
       <main className="flex-1 overflow-y-auto">
-        <div className="p-6 lg:p-8">{children}</div>
+        <div className="p-4 pb-24 lg:p-8 lg:pb-8">{children}</div>
       </main>
     </div>
   );

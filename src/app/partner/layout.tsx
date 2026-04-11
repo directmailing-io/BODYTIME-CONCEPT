@@ -24,7 +24,7 @@ export default async function PartnerLayout({ children }: { children: React.Reac
     <div className="flex h-screen bg-[#f5f5f7] overflow-hidden">
       <PartnerSidebar profile={profile} />
       <main className="flex-1 overflow-y-auto">
-        <div className="p-6 lg:p-8">{children}</div>
+        <div className="p-4 pb-24 lg:p-8 lg:pb-8">{children}</div>
       </main>
     </div>
   );
