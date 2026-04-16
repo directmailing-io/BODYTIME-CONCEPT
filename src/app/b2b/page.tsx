@@ -11,6 +11,7 @@ import {
   Building2, ArrowRight, BadgeCheck, Coins, UserX, Layers,
   Smartphone, MapPin,
 } from 'lucide-react';
+import Image from 'next/image';
 import { ButtonColorful } from '@/components/ui/ButtonColorful';
 import SiteFooter from '@/components/marketing/SiteFooter';
 
@@ -22,6 +23,7 @@ const B2B_NAV_LINKS = [
   { label: 'Das Erlebnis',    href: '#kundenerlebnis' },
   { label: 'Was du bekommst', href: '#leistungen' },
   { label: 'Investition',     href: '#preise' },
+  { label: 'Über uns',        href: '#gruender' },
   { label: 'FAQ',             href: '#faq' },
 ];
 
@@ -1384,6 +1386,199 @@ function B2BFAQSection() {
   );
 }
 
+/* ─── Founders / Über uns ───────────────────────────────────────── */
+const B2B_FOUNDERS = [
+  {
+    name: 'Oliver Pfannes',
+    role: 'Co-Founder · Vertrieb & Expansion',
+    image: '/oliver-pfannes.jpeg',
+    highlights: [
+      '10 Jahre miha bodytec – Marktführer EMS-Geräte',
+      'Gründer KissSoccer & Sports',
+      'Expansion der EMS-Lounge 2018–2025',
+      'Vertriebsleitung Refresherboxx',
+    ],
+    timeline: [
+      { year: '2000–03', label: 'Ausbildung Go Fit Bad Kissingen' },
+      { year: '2004–08', label: 'Fitnesstrainer KissSalis Therme' },
+      { year: '2008–18', label: 'Vertrieb miha bodytec (EMS-Marktführer)' },
+      { year: '2016', label: 'Gründung KissSoccer & Sports' },
+      { year: '2018–25', label: 'Expansion EMS-Lounge' },
+      { year: '2025', label: 'BODYTIME Concept' },
+    ],
+  },
+  {
+    name: 'Christoph Schmitt',
+    role: 'Co-Founder · Training & Coaching',
+    image: '/christoph-schmitt.jpeg',
+    highlights: [
+      '10 Jahre Inhaber BODYTIME Bad Kissingen',
+      'EMS Personal Trainer seit 2008',
+      'OS Physio Coach Ausbildung (TSG Hoffenheim)',
+      'Studium Sport- & Fitnessmanagement',
+    ],
+    timeline: [
+      { year: '2005–08', label: 'Ausbildung INJOY Health & Fitnessclub' },
+      { year: '2008–11', label: 'Leitung Training & Vertrieb INJOY' },
+      { year: '2008', label: 'Start als EMS Personal Trainer' },
+      { year: '2012–13', label: 'OS Physio Coach (TSG Hoffenheim)' },
+      { year: '2013–23', label: 'Inhaber BODYTIME Bad Kissingen' },
+      { year: '2025', label: 'BODYTIME Concept' },
+    ],
+  },
+];
+
+function B2BFoundersSection() {
+  return (
+    <section
+      id="gruender"
+      className="relative"
+      style={{ background: '#071a24', borderTop: '1px solid rgba(255,255,255,0.06)' }}
+    >
+      {/* subtle glow */}
+      <div
+        aria-hidden
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse, rgba(37,168,224,0.08) 0%, transparent 70%)', filter: 'blur(60px)' }}
+      />
+
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.6, ease }}
+          className="max-w-xl mb-12"
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: '#07C8DB' }}>
+            Die Gründer
+          </p>
+          <h2
+            className="font-semibold text-white leading-tight tracking-tight"
+            style={{ fontSize: 'clamp(26px, 4vw, 38px)' }}
+          >
+            Wen du an deiner Seite hast.
+          </h2>
+          <p className="text-white/45 text-base leading-relaxed mt-3 font-light">
+            Kein anonymes Franchise. Hinter BODYTIME concept stehen zwei Unternehmer mit über 30 Jahren
+            gebündelter Erfahrung im EMS- und Fitnessbereich.
+          </p>
+        </motion.div>
+
+        <div className="flex flex-col gap-5">
+          {B2B_FOUNDERS.map((founder, i) => (
+            <motion.div
+              key={founder.name}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.65, ease, delay: i * 0.14 }}
+              className="rounded-3xl overflow-hidden flex flex-col lg:flex-row"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.07)',
+              }}
+            >
+              {/* Photo */}
+              <div className="relative w-full lg:w-[280px] xl:w-[320px] flex-shrink-0">
+                <div className="relative w-full aspect-square lg:aspect-auto lg:h-full min-h-[280px]">
+                  <Image
+                    src={founder.image}
+                    alt={founder.name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 1024px) 100vw, 320px"
+                  />
+                  <div
+                    className="absolute inset-0 lg:hidden"
+                    style={{ background: 'linear-gradient(to bottom, transparent 45%, rgba(7,26,36,0.85) 100%)' }}
+                  />
+                  <div
+                    className="absolute inset-0 hidden lg:block"
+                    style={{ background: 'linear-gradient(to right, transparent 80%, rgba(7,26,36,0.4) 100%)' }}
+                  />
+                  <div className="absolute bottom-4 left-5 lg:hidden">
+                    <p className="text-white text-xl font-semibold leading-tight">{founder.name}</p>
+                    <p className="text-xs mt-0.5" style={{ color: '#25A8E0' }}>{founder.role}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="flex flex-col gap-6 p-6 sm:p-8 flex-1">
+                {/* Name + role – desktop */}
+                <div className="hidden lg:block">
+                  <p className="text-xl font-semibold text-white leading-tight">{founder.name}</p>
+                  <p className="text-sm mt-1 font-medium" style={{ color: '#25A8E0' }}>{founder.role}</p>
+                </div>
+
+                {/* Highlights */}
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                    Expertise
+                  </p>
+                  <ul className="space-y-2">
+                    {founder.highlights.map((h) => (
+                      <li key={h} className="flex items-start gap-2.5">
+                        <span
+                          className="mt-0.5 w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center"
+                          style={{ background: 'linear-gradient(135deg, #25A8E0, #07C8DB)' }}
+                        >
+                          <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
+                            <path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </span>
+                        <span className="text-sm text-white/65 leading-snug">{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Divider */}
+                <div className="h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
+
+                {/* Timeline */}
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                    Werdegang
+                  </p>
+                  <div className="relative pl-4">
+                    <div className="absolute left-0 top-2 bottom-2 w-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
+                    <div className="space-y-3">
+                      {founder.timeline.map((entry, j) => {
+                        const isLast = j === founder.timeline.length - 1;
+                        return (
+                          <div key={j} className="flex items-start gap-3">
+                            <span
+                              className="absolute -left-[3px] mt-[5px] w-[7px] h-[7px] rounded-full flex-shrink-0"
+                              style={isLast
+                                ? { background: '#25A8E0', boxShadow: '0 0 8px rgba(37,168,224,0.6)' }
+                                : { background: 'rgba(255,255,255,0.2)' }
+                              }
+                            />
+                            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                              <span className="text-[11px] font-semibold tabular-nums whitespace-nowrap" style={{ color: '#25A8E0' }}>
+                                {entry.year}
+                              </span>
+                              <span className={`text-xs leading-snug ${isLast ? 'text-white font-semibold' : 'text-white/40'}`}>
+                                {entry.label}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── CTA ───────────────────────────────────────────────────────── */
 function CTASection() {
   return (
@@ -1467,6 +1662,7 @@ export default function PartnerWerdenPage() {
       <KundenerlebnisSection />
       <LeistungenSection />
       <PreiseSection />
+      <B2BFoundersSection />
       <CTASection />
       <B2BFAQSection />
       <SiteFooter />

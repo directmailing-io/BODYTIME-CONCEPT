@@ -26,20 +26,30 @@ interface PartnerProfile {
   role: string;
 }
 
-const primaryTabs = [
-  { href: '/partner/dashboard',  label: 'Dashboard',  icon: LayoutDashboard },
-  { href: '/partner/customers',  label: 'Kunden',     icon: Users },
-  { href: '/partner/order',      label: 'Bestellung', icon: ShoppingCart },
+// Desktop sidebar — all items
+const allNavItems = [
+  { href: '/partner/dashboard',  label: 'Dashboard',        icon: LayoutDashboard },
+  { href: '/partner/customers',  label: 'Kunden',           icon: Users },
+  { href: '/partner/order',      label: 'Neue Bestellung',  icon: ShoppingCart },
+  { href: '/partner/empfehlung', label: 'Empfehlung',       icon: Gift },
+  { href: '/partner/steckbrief', label: 'Profil',           icon: IdCard },
+  { href: '/partner/documents',  label: 'Dokumente',        icon: FileText },
+  { href: '/partner/profile',    label: 'Einstellungen',    icon: Settings },
+];
+
+// Mobile tab bar — 2 left + center action + 2 right + Mehr
+const leftTabs = [
+  { href: '/partner/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/partner/customers', label: 'Kunden',    icon: Users },
+];
+const rightTabs = [
+  { href: '/partner/empfehlung', label: 'Empfehlung', icon: Gift },
   { href: '/partner/steckbrief', label: 'Profil',     icon: IdCard },
 ];
-
 const secondaryItems = [
-  { href: '/partner/documents',  label: 'Dokumente',         icon: FileText },
-  { href: '/partner/empfehlung', label: 'Empfehlung abgeben', icon: Gift },
-  { href: '/partner/profile',    label: 'Einstellungen',     icon: Settings },
+  { href: '/partner/documents', label: 'Dokumente',      icon: FileText },
+  { href: '/partner/profile',   label: 'Einstellungen',  icon: Settings },
 ];
-
-const allNavItems = [...primaryTabs, ...secondaryItems];
 
 function getInitials(firstName: string | null, lastName: string | null): string {
   const first = firstName?.charAt(0)?.toUpperCase() ?? '';
@@ -118,6 +128,27 @@ function MobileNav({ profile }: { profile: PartnerProfile }) {
     (i) => pathname === i.href || pathname.startsWith(i.href + '/'),
   );
 
+  const isOrderActive = pathname === '/partner/order' || pathname.startsWith('/partner/order/');
+
+  function renderTab({ href, label, icon: Icon }: typeof leftTabs[0]) {
+    const isActive = pathname === href || pathname.startsWith(href + '/');
+    return (
+      <Link
+        key={href}
+        href={href}
+        className="flex-1 flex flex-col items-center justify-center gap-1 transition-colors min-w-0"
+      >
+        <Icon
+          className={['w-5 h-5 transition-colors', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
+          strokeWidth={isActive ? 2.5 : 1.8}
+        />
+        <span className={['text-[10px] font-medium leading-none transition-colors truncate', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}>
+          {label}
+        </span>
+      </Link>
+    );
+  }
+
   return (
     <>
       {/* Bottom tab bar */}
@@ -129,45 +160,37 @@ function MobileNav({ profile }: { profile: PartnerProfile }) {
         }}
       >
         <div className="flex items-stretch h-16">
-          {primaryTabs.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname === href || pathname.startsWith(href + '/');
-            return (
-              <Link
-                key={href}
-                href={href}
-                className="flex-1 flex flex-col items-center justify-center gap-1 transition-colors"
-              >
-                <Icon
-                  className={['w-5 h-5 transition-colors', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
-                  strokeWidth={isActive ? 2.5 : 1.8}
-                />
-                <span
-                  className={[
-                    'text-[10px] font-medium leading-none transition-colors',
-                    isActive ? 'text-gray-900' : 'text-gray-400',
-                  ].join(' ')}
-                >
-                  {label}
-                </span>
-              </Link>
-            );
-          })}
+          {/* Left tabs */}
+          {leftTabs.map(renderTab)}
+
+          {/* Center action — "Neue Bestellung" */}
+          <Link
+            href="/partner/order"
+            className="flex-1 flex items-center justify-center px-1 py-2 min-w-0"
+            aria-label="Neue Bestellung"
+          >
+            <div className={[
+              'w-full max-w-[80px] h-11 rounded-2xl flex flex-col items-center justify-center gap-0.5 shadow-md active:scale-95 transition-all',
+              isOrderActive ? 'bg-blue-600' : 'bg-blue-500',
+            ].join(' ')}>
+              <ShoppingCart className="w-4 h-4 text-white" strokeWidth={2.5} />
+              <span className="text-[9px] font-bold text-white leading-none">Bestellung</span>
+            </div>
+          </Link>
+
+          {/* Right tabs */}
+          {rightTabs.map(renderTab)}
 
           {/* "Mehr" tab */}
           <button
             onClick={() => setSheetOpen(true)}
-            className="flex-1 flex flex-col items-center justify-center gap-1"
+            className="flex-1 flex flex-col items-center justify-center gap-1 min-w-0"
           >
             <MoreHorizontal
               className={['w-5 h-5', isSecondaryActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
               strokeWidth={isSecondaryActive ? 2.5 : 1.8}
             />
-            <span
-              className={[
-                'text-[10px] font-medium leading-none',
-                isSecondaryActive ? 'text-gray-900' : 'text-gray-400',
-              ].join(' ')}
-            >
+            <span className={['text-[10px] font-medium leading-none', isSecondaryActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}>
               Mehr
             </span>
           </button>
@@ -193,8 +216,8 @@ function MobileNav({ profile }: { profile: PartnerProfile }) {
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {/* Handle + header */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-2">
-          <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto absolute left-1/2 -translate-x-1/2 top-3" />
+        <div className="flex items-center justify-between px-5 pt-4 pb-2 relative">
+          <div className="w-10 h-1 rounded-full bg-gray-200 absolute left-1/2 -translate-x-1/2 top-3" />
           <div className="flex items-center gap-3 pt-3">
             <div className="w-9 h-9 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
               <span className="text-xs font-semibold text-white">
@@ -228,9 +251,7 @@ function MobileNav({ profile }: { profile: PartnerProfile }) {
                 onClick={() => setSheetOpen(false)}
                 className={[
                   'flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-colors',
-                  isActive
-                    ? 'bg-gray-100 text-gray-900'
-                    : 'text-gray-600 active:bg-gray-50',
+                  isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 active:bg-gray-50',
                 ].join(' ')}
               >
                 <Icon

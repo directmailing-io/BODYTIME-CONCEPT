@@ -29,9 +29,11 @@ interface Partner {
 
 interface PartnerActionsProps {
   partner: Partner;
+  /** Compact mode shows icon-only buttons (for use inside table rows) */
+  compact?: boolean;
 }
 
-export default function PartnerActions({ partner }: PartnerActionsProps) {
+export default function PartnerActions({ partner, compact = false }: PartnerActionsProps) {
   const router = useRouter();
   const name = fullName(partner.first_name ?? '', partner.last_name ?? '') || 'Diesen Partner';
 
@@ -77,7 +79,7 @@ export default function PartnerActions({ partner }: PartnerActionsProps) {
       }
       toast.success(`${name} und alle zugehörigen Daten wurden gelöscht.`);
       setDeleteOpen(false);
-      router.refresh();
+      router.push('/admin/partners');
     } catch {
       toast.error('Löschen fehlgeschlagen. Bitte versuche es erneut.');
     } finally {
@@ -98,14 +100,24 @@ export default function PartnerActions({ partner }: PartnerActionsProps) {
         /* Deactivate — needs confirmation */
         <AlertDialog open={toggleOpen} onOpenChange={setToggleOpen}>
           <AlertDialogTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5 text-amber-700 border-amber-200 hover:bg-amber-50 hover:border-amber-300"
-            >
-              <ShieldOff className="w-3.5 h-3.5" />
-              Deaktivieren
-            </Button>
+            {compact ? (
+              <button
+                type="button"
+                title="Deaktivieren"
+                className="p-2 rounded-lg text-amber-600 hover:bg-amber-50 transition-colors"
+              >
+                <ShieldOff className="w-4 h-4" />
+              </button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 text-amber-700 border-amber-200 hover:bg-amber-50 hover:border-amber-300"
+              >
+                <ShieldOff className="w-3.5 h-3.5" />
+                Deaktivieren
+              </Button>
+            )}
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -131,33 +143,58 @@ export default function PartnerActions({ partner }: PartnerActionsProps) {
         </AlertDialog>
       ) : (
         /* Activate — no confirmation needed */
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={isToggling}
-          onClick={handleToggleStatus}
-          className="gap-1.5 text-green-700 border-green-200 hover:bg-green-50 hover:border-green-300"
-        >
-          {isToggling ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <ShieldCheck className="w-3.5 h-3.5" />
-          )}
-          Aktivieren
-        </Button>
+        compact ? (
+          <button
+            type="button"
+            title="Aktivieren"
+            disabled={isToggling}
+            onClick={handleToggleStatus}
+            className="p-2 rounded-lg text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50"
+          >
+            {isToggling
+              ? <Loader2 className="w-4 h-4 animate-spin" />
+              : <ShieldCheck className="w-4 h-4" />
+            }
+          </button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isToggling}
+            onClick={handleToggleStatus}
+            className="gap-1.5 text-green-700 border-green-200 hover:bg-green-50 hover:border-green-300"
+          >
+            {isToggling ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <ShieldCheck className="w-3.5 h-3.5" />
+            )}
+            Aktivieren
+          </Button>
+        )
       )}
 
       {/* Delete */}
       <AlertDialog open={deleteOpen} onOpenChange={handleDeleteOpenChange}>
         <AlertDialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            Löschen
-          </Button>
+          {compact ? (
+            <button
+              type="button"
+              title="Löschen"
+              className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5 text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Löschen
+            </Button>
+          )}
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>

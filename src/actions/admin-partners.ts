@@ -178,6 +178,22 @@ export async function togglePartnerStatusAction(
   }
 }
 
+export async function updatePartnerNotesAction(partnerId: string, notes: string): Promise<ActionResult> {
+  try {
+    const { supabase } = await requireAdmin();
+    const { error } = await supabase
+      .from('bt_partner_profiles')
+      .update({ admin_notes: notes || null })
+      .eq('user_id', partnerId);
+    if (error) return { success: false, error: 'Notiz konnte nicht gespeichert werden.' };
+    revalidatePath(`/admin/partners/${partnerId}`);
+    return { success: true };
+  } catch (err) {
+    console.error('[updatePartnerNotesAction]', err);
+    return { success: false, error: 'Ein Fehler ist aufgetreten.' };
+  }
+}
+
 export async function deletePartnerAction(partnerId: string): Promise<ActionResult> {
   try {
     const { user: adminUser, supabase } = await requireAdmin();

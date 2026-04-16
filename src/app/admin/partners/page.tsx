@@ -79,7 +79,6 @@ export default async function PartnersPage() {
         is_active: p.is_active,
         created_at: p.created_at,
         company_name: getPartnerProfile(p.bt_partner_profiles)?.company_name ?? null,
-        address_city: getPartnerProfile(p.bt_partner_profiles)?.address_city ?? null,
         customer_count: getCustomerCount(p.bt_customers),
       }))} />
     </div>

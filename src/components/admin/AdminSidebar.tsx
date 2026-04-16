@@ -15,9 +15,11 @@ import {
   LogOut,
   MoreHorizontal,
   X,
+  Plus,
 } from 'lucide-react';
 import Image from 'next/image';
 import { logoutAction } from '@/actions/auth';
+import CreatePartnerDialog from '@/components/admin/CreatePartnerDialog';
 
 interface AdminProfile {
   first_name: string | null;
@@ -27,21 +29,33 @@ interface AdminProfile {
   role: string;
 }
 
-const primaryTabs = [
-  { href: '/admin/dashboard',        label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/partners',         label: 'Partner',   icon: Users },
-  { href: '/admin/customers',        label: 'Kunden',    icon: UserCheck },
-  { href: '/admin/freigabezentrale', label: 'Freigabe',  icon: ClipboardCheck },
+// Desktop sidebar — all items in order
+const allNavItems = [
+  { href: '/admin/dashboard',        label: 'Dashboard',      icon: LayoutDashboard },
+  { href: '/admin/partners',         label: 'Partner',        icon: Users },
+  { href: '/admin/customers',        label: 'Kunden',         icon: UserCheck },
+  { href: '/admin/empfehlungszentrale', label: 'Empfehlungen', icon: Gift },
+  { href: '/admin/freigabezentrale', label: 'Freigabe',       icon: ClipboardCheck },
+  { href: '/admin/documents',        label: 'Dokumente',      icon: FileText },
+  { href: '/admin/settings',         label: 'Einstellungen',  icon: Settings },
+  { href: '/admin/profile',          label: 'Profil',         icon: User },
 ];
 
+// Mobile bottom bar — 2 left + center action + 2 right + Mehr
+const leftTabs = [
+  { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/partners',  label: 'Partner',   icon: Users },
+];
+const rightTabs = [
+  { href: '/admin/customers',           label: 'Kunden',      icon: UserCheck },
+  { href: '/admin/empfehlungszentrale', label: 'Empfehlungen', icon: Gift },
+];
 const secondaryItems = [
-  { href: '/admin/documents',           label: 'Dokumente',      icon: FileText },
-  { href: '/admin/empfehlungszentrale', label: 'Empfehlungen',   icon: Gift },
-  { href: '/admin/settings',            label: 'Einstellungen',  icon: Settings },
-  { href: '/admin/profile',             label: 'Profil',         icon: User },
+  { href: '/admin/freigabezentrale', label: 'Freigabe',      icon: ClipboardCheck },
+  { href: '/admin/documents',        label: 'Dokumente',     icon: FileText },
+  { href: '/admin/settings',         label: 'Einstellungen', icon: Settings },
+  { href: '/admin/profile',          label: 'Profil',        icon: User },
 ];
-
-const allNavItems = [...primaryTabs, ...secondaryItems];
 
 function getInitials(firstName: string | null, lastName: string | null): string {
   const first = firstName?.charAt(0)?.toUpperCase() ?? '';
@@ -120,13 +134,38 @@ function SidebarContent({ profile, newReferralCount = 0 }: { profile: AdminProfi
 function MobileNav({ profile, newReferralCount = 0 }: { profile: AdminProfile; newReferralCount?: number }) {
   const pathname = usePathname();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const isSecondaryActive = secondaryItems.some(
     (i) => pathname === i.href || pathname.startsWith(i.href + '/'),
   );
 
-  const freigabeActive =
-    pathname === '/admin/freigabezentrale' || pathname.startsWith('/admin/freigabezentrale/');
+  function renderTab({ href, label, icon: Icon }: typeof leftTabs[0]) {
+    const isActive = pathname === href || pathname.startsWith(href + '/');
+    const isEmpfehlung = href === '/admin/empfehlungszentrale';
+    return (
+      <Link
+        key={href}
+        href={href}
+        className="flex-1 flex flex-col items-center justify-center gap-1 relative transition-colors min-w-0"
+      >
+        <div className="relative">
+          <Icon
+            className={['w-5 h-5 transition-colors', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
+            strokeWidth={isActive ? 2.5 : 1.8}
+          />
+          {isEmpfehlung && newReferralCount > 0 && (
+            <span className="absolute -top-1 -right-1.5 inline-flex items-center justify-center min-w-[14px] h-[14px] px-0.5 rounded-full bg-amber-500 text-white text-[9px] font-bold leading-none">
+              {newReferralCount > 9 ? '9+' : newReferralCount}
+            </span>
+          )}
+        </div>
+        <span className={['text-[10px] font-medium leading-none transition-colors truncate', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}>
+          {label}
+        </span>
+      </Link>
+    );
+  }
 
   return (
     <>
@@ -139,58 +178,42 @@ function MobileNav({ profile, newReferralCount = 0 }: { profile: AdminProfile; n
         }}
       >
         <div className="flex items-stretch h-16">
-          {primaryTabs.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname === href || pathname.startsWith(href + '/');
-            const isFreigabe = href === '/admin/freigabezentrale';
-            return (
-              <Link
-                key={href}
-                href={href}
-                className="flex-1 flex flex-col items-center justify-center gap-1 relative transition-colors"
-              >
-                <div className="relative">
-                  <Icon
-                    className={['w-5 h-5 transition-colors', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
-                    strokeWidth={isActive ? 2.5 : 1.8}
-                  />
-                  {isFreigabe && newReferralCount > 0 && (
-                    <span className="absolute -top-1 -right-1.5 inline-flex items-center justify-center min-w-[14px] h-[14px] px-0.5 rounded-full bg-amber-500 text-white text-[9px] font-bold leading-none">
-                      {newReferralCount > 9 ? '9+' : newReferralCount}
-                    </span>
-                  )}
-                </div>
-                <span
-                  className={[
-                    'text-[10px] font-medium leading-none transition-colors',
-                    isActive ? 'text-gray-900' : 'text-gray-400',
-                  ].join(' ')}
-                >
-                  {label}
-                </span>
-              </Link>
-            );
-          })}
+          {/* Left tabs */}
+          {leftTabs.map(renderTab)}
+
+          {/* Center action — "Partner anlegen" */}
+          <button
+            onClick={() => setCreateOpen(true)}
+            className="flex-1 flex items-center justify-center px-1 py-2 min-w-0"
+            aria-label="Partner anlegen"
+          >
+            <div className="w-full max-w-[72px] h-11 rounded-2xl bg-gray-900 flex flex-col items-center justify-center gap-0.5 shadow-md active:scale-95 transition-transform">
+              <Plus className="w-4 h-4 text-white" strokeWidth={2.5} />
+              <span className="text-[9px] font-bold text-white leading-none">Anlegen</span>
+            </div>
+          </button>
+
+          {/* Right tabs */}
+          {rightTabs.map(renderTab)}
 
           {/* "Mehr" tab */}
           <button
             onClick={() => setSheetOpen(true)}
-            className="flex-1 flex flex-col items-center justify-center gap-1"
+            className="flex-1 flex flex-col items-center justify-center gap-1 min-w-0"
           >
             <MoreHorizontal
               className={['w-5 h-5', isSecondaryActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
               strokeWidth={isSecondaryActive ? 2.5 : 1.8}
             />
-            <span
-              className={[
-                'text-[10px] font-medium leading-none',
-                isSecondaryActive ? 'text-gray-900' : 'text-gray-400',
-              ].join(' ')}
-            >
+            <span className={['text-[10px] font-medium leading-none', isSecondaryActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}>
               Mehr
             </span>
           </button>
         </div>
       </nav>
+
+      {/* CreatePartnerDialog — controlled by center button */}
+      <CreatePartnerDialog open={createOpen} onOpenChange={setCreateOpen} />
 
       {/* Backdrop */}
       <div
@@ -239,7 +262,6 @@ function MobileNav({ profile, newReferralCount = 0 }: { profile: AdminProfile; n
         <div className="px-4 py-3 space-y-1">
           {secondaryItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href || pathname.startsWith(href + '/');
-            const isEmpfehlung = href === '/admin/empfehlungszentrale';
             return (
               <Link
                 key={href}
@@ -257,11 +279,6 @@ function MobileNav({ profile, newReferralCount = 0 }: { profile: AdminProfile; n
                 <span className={['text-[15px] flex-1', isActive ? 'font-semibold' : 'font-medium'].join(' ')}>
                   {label}
                 </span>
-                {isEmpfehlung && newReferralCount > 0 && (
-                  <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1 rounded-full bg-amber-500 text-white text-[10px] font-bold">
-                    {newReferralCount > 9 ? '9+' : newReferralCount}
-                  </span>
-                )}
               </Link>
             );
           })}

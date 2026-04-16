@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +17,6 @@ interface PartnerRow {
   is_active: boolean;
   created_at: string;
   company_name: string | null;
-  address_city: string | null;
   customer_count: number;
 }
 
@@ -25,6 +25,7 @@ interface PartnersSearchFilterProps {
 }
 
 export default function PartnersSearchFilter({ partners }: PartnersSearchFilterProps) {
+  const router = useRouter();
   const [search, setSearch] = useState('');
 
   const filtered = partners.filter((p) => {
@@ -34,8 +35,7 @@ export default function PartnersSearchFilter({ partners }: PartnersSearchFilterP
     return (
       name.includes(term) ||
       (p.email?.toLowerCase().includes(term) ?? false) ||
-      (p.company_name?.toLowerCase().includes(term) ?? false) ||
-      (p.address_city?.toLowerCase().includes(term) ?? false)
+      (p.company_name?.toLowerCase().includes(term) ?? false)
     );
   });
 
@@ -82,9 +82,6 @@ export default function PartnersSearchFilter({ partners }: PartnersSearchFilterP
                     <th className="text-left px-6 py-3.5 text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                       E-Mail
                     </th>
-                    <th className="text-left px-6 py-3.5 text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
-                      Stadt
-                    </th>
                     <th className="text-left px-6 py-3.5 text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                       Kunden
                     </th>
@@ -101,7 +98,8 @@ export default function PartnersSearchFilter({ partners }: PartnersSearchFilterP
                   {filtered.map((partner) => (
                     <tr
                       key={partner.id}
-                      className="hover:bg-gray-50/50 transition-colors"
+                      onClick={() => router.push(`/admin/partners/${partner.id}`)}
+                      className="hover:bg-gray-50 transition-colors cursor-pointer"
                     >
                       {/* Name */}
                       <td className="px-6 py-4">
@@ -128,11 +126,6 @@ export default function PartnersSearchFilter({ partners }: PartnersSearchFilterP
                         {partner.email ?? <span className="text-gray-300">—</span>}
                       </td>
 
-                      {/* Stadt */}
-                      <td className="px-6 py-4 text-gray-600 hidden xl:table-cell">
-                        {partner.address_city ?? <span className="text-gray-300">—</span>}
-                      </td>
-
                       {/* Kunden */}
                       <td className="px-6 py-4 hidden sm:table-cell">
                         <span className="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-700">
@@ -152,8 +145,11 @@ export default function PartnersSearchFilter({ partners }: PartnersSearchFilterP
                         {formatDate(partner.created_at)}
                       </td>
 
-                      {/* Aktionen */}
-                      <td className="px-6 py-4">
+                      {/* Aktionen — stop propagation so row click doesn't fire */}
+                      <td
+                        className="px-4 py-4"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <PartnerActions
                           partner={{
                             id: partner.id,
@@ -161,6 +157,7 @@ export default function PartnersSearchFilter({ partners }: PartnersSearchFilterP
                             first_name: partner.first_name,
                             last_name: partner.last_name,
                           }}
+                          compact
                         />
                       </td>
                     </tr>

@@ -5,7 +5,6 @@ import PromisesSection from '@/components/marketing/PromisesSection';
 import ProductSection from '@/components/marketing/ProductSection';
 import FlexibilitySection from '@/components/marketing/FlexibilitySection';
 import AboutConceptSection from '@/components/marketing/AboutConceptSection';
-import ComparisonSection from '@/components/marketing/ComparisonSection';
 import TransformationSection from '@/components/marketing/TransformationSection';
 import TrainerSection from '@/components/marketing/TrainerSection';
 import AboutUsSection from '@/components/marketing/AboutUsSection';
@@ -61,9 +60,6 @@ export default async function LandingPage() {
 
       {/* ── Was ist BODYTIME concept ────────────────────────────── */}
       <AboutConceptSection />
-
-      {/* ── Vergleichstabelle ───────────────────────────────────── */}
-      <ComparisonSection />
 
       {/* ── Transformation / Kreislauf ──────────────────────────── */}
       <TransformationSection />

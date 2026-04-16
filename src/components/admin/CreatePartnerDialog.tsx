@@ -19,11 +19,25 @@ import {
 import { createPartnerSchema, type CreatePartnerInput } from '@/lib/validations/partner';
 import { createPartnerAction } from '@/actions/admin-partners';
 
-export default function CreatePartnerDialog() {
+interface CreatePartnerDialogProps {
+  /** When provided, dialog is controlled externally — no built-in trigger button */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export default function CreatePartnerDialog({ open: externalOpen, onOpenChange: externalOnOpenChange }: CreatePartnerDialogProps = {}) {
+  const isControlled = externalOpen !== undefined;
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [localOpen, setLocalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const open = isControlled ? externalOpen! : localOpen;
+
+  function setOpen(value: boolean) {
+    if (isControlled) externalOnOpenChange?.(value);
+    else setLocalOpen(value);
+  }
 
   const {
     register,
@@ -82,10 +96,12 @@ export default function CreatePartnerDialog() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="gap-2">
-        <Plus className="w-4 h-4" strokeWidth={2.5} />
-        Partner anlegen
-      </Button>
+      {!isControlled && (
+        <Button onClick={() => setOpen(true)} className="gap-2">
+          <Plus className="w-4 h-4" strokeWidth={2.5} />
+          Partner anlegen
+        </Button>
+      )}
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-md">
