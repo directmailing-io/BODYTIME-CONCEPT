@@ -1830,16 +1830,12 @@ function PhilosophieSection() {
               >
                 BODY
               </motion.span>
-              <motion.span
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
+              <span
                 className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] whitespace-nowrap"
                 style={{ color: '#4ADE80' }}
               >
                 Körper · Das wichtigste Gut
-              </motion.span>
+              </span>
             </div>
 
             {/* + wrapper */}
@@ -1868,16 +1864,12 @@ function PhilosophieSection() {
               >
                 TIME
               </motion.span>
-              <motion.span
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
+              <span
                 className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] whitespace-nowrap"
                 style={{ color: '#25A8E0' }}
               >
                 Zeit · Die knappe Ressource
-              </motion.span>
+              </span>
             </div>
 
           </div>
