@@ -142,9 +142,6 @@ export default function PublicOrderFlow({ partnerId, partnerName, voucherCode }:
   if (step === 'success') {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 text-center">
-        <div className="mb-6">
-          <img src="/logo.svg" alt="BODYTIME concept" className="h-12 mx-auto" />
-        </div>
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
           <CheckCircle2 className="w-8 h-8 text-green-600" />
         </div>
@@ -162,7 +159,7 @@ export default function PublicOrderFlow({ partnerId, partnerName, voucherCode }:
 
         {/* Logo */}
         <div className="text-center mb-8">
-          <img src="/logo.svg" alt="BODYTIME concept" className="h-10 mx-auto mb-4" />
+          <img src="/logo.svg" alt="BODYTIME concept" className="h-24 mx-auto mb-4" />
           <p className="text-sm text-gray-400">Empfohlen von <span className="font-medium text-gray-700">{partnerName}</span></p>
         </div>
 
@@ -344,18 +341,6 @@ export default function PublicOrderFlow({ partnerId, partnerName, voucherCode }:
                       </button>
                     ))}
                   </div>
-                </div>
-
-                {/* EMS suit type */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1.5">Art des EMS-Anzugs</label>
-                  <input
-                    type="text"
-                    value={emsSuit}
-                    onChange={e => setEmsSuit(e.target.value)}
-                    placeholder="z. B. Ganzkörperanzug"
-                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                  />
                 </div>
 
                 {/* Sizes */}

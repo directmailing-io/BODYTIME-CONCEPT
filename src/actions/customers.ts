@@ -130,7 +130,7 @@ export async function updateCustomerAction(
         ...coreData,
         contract_end_date: contractEndDate,
         updated_at: new Date().toISOString(),
-        // order_number only included when non-empty (requires migration 002)
+        profile_complete: true,
         ...(order_number ? { order_number } : {}),
       })
       .eq('id', customerId);
