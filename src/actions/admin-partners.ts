@@ -75,7 +75,7 @@ export async function createPartnerAction(formData: FormData): Promise<ActionRes
       // Send invite link via Supabase magic link / OTP
       const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
         data: { first_name, last_name, role: 'partner' },
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?next=/register`,
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/invite`,
       });
 
       if (error || !data.user) {
@@ -180,11 +180,12 @@ export async function togglePartnerStatusAction(
 
 export async function updatePartnerNotesAction(partnerId: string, notes: string): Promise<ActionResult> {
   try {
-    const { supabase } = await requireAdmin();
-    const { error } = await supabase
+    await requireAdmin();
+    // Use adminClient to bypass RLS and upsert in case the row doesn't exist yet
+    const adminClient = createAdminClient();
+    const { error } = await adminClient
       .from('bt_partner_profiles')
-      .update({ admin_notes: notes || null })
-      .eq('user_id', partnerId);
+      .upsert({ user_id: partnerId, admin_notes: notes || null }, { onConflict: 'user_id' });
     if (error) return { success: false, error: 'Notiz konnte nicht gespeichert werden.' };
     revalidatePath(`/admin/partners/${partnerId}`);
     return { success: true };
