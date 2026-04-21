@@ -13,11 +13,11 @@ const inviteRedirectScript = `(function(){var h=window.location.hash;if(!h)retur
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className="h-full" style={{ overflowX: 'clip' }}>
+    <html lang="de" className="h-full">
       <head>
         <script dangerouslySetInnerHTML={{ __html: inviteRedirectScript }} />
       </head>
-      <body className="min-h-full antialiased overflow-x-hidden" suppressHydrationWarning>
+      <body className="min-h-full antialiased" suppressHydrationWarning>
         {children}
         <CookieConsent />
         <Toaster
