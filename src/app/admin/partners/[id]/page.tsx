@@ -68,6 +68,7 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
         partnerProfile.license_start,
         partnerProfile.license_duration_months ?? 12,
         partnerProfile.is_cancelled ?? false,
+        partnerProfile.cancellation_date ?? null,
       )
     : null;
 
@@ -131,8 +132,10 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
               <Badge variant={profile.is_active ? 'success' : 'neutral'} className="shrink-0">
                 {profile.is_active ? 'Aktiv' : 'Deaktiviert'}
               </Badge>
-              {partnerProfile?.is_cancelled && (
-                <Badge variant="danger" className="shrink-0">Gekündigt</Badge>
+              {partnerProfile?.is_cancelled && licenseInfo && (
+                licenseInfo.contractEnded
+                  ? <Badge variant="danger" className="shrink-0">Gekündigt</Badge>
+                  : <Badge variant="warning" className="shrink-0">Gekündigt, endet {formatDate(licenseInfo.possibleEnd.toISOString())}</Badge>
               )}
               {licenseInfo && !partnerProfile?.is_cancelled && licenseInfo.status === 'auto_renewing' && (
                 <Badge variant="warning" className="shrink-0">Verlängert sich automatisch</Badge>
@@ -251,7 +254,8 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
                       </div>
                       <div className="flex justify-between items-center text-sm pt-1">
                         <span className="text-gray-500">Status</span>
-                        {licenseInfo.status === 'cancelled' && <Badge variant="danger">Gekündigt</Badge>}
+                        {licenseInfo.status === 'cancelled_ended' && <Badge variant="danger">Gekündigt</Badge>}
+                        {licenseInfo.status === 'cancelled' && <Badge variant="warning">Gekündigt, endet {formatDate(licenseInfo.possibleEnd.toISOString())}</Badge>}
                         {licenseInfo.status === 'monthly' && <Badge variant="neutral">Monatlich</Badge>}
                         {licenseInfo.status === 'auto_renewing' && <Badge variant="warning">Verlängert sich</Badge>}
                         {licenseInfo.status === 'expiring_warning' && <Badge variant="warning">Bald verlängerbar</Badge>}

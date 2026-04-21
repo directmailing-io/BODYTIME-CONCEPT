@@ -1,21 +1,24 @@
 import { addMonths, differenceInDays, differenceInCalendarMonths, parseISO } from 'date-fns';
 
-export type LicenseStatus = 'active' | 'expiring_warning' | 'auto_renewing' | 'monthly' | 'cancelled';
+export type LicenseStatus = 'active' | 'expiring_warning' | 'auto_renewing' | 'monthly' | 'cancelled' | 'cancelled_ended';
 
 export interface LicenseInfo {
   licenseStart: Date;
   initialEnd: Date;
   possibleEnd: Date;
   cancellationDeadline: Date;
+  cancellationNoticeMonths: number; // 3 in initial period, 1 in monthly
   status: LicenseStatus;
   daysToInitialEnd: number;
   isInInitialPeriod: boolean;
+  contractEnded: boolean; // true when cancelled AND today >= possibleEnd
 }
 
 export function getLicenseInfo(
   licenseStart: string,
   durationMonths: number = 12,
   isCancelled: boolean = false,
+  cancellationDate?: string | null,
   today: Date = new Date()
 ): LicenseInfo {
   const start = parseISO(licenseStart);
@@ -24,29 +27,51 @@ export function getLicenseInfo(
   const isInInitialPeriod = daysToInitialEnd >= 0;
 
   let possibleEnd: Date;
+  let cancellationNoticeMonths: number;
+
   if (isInInitialPeriod) {
     possibleEnd = initialEnd;
+    cancellationNoticeMonths = durationMonths >= 12 ? 3 : 1;
+  } else if (isCancelled && cancellationDate) {
+    // When cancelled past initial period: fix possibleEnd at the period end at time of cancellation
+    const cancelledAt = parseISO(cancellationDate);
+    const monthsPastAtCancellation = differenceInCalendarMonths(cancelledAt, initialEnd);
+    possibleEnd = addMonths(initialEnd, monthsPastAtCancellation + 1);
+    cancellationNoticeMonths = 1;
   } else {
+    // Monthly renewal: end = next period end after today
     const monthsPast = differenceInCalendarMonths(today, initialEnd);
     possibleEnd = addMonths(initialEnd, monthsPast + 1);
+    cancellationNoticeMonths = 1;
   }
 
-  const cancellationDeadline = addMonths(possibleEnd, -1);
+  const cancellationDeadline = addMonths(possibleEnd, -cancellationNoticeMonths);
+  const contractEnded = isCancelled && differenceInDays(possibleEnd, today) < 0;
 
   let status: LicenseStatus;
   if (isCancelled) {
-    status = 'cancelled';
+    status = contractEnded ? 'cancelled_ended' : 'cancelled';
   } else if (!isInInitialPeriod) {
     status = 'monthly';
   } else if (daysToInitialEnd <= 90) {
-    status = 'auto_renewing';
+    status = 'auto_renewing'; // past 3-month cancellation deadline
   } else if (daysToInitialEnd <= 120) {
-    status = 'expiring_warning';
+    status = 'expiring_warning'; // 4-month admin warning window
   } else {
     status = 'active';
   }
 
-  return { licenseStart: start, initialEnd, possibleEnd, cancellationDeadline, status, daysToInitialEnd, isInInitialPeriod };
+  return {
+    licenseStart: start,
+    initialEnd,
+    possibleEnd,
+    cancellationDeadline,
+    cancellationNoticeMonths,
+    status,
+    daysToInitialEnd,
+    isInInitialPeriod,
+    contractEnded,
+  };
 }
 
 export function todayISO(): string {

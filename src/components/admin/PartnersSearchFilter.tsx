@@ -21,6 +21,7 @@ interface PartnerRow {
   license_start: string | null;
   license_duration_months: number;
   is_cancelled: boolean;
+  cancellation_date: string | null;
 }
 
 type SortKey = 'name' | 'customer_count' | 'is_active' | 'license_start';
@@ -41,13 +42,21 @@ function LicenseBadge({ partner }: { partner: PartnerRow }) {
   if (!partner.is_active) {
     return <Badge variant="neutral">Deaktiviert</Badge>;
   }
-  if (partner.is_cancelled) {
-    return <Badge variant="danger">Gekündigt</Badge>;
-  }
   if (!partner.license_start) {
     return <Badge variant="success">Aktiv</Badge>;
   }
-  const info = getLicenseInfo(partner.license_start, partner.license_duration_months ?? 12, false);
+  const info = getLicenseInfo(
+    partner.license_start,
+    partner.license_duration_months ?? 12,
+    partner.is_cancelled,
+    partner.cancellation_date ?? null,
+  );
+  if (info.status === 'cancelled_ended') {
+    return <Badge variant="danger">Gekündigt</Badge>;
+  }
+  if (info.status === 'cancelled') {
+    return <Badge variant="warning">Gekündigt, endet {formatDate(info.possibleEnd.toISOString())}</Badge>;
+  }
   if (info.status === 'auto_renewing') {
     return <Badge variant="warning">Verlängert sich</Badge>;
   }

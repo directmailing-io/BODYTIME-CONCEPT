@@ -9,6 +9,7 @@ interface PartnerProfile {
   license_start: string | null;
   license_duration_months: number | null;
   is_cancelled: boolean | null;
+  cancellation_date: string | null;
 }
 
 interface CustomerCount {
@@ -45,7 +46,7 @@ export default async function PartnersPage() {
     .from('bt_profiles')
     .select(`
       id, first_name, last_name, email, is_active, created_at,
-      bt_partner_profiles (phone, license_start, license_duration_months, is_cancelled),
+      bt_partner_profiles (phone, license_start, license_duration_months, is_cancelled, cancellation_date),
       bt_customers (count)
     `)
     .eq('role', 'partner')
@@ -78,6 +79,7 @@ export default async function PartnersPage() {
           license_start: pp?.license_start ?? null,
           license_duration_months: pp?.license_duration_months ?? 12,
           is_cancelled: pp?.is_cancelled ?? false,
+          cancellation_date: pp?.cancellation_date ?? null,
         };
       })} />
     </div>
