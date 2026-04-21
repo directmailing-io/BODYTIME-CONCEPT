@@ -1,6 +1,6 @@
 import { addMonths, differenceInDays, differenceInCalendarMonths, parseISO } from 'date-fns';
 
-export type LicenseStatus = 'active' | 'expiring_warning' | 'auto_renewing' | 'monthly' | 'cancelled' | 'cancelled_ended';
+export type LicenseStatus = 'active' | 'auto_renewing' | 'cancelled' | 'cancelled_ended';
 
 export interface LicenseInfo {
   licenseStart: Date;
@@ -59,11 +59,6 @@ export function getLicenseInfo(
   } else if (daysUntilDeadline < 0) {
     // Cancellation deadline has passed — renewal is inevitable
     status = 'auto_renewing';
-  } else if (daysUntilDeadline <= 30) {
-    // Within 30 days of deadline — can still cancel, admin should act
-    status = 'expiring_warning';
-  } else if (!isInInitialPeriod) {
-    status = 'monthly';
   } else {
     status = 'active';
   }

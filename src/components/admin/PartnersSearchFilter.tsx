@@ -55,18 +55,12 @@ function LicenseBadge({ partner }: { partner: PartnerRow }) {
     return <Badge variant="danger">Gekündigt</Badge>;
   }
   if (info.status === 'cancelled') {
-    return <Badge variant="warning">Gekündigt, endet {formatDate(info.possibleEnd.toISOString())}</Badge>;
+    return <Badge variant="warning">Gekündigt, läuft bis {formatDate(info.possibleEnd.toISOString())}</Badge>;
   }
   if (info.status === 'auto_renewing') {
-    return <Badge variant="warning">Verlängert sich</Badge>;
+    return <Badge variant="warning">Läuft, verlängert sich</Badge>;
   }
-  if (info.status === 'expiring_warning') {
-    return <Badge variant="warning">Bald verlängerbar</Badge>;
-  }
-  if (info.status === 'monthly') {
-    return <Badge variant="neutral">Monatlich</Badge>;
-  }
-  return <Badge variant="success">Aktiv</Badge>;
+  return <Badge variant="success">Vertrag läuft</Badge>;
 }
 
 export default function PartnersSearchFilter({ partners }: PartnersSearchFilterProps) {

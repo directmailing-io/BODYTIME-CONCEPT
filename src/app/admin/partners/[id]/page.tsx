@@ -1,7 +1,7 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Mail, Phone, Globe, MapPin, UserPlus, Calendar, Users, AlertTriangle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Globe, MapPin, UserPlus, Calendar, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate, fullName, isExpired, isExpiringSoon } from '@/lib/utils';
@@ -74,11 +74,6 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
       )
     : null;
 
-  const showExpiryWarning =
-    licenseInfo &&
-    !partnerProfile?.is_cancelled &&
-    (licenseInfo.status === 'expiring_warning' || licenseInfo.status === 'auto_renewing');
-
   return (
     <div className="max-w-4xl mx-auto">
 
@@ -89,32 +84,6 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
       >
         <ArrowLeft className="h-4 w-4" /> Alle Partner
       </Link>
-
-      {/* Warning banner */}
-      {showExpiryWarning && (
-        <div className={`mb-4 rounded-xl border px-4 py-3 flex items-start gap-3 ${
-          licenseInfo!.status === 'auto_renewing'
-            ? 'bg-blue-50 border-blue-100'
-            : 'bg-amber-50 border-amber-100'
-        }`}>
-          {licenseInfo!.status === 'auto_renewing' ? (
-            <RefreshCw className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
-          ) : (
-            <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
-          )}
-          <div>
-            {licenseInfo!.status === 'auto_renewing' ? (
-              <p className="text-sm font-medium text-blue-800">
-                Lizenz verlängert sich automatisch — Kündigung bis {formatDate(licenseInfo!.cancellationDeadline.toISOString())} möglich.
-              </p>
-            ) : (
-              <p className="text-sm font-medium text-amber-800">
-                Lizenz läuft in {licenseInfo!.daysToInitialEnd} Tagen ab (am {formatDate(licenseInfo!.initialEnd.toISOString())}).
-              </p>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* ── Header ──────────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 mb-4">
@@ -140,7 +109,7 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
                   : <Badge variant="warning" className="shrink-0">Gekündigt, endet {formatDate(licenseInfo.possibleEnd.toISOString())}</Badge>
               )}
               {licenseInfo && !partnerProfile?.is_cancelled && licenseInfo.status === 'auto_renewing' && (
-                <Badge variant="warning" className="shrink-0">Verlängert sich automatisch</Badge>
+                <Badge variant="warning" className="shrink-0">Läuft, verlängert sich</Badge>
               )}
             </div>
             {partnerProfile?.company_name && (
@@ -281,11 +250,9 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
                       <div className="flex justify-between items-center text-sm pt-1">
                         <span className="text-gray-500">Status</span>
                         {licenseInfo.status === 'cancelled_ended' && <Badge variant="danger">Gekündigt</Badge>}
-                        {licenseInfo.status === 'cancelled' && <Badge variant="warning">Gekündigt, endet {formatDate(licenseInfo.possibleEnd.toISOString())}</Badge>}
-                        {licenseInfo.status === 'monthly' && <Badge variant="neutral">Monatlich</Badge>}
-                        {licenseInfo.status === 'auto_renewing' && <Badge variant="warning">Verlängert sich</Badge>}
-                        {licenseInfo.status === 'expiring_warning' && <Badge variant="warning">Bald verlängerbar</Badge>}
-                        {licenseInfo.status === 'active' && <Badge variant="success">Aktiv</Badge>}
+                        {licenseInfo.status === 'cancelled' && <Badge variant="warning">Gekündigt, läuft bis {formatDate(licenseInfo.possibleEnd.toISOString())}</Badge>}
+                        {licenseInfo.status === 'auto_renewing' && <Badge variant="warning">Läuft, verlängert sich</Badge>}
+                        {licenseInfo.status === 'active' && <Badge variant="success">Vertrag läuft</Badge>}
                       </div>
                     </>
                   )}
