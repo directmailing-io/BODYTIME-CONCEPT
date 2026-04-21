@@ -9,7 +9,7 @@ import {
   TrendingUp, Users, Clock, Shield,
   CalendarDays, MessageCircle, CheckCircle2, Plus,
   Building2, ArrowRight, BadgeCheck, Coins, UserX, Layers,
-  Smartphone, MapPin, Heart, Dumbbell,
+  Smartphone, MapPin, Heart, Dumbbell, Timer,
 } from 'lucide-react';
 import Image from 'next/image';
 import { ButtonColorful } from '@/components/ui/ButtonColorful';
@@ -1652,39 +1652,58 @@ function CTASection() {
 /* ─── Page ──────────────────────────────────────────────────────── */
 /* ─── Philosophie Section ───────────────────────────────────────── */
 function PhilosophieSection() {
+  const [hoveredWord, setHoveredWord] = useState<'body' | 'time' | null>(null);
+
   const stagger = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.13 } },
+    visible: { transition: { staggerChildren: 0.15 } },
   };
   const word = {
-    hidden: { opacity: 0, y: 48 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease } },
+    hidden: { opacity: 0, y: 56 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease } },
   };
 
   return (
     <section
+      id="philosophie"
       style={{ background: '#080c18', borderTop: '1px solid rgba(255,255,255,0.04)' }}
       className="relative overflow-hidden"
     >
+      <style>{`
+        @keyframes philosophiePulse {
+          0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(37,168,224,0.5)); }
+          50%       { transform: scale(1.12); filter: drop-shadow(0 0 28px rgba(37,168,224,0.9)); }
+        }
+        @keyframes heartbeat {
+          0%, 100% { transform: scale(1); }
+          14%       { transform: scale(1.22); }
+          28%       { transform: scale(1); }
+          42%       { transform: scale(1.14); }
+          70%       { transform: scale(1); }
+        }
+        @keyframes timerSpin {
+          0%   { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .phil-plus-pulse {
+          display: inline-block;
+          animation: philosophiePulse 2.4s ease-in-out infinite;
+        }
+        .phil-heart-beat {
+          animation: heartbeat 1.8s ease-in-out infinite;
+        }
+        .phil-timer-spin {
+          animation: timerSpin 6s linear infinite;
+        }
+      `}</style>
+
       {/* Ambient glow */}
       <div aria-hidden className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 900px 500px at 50% 40%, rgba(37,168,224,0.07) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse 1000px 600px at 50% 35%, rgba(37,168,224,0.06) 0%, transparent 70%)' }} />
 
       <div className="relative max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 py-20 sm:py-28 lg:py-36">
 
-        {/* ── Label ── */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5, ease }}
-          className="text-center text-xs font-semibold uppercase tracking-[0.2em] mb-12 sm:mb-16"
-          style={{ color: '#25A8E0' }}
-        >
-          Die Philosophie
-        </motion.p>
-
-        {/* ── Equation ── */}
+        {/* ── PART 1: Hero Equation ── */}
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -1693,170 +1712,206 @@ function PhilosophieSection() {
           className="flex flex-col items-center mb-20 sm:mb-28"
         >
           {/* BODY + TIME */}
-          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-5 lg:gap-7">
-            <motion.span variants={word}
-              className="font-black tracking-tight text-white leading-none select-none"
-              style={{ fontSize: 'clamp(3.2rem, 13vw, 9rem)' }}
-            >
-              BODY
-            </motion.span>
-            <motion.span variants={word}
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 lg:gap-6">
+
+            {/* BODY word */}
+            <div className="relative flex flex-col items-center">
+              <motion.span
+                variants={word}
+                className="font-black tracking-tight leading-none select-none cursor-default"
+                style={{
+                  fontSize: 'clamp(4rem, 15vw, 11rem)',
+                  color: hoveredWord === 'body' ? '#ffffff' : 'rgba(255,255,255,0.92)',
+                  textShadow: hoveredWord === 'body'
+                    ? '0 0 60px rgba(74,222,128,0.45), 0 0 120px rgba(74,222,128,0.2)'
+                    : 'none',
+                  transition: 'color 0.3s ease, text-shadow 0.3s ease',
+                }}
+                onMouseEnter={() => setHoveredWord('body')}
+                onMouseLeave={() => setHoveredWord(null)}
+                onTouchStart={() => setHoveredWord('body')}
+                onTouchEnd={() => setHoveredWord(null)}
+              >
+                BODY
+              </motion.span>
+              <AnimatePresence>
+                {hoveredWord === 'body' && (
+                  <motion.span
+                    key="body-reveal"
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.22, ease }}
+                    className="absolute -bottom-7 text-xs font-semibold uppercase tracking-[0.2em] whitespace-nowrap"
+                    style={{ color: '#4ADE80' }}
+                  >
+                    Körper · Das wichtigste Gut
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* + pulsing */}
+            <motion.span
+              variants={word}
               className="font-black leading-none select-none"
-              style={{ fontSize: 'clamp(2.2rem, 8vw, 6rem)', color: '#25A8E0' }}
+              style={{ fontSize: 'clamp(2.5rem, 9vw, 7rem)', color: '#25A8E0' }}
             >
-              +
+              <span className="phil-plus-pulse">+</span>
             </motion.span>
-            <motion.span variants={word}
-              className="font-black tracking-tight text-white leading-none select-none"
-              style={{ fontSize: 'clamp(3.2rem, 13vw, 9rem)' }}
-            >
-              TIME
-            </motion.span>
+
+            {/* TIME word */}
+            <div className="relative flex flex-col items-center">
+              <motion.span
+                variants={word}
+                className="font-black tracking-tight leading-none select-none cursor-default"
+                style={{
+                  fontSize: 'clamp(4rem, 15vw, 11rem)',
+                  color: hoveredWord === 'time' ? '#ffffff' : 'rgba(255,255,255,0.92)',
+                  textShadow: hoveredWord === 'time'
+                    ? '0 0 60px rgba(37,168,224,0.55), 0 0 120px rgba(37,168,224,0.22)'
+                    : 'none',
+                  transition: 'color 0.3s ease, text-shadow 0.3s ease',
+                }}
+                onMouseEnter={() => setHoveredWord('time')}
+                onMouseLeave={() => setHoveredWord(null)}
+                onTouchStart={() => setHoveredWord('time')}
+                onTouchEnd={() => setHoveredWord(null)}
+              >
+                TIME
+              </motion.span>
+              <AnimatePresence>
+                {hoveredWord === 'time' && (
+                  <motion.span
+                    key="time-reveal"
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.22, ease }}
+                    className="absolute -bottom-7 text-xs font-semibold uppercase tracking-[0.2em] whitespace-nowrap"
+                    style={{ color: '#25A8E0' }}
+                  >
+                    Zeit · Die knappe Ressource
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
-          {/* = BODYTIME concept */}
-          <motion.div variants={word}
-            className="flex flex-wrap justify-center items-baseline gap-2 sm:gap-4 mt-3 sm:mt-5"
+          {/* Subtitle */}
+          <motion.p
+            variants={word}
+            className="text-center font-light tracking-[0.22em] uppercase mt-10 sm:mt-12"
+            style={{ color: 'rgba(255,255,255,0.38)', fontSize: 'clamp(0.7rem, 2vw, 0.9rem)' }}
           >
-            <span className="font-black leading-none select-none"
-              style={{ fontSize: 'clamp(1.6rem, 5vw, 3.2rem)', color: 'rgba(255,255,255,0.18)' }}>
-              =
-            </span>
-            <span
-              className="font-black tracking-tight leading-none select-none"
-              style={{
-                fontSize: 'clamp(2rem, 7vw, 4.5rem)',
-                background: 'linear-gradient(120deg, #ffffff 0%, #25A8E0 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              BODYTIME
-            </span>
-            <span className="font-light tracking-[0.18em] leading-none select-none"
-              style={{ fontSize: 'clamp(1.2rem, 3.5vw, 2.2rem)', color: 'rgba(255,255,255,0.35)' }}>
-              concept
-            </span>
-          </motion.div>
-
-          <motion.p variants={word}
-            className="text-center text-sm sm:text-base font-light mt-6 sm:mt-8 max-w-md"
-            style={{ color: 'rgba(255,255,255,0.35)' }}
-          >
-            Zwei knappe Ressourcen. Ein intelligentes Konzept.
+            Unser ganzheitliches Konzept
           </motion.p>
         </motion.div>
 
-        {/* ── Two pillar cards ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
-
-          {/* BODY card */}
-          <motion.div
-            initial={{ opacity: 0, y: 36 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.7, ease }}
-            className="relative rounded-3xl overflow-hidden p-8 sm:p-10"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
-          >
-            <div aria-hidden className="absolute inset-0 pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at -10% -10%, rgba(74,222,128,0.09) 0%, transparent 55%)' }} />
-            <div className="relative">
-              <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-6"
-                style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.2)' }}>
-                <Heart className="w-5 h-5" style={{ color: '#4ADE80' }} />
-              </div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: '#4ADE80' }}>
-                BODY · Körper
-              </p>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
-                Das wichtigste Gut.
-              </h3>
-              <p className="text-sm sm:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                Ohne Gesundheit ist alles nichts. Der Körper ist die Grundlage für alles, was wir im Leben erreichen wollen — und verdient höchste Priorität.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* TIME card */}
-          <motion.div
-            initial={{ opacity: 0, y: 36 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.7, ease, delay: 0.1 }}
-            className="relative rounded-3xl overflow-hidden p-8 sm:p-10"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
-          >
-            <div aria-hidden className="absolute inset-0 pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at 110% -10%, rgba(37,168,224,0.1) 0%, transparent 55%)' }} />
-            <div className="relative">
-              <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-6"
-                style={{ background: 'rgba(37,168,224,0.1)', border: '1px solid rgba(37,168,224,0.2)' }}>
-                <Clock className="w-5 h-5" style={{ color: '#25A8E0' }} />
-              </div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: '#25A8E0' }}>
-                TIME · Zeit
-              </p>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
-                Die knappe Ressource.
-              </h3>
-              <p className="text-sm sm:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                In der schnellen Welt von heute ist Zeit unser wertvollstes Gut. Wer Zeit effizient nutzt, gewinnt Lebensqualität — und genau das ist unser Versprechen.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* ── Addon card ── */}
+        {/* ── PART 2: Two-Column Visual Philosophy ── */}
         <motion.div
-          initial={{ opacity: 0, y: 36 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.7, ease, delay: 0.15 }}
-          className="relative rounded-3xl overflow-hidden p-8 sm:p-10"
-          style={{ background: 'rgba(37,168,224,0.04)', border: '1px solid rgba(37,168,224,0.14)' }}
+          transition={{ duration: 0.85, ease }}
+          className="relative mb-10 sm:mb-12"
         >
-          <div aria-hidden className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at 50% 110%, rgba(37,168,224,0.08) 0%, transparent 65%)' }} />
-          <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-16">
+          {/* Outer border */}
+          <div
+            className="rounded-3xl overflow-hidden"
+            style={{ border: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.015)' }}
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr]">
 
-            {/* Text */}
-            <div className="flex-1">
-              <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-6"
-                style={{ background: 'rgba(37,168,224,0.12)', border: '1px solid rgba(37,168,224,0.22)' }}>
-                <Layers className="w-5 h-5" style={{ color: '#25A8E0' }} />
-              </div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: '#25A8E0' }}>
-                Dein Add-on
-              </p>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
-                Passt in dein bestehendes Konzept.
-              </h3>
-              <p className="text-sm sm:text-base leading-relaxed max-w-lg" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                BODYTIME concept ist kein Ersatz — es ist dein Addon. Egal ob du EMS-Studio, Personal Trainer oder Coach bist: Unser Konzept stärkt und erweitert das, was du bereits aufgebaut hast.
-              </p>
-            </div>
-
-            {/* Compatibility chips */}
-            <div className="flex flex-row lg:flex-col gap-3 flex-wrap">
-              {[
-                { label: 'EMS-Studio', icon: <Dumbbell className="w-3.5 h-3.5" /> },
-                { label: 'Personal Trainer', icon: <Users className="w-3.5 h-3.5" /> },
-                { label: 'Coach', icon: <TrendingUp className="w-3.5 h-3.5" /> },
-              ].map(({ label, icon }) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-2.5 px-4 py-3 rounded-2xl whitespace-nowrap"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
-                >
-                  <span style={{ color: 'rgba(255,255,255,0.4)' }}>{icon}</span>
-                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>{label}</span>
-                  <Plus className="w-3 h-3" style={{ color: 'rgba(37,168,224,0.5)' }} />
-                  <span className="text-xs font-semibold" style={{ color: '#25A8E0' }}>BODYTIME concept</span>
+              {/* Left: BODY */}
+              <div className="flex flex-col items-center text-center px-8 sm:px-12 py-12 sm:py-16"
+                style={{ background: 'radial-gradient(ellipse at 30% -10%, rgba(74,222,128,0.07) 0%, transparent 65%)' }}
+              >
+                <div className="mb-6">
+                  <Heart
+                    className="phil-heart-beat"
+                    style={{ width: 52, height: 52, color: '#4ADE80', filter: 'drop-shadow(0 0 14px rgba(74,222,128,0.5))' }}
+                  />
                 </div>
-              ))}
+                <p className="text-xs font-bold uppercase tracking-[0.25em] mb-3" style={{ color: '#4ADE80' }}>
+                  KÖRPER
+                </p>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 leading-tight">
+                  Das wichtigste Gut
+                </h3>
+                <p className="text-sm font-light leading-relaxed max-w-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                  Ohne Gesundheit ist alles nichts.
+                </p>
+              </div>
+
+              {/* Center divider + connector */}
+              <div className="hidden sm:flex flex-col items-center justify-center px-4 py-12">
+                <div className="flex-1 w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.08) 70%, transparent)' }} />
+                <div
+                  className="my-4 w-9 h-9 rounded-full flex items-center justify-center font-black text-base flex-shrink-0"
+                  style={{
+                    background: 'rgba(37,168,224,0.1)',
+                    border: '1px solid rgba(37,168,224,0.3)',
+                    color: '#25A8E0',
+                    boxShadow: '0 0 20px rgba(37,168,224,0.2)',
+                  }}
+                >
+                  +
+                </div>
+                <div className="flex-1 w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.08) 70%, transparent)' }} />
+              </div>
+
+              {/* Mobile divider */}
+              <div className="sm:hidden h-px mx-8" style={{ background: 'rgba(255,255,255,0.06)' }} />
+
+              {/* Right: TIME */}
+              <div className="flex flex-col items-center text-center px-8 sm:px-12 py-12 sm:py-16"
+                style={{ background: 'radial-gradient(ellipse at 70% -10%, rgba(37,168,224,0.08) 0%, transparent 65%)' }}
+              >
+                <div className="mb-6">
+                  <Timer
+                    className="phil-timer-spin"
+                    style={{ width: 52, height: 52, color: '#25A8E0', filter: 'drop-shadow(0 0 14px rgba(37,168,224,0.55))' }}
+                  />
+                </div>
+                <p className="text-xs font-bold uppercase tracking-[0.25em] mb-3" style={{ color: '#25A8E0' }}>
+                  ZEIT
+                </p>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 leading-tight">
+                  Die knappe Ressource
+                </h3>
+                <p className="text-sm font-light leading-relaxed max-w-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                  Zeit ist begrenzt — nutze sie weise.
+                </p>
+              </div>
             </div>
           </div>
+        </motion.div>
+
+        {/* ── PART 3: Addon row (compact chips) ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease }}
+          className="flex flex-wrap justify-center items-center gap-3"
+        >
+          {[
+            { label: 'EMS-Studio', icon: <Dumbbell className="w-3.5 h-3.5" /> },
+            { label: 'Personal Trainer', icon: <Users className="w-3.5 h-3.5" /> },
+            { label: 'Coach', icon: <TrendingUp className="w-3.5 h-3.5" /> },
+          ].map(({ label, icon }) => (
+            <div
+              key={label}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-full"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+            >
+              <span style={{ color: 'rgba(255,255,255,0.35)' }}>{icon}</span>
+              <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</span>
+              <Plus className="w-2.5 h-2.5" style={{ color: 'rgba(37,168,224,0.45)' }} />
+              <span className="text-xs font-semibold" style={{ color: 'rgba(37,168,224,0.75)' }}>BODYTIME concept</span>
+            </div>
+          ))}
         </motion.div>
 
       </div>
