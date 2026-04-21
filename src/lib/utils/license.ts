@@ -51,16 +51,19 @@ export function getLicenseInfo(
 
   const cancellationDeadline = addMonths(possibleEnd, -cancellationNoticeMonths);
   const contractEnded = isCancelled && differenceInDays(possibleEnd, today) < 0;
+  const daysUntilDeadline = differenceInDays(cancellationDeadline, today);
 
   let status: LicenseStatus;
   if (isCancelled) {
     status = contractEnded ? 'cancelled_ended' : 'cancelled';
+  } else if (daysUntilDeadline < 0) {
+    // Cancellation deadline has passed — renewal is inevitable
+    status = 'auto_renewing';
+  } else if (daysUntilDeadline <= 30) {
+    // Within 30 days of deadline — can still cancel, admin should act
+    status = 'expiring_warning';
   } else if (!isInInitialPeriod) {
     status = 'monthly';
-  } else if (daysToInitialEnd <= 90) {
-    status = 'auto_renewing'; // past 3-month cancellation deadline
-  } else if (daysToInitialEnd <= 120) {
-    status = 'expiring_warning'; // 4-month admin warning window
   } else {
     status = 'active';
   }
