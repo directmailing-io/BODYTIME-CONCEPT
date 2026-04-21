@@ -1976,34 +1976,34 @@ function PhilosophieSection() {
 /* ─── SchmerzSection ────────────────────────────────────────────── */
 const SCHMERZ_PAIRS = [
   {
-    pain: 'Kein Privatleben mehr',
-    painDesc: 'Du bist der erste der kommt und der letzte der geht. Urlaub? Fast kaum möglich.',
-    fix: 'Du bestimmst deine Zeiten selbst',
-    fixDesc: 'Kein Pflichtbetrieb, kein fixer Standort. Du arbeitest wann und so viel du willst.',
+    pain: 'Du hast kaum noch Zeit für Partner/in, Familie und Freunde',
+    painDesc: 'Das Studio läuft, aber du läufst mit. Abende, Wochenenden, irgendwann merkt dein Umfeld, dass das Studio mehr bekommt als sie.',
+    fix: 'Mit BODYTIME concept schaffst du dir wieder etwas Luft',
+    fixDesc: 'Deine Kunden trainieren mit Suit und App auch dann, wenn du gerade nicht da bist. Dein Angebot läuft, ohne dass du immer präsent sein musst.',
   },
   {
-    pain: 'Personalprobleme ohne Ende',
-    painDesc: 'Krankmeldungen, Fluktuation, Einarbeitung. Das frisst Zeit und Nerven.',
-    fix: 'Du brauchst kein eigenes Personal',
-    fixDesc: 'Starte solo oder im kleinen Team. Keine Abhängigkeiten, kein Stress mit Mitarbeitern.',
+    pain: 'Dein Tagesablauf hängt zu oft von deinen Mitarbeitern ab',
+    painDesc: 'Wenn jemand ausfällt, springst du ein. Irgendwie bist du immer der letzte Puffer. Das kennt jeder.',
+    fix: 'BODYTIME concept funktioniert als Ergänzung, ohne extra Personal',
+    fixDesc: 'Du bietest es zusätzlich in deinem Studio an, dein bestehendes Team reicht völlig aus. Kein Neueinstellung, keine zusätzliche Einarbeitung.',
   },
   {
-    pain: 'Fixkosten die jeden Monat drücken',
-    painDesc: 'Miete, Equipment, Versicherungen. Die Last bleibt, egal wie der Monat läuft.',
-    fix: 'Kaum Fixkosten, kein großes Investment',
-    fixDesc: 'Kein teures Studio, kein eigenes Equipment. Du startest mit überschaubarem Aufwand.',
+    pain: 'Jeden Monat dieselben Fixkosten, egal wie gut es lief',
+    painDesc: 'Miete, Equipment, Versicherungen. Die Last ist da, ob du 20 oder 80 Kunden hattest. Das drückt auf die Motivation.',
+    fix: 'BODYTIME concept bringt dir Umsatz ohne neue Fixkosten',
+    fixDesc: 'Kein neues Equipment kaufen, kein Umbau nötig. Du integrierst es in dein bestehendes Angebot und verdienst direkt mit.',
   },
   {
-    pain: 'Kapazitäten immer ausgereizt',
-    painDesc: 'Du kannst nur so viele Kunden betreuen, wie du Stunden hast. Mehr geht nicht.',
-    fix: 'Skalieren so weit du willst',
-    fixDesc: 'Mehr Partner, mehr Kunden, mehr Umsatz. Ohne dass der Aufwand proportional mitsteigt.',
+    pain: 'Du kannst nicht mehr Kunden annehmen, weil die Zeit einfach fehlt',
+    painDesc: 'Mehr Umsatz klingt gut, aber mehr Stunden hast du nicht. Irgendwann ist die Kapazitätsgrenze einfach erreicht.',
+    fix: 'Mit BODYTIME concept begleitest du mehr Kunden, ohne mehr Zeit zu investieren',
+    fixDesc: 'Deine Kunden trainieren eigenständig mit dem Suit. Du begleitest sie, bist aber nicht bei jeder Session dabei.',
   },
   {
-    pain: 'Gefangen im goldenen Hamsterrad',
-    painDesc: 'Läuft gut, aber du kommst nicht raus. Jede Woche dieselbe Routine.',
-    fix: 'Ein Konzept das echte Freiheit gibt',
-    fixDesc: 'Dein Aufbau, deine Regeln. Kein Standortrisiko, keine fremden Abhängigkeiten.',
+    pain: 'Du fragst dich manchmal, wann du zuletzt wirklich frei hattest',
+    painDesc: 'Nicht weil du nicht willst. Sondern weil das Studio immer irgendwie da ist. Immer irgendetwas.',
+    fix: 'BODYTIME concept schafft dir Spielraum, ohne dass du etwas aufgibst',
+    fixDesc: 'Als Ergänzung zu deinem Studio baust du dir ein Standbein auf, das auch ohne deine ständige Anwesenheit Umsatz bringt.',
   },
 ];
 
@@ -2031,8 +2031,8 @@ function SchmerzSection() {
             Du kennst das sicher.
           </h2>
           <p className="text-base sm:text-lg text-gray-500 leading-relaxed font-light">
-            Wer ein Studio betreibt weiß: irgendwann fühlt sich das Hamsterrad echter an als die Freiheit,
-            für die man mal gestartet ist. Das muss nicht sein.
+            Wer ein Studio betreibt weiß: irgendwann fühlt sich das Hamsterrad echter an als die Freiheit, für die man mal gestartet ist.
+            BODYTIME concept lässt sich in dein bestehendes Business integrieren und kann genau da helfen.
           </p>
         </motion.div>
 
@@ -2099,11 +2099,11 @@ function SchmerzSection() {
                 Für Einsteiger
               </p>
               <h3 className="text-2xl sm:text-3xl font-semibold text-white leading-tight tracking-tight mb-4">
-                Noch kein Studio?<br />Kein Problem.
+                Du willst dich selbstständig machen?
               </h3>
               <p className="text-white/80 text-[15px] leading-relaxed">
-                Du musst nicht erst ein Studio aufbauen, um mit BODYTIME concept durchzustarten.
-                Viele unserer Partner haben bei null angefangen. Ohne Standort, ohne Equipment, ohne großes Startkapital.
+                Du brauchst kein eigenes Studio, um mit BODYTIME concept einzusteigen.
+                Viele unserer Partner starten ohne festen Standort, ohne eigenes Equipment und trotzdem sofort.
               </p>
             </div>
             <div className="flex flex-col gap-3">
