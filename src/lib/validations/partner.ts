@@ -4,7 +4,6 @@ export const createPartnerSchema = z.object({
   first_name: z.string().min(1, 'Vorname ist erforderlich').max(100),
   last_name: z.string().min(1, 'Nachname ist erforderlich').max(100),
   email: z.string().email('Ungültige E-Mail-Adresse'),
-  // Optional: admin can set a password directly, or leave empty to send invite
   password: z
     .string()
     .min(8, 'Mindestens 8 Zeichen')
@@ -14,6 +13,8 @@ export const createPartnerSchema = z.object({
     .optional()
     .or(z.literal('')),
   send_invite: z.boolean(),
+  license_start: z.string().min(1, 'Lizenzstart ist erforderlich'),
+  license_duration_months: z.number().int().positive(),
 });
 
 export const updatePartnerProfileSchema = z.object({

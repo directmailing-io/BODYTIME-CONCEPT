@@ -1,34 +1,30 @@
-import { createClient } from '@/lib/supabase/server';
-import { createAdminClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, UserCheck, Clock, AlertTriangle, ArrowRight, Gift } from 'lucide-react';
-import { formatDate, fullName, daysUntilEnd } from '@/lib/utils';
+import { Card, CardContent } from '@/components/ui/card';
+import { Users, UserCheck, AlertTriangle, Gift, ArrowRight, Clock, CalendarClock } from 'lucide-react';
+import { formatDate, daysUntilEnd, fullName } from '@/lib/utils';
+import { getLicenseInfo } from '@/lib/utils/license';
 import AdminMonthlyStats from '@/components/admin/AdminMonthlyStats';
 
-interface KpiCardProps {
-  icon: React.ElementType;
-  value: number;
-  label: string;
-  iconBg: string;
-  iconColor: string;
-}
-
-function KpiCard({ icon: Icon, value, label, iconBg, iconColor }: KpiCardProps) {
+function KpiCard({ icon: Icon, value, label, iconBg, iconColor, href }: {
+  icon: React.ElementType; value: number; label: string;
+  iconBg: string; iconColor: string; href?: string;
+}) {
+  const content = (
+    <CardContent className="p-5 flex items-center gap-4">
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${iconBg}`}>
+        <Icon className={`w-5 h-5 ${iconColor}`} strokeWidth={1.8} />
+      </div>
+      <div>
+        <p className="text-2xl font-bold text-gray-900 leading-none tracking-tight">{value}</p>
+        <p className="text-xs text-gray-500 mt-1">{label}</p>
+      </div>
+    </CardContent>
+  );
   return (
-    <Card>
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-3xl font-bold text-gray-900 tracking-tight">{value}</p>
-            <p className="text-sm text-gray-500 mt-1">{label}</p>
-          </div>
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBg}`}>
-            <Icon className={`w-5 h-5 ${iconColor}`} strokeWidth={2} />
-          </div>
-        </div>
-      </CardContent>
+    <Card className={href ? 'hover:shadow-sm transition-shadow' : ''}>
+      {href ? <Link href={href}>{content}</Link> : content}
     </Card>
   );
 }
@@ -39,13 +35,22 @@ function ExpiryBadge({ days }: { days: number }) {
   return <Badge variant="neutral">{days}d</Badge>;
 }
 
+interface PartnerWithLicense {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  license_start: string | null;
+  license_duration_months: number;
+  daysToInitialEnd: number;
+  status: string;
+}
+
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
-
-  const today = new Date().toISOString().split('T')[0];
-  const in90days = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-
   const adminClient = createAdminClient();
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const in90days = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
   const [
     { data: partners },
@@ -53,100 +58,95 @@ export default async function AdminDashboardPage() {
     { data: recentCustomers },
     { data: allCustomers },
     { data: newReferrals },
+    { data: partnersWithLicense },
   ] = await Promise.all([
-    supabase
-      .from('bt_profiles')
-      .select('id, first_name, last_name, email, is_active, created_at')
+    supabase.from('bt_profiles')
+      .select('id, first_name, last_name, is_active, created_at')
+      .eq('role', 'partner').order('created_at', { ascending: false }),
+    supabase.from('bt_customers')
+      .select('id, first_name, last_name, contract_end_date, partner:bt_profiles!partner_id(id, first_name, last_name)')
+      .eq('is_active', true).gte('contract_end_date', todayStr).lte('contract_end_date', in90days)
+      .order('contract_end_date', { ascending: true }).limit(20),
+    supabase.from('bt_customers')
+      .select('id, first_name, last_name, created_at, partner:bt_profiles!partner_id(first_name, last_name)')
+      .order('created_at', { ascending: false }).limit(8),
+    supabase.from('bt_customers').select('created_at').order('created_at', { ascending: true }),
+    adminClient.from('bt_referrals')
+      .select('id, first_name, last_name, created_at, partner:bt_profiles!partner_id(id, first_name, last_name)')
+      .eq('status', 'eingegangen').order('created_at', { ascending: false }).limit(8),
+    supabase.from('bt_profiles')
+      .select('id, first_name, last_name, bt_partner_profiles(license_start, license_duration_months, is_cancelled)')
       .eq('role', 'partner')
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('bt_customers')
-      .select(`
-        id, first_name, last_name, contract_end_date, is_active,
-        partner:bt_profiles!partner_id(id, first_name, last_name)
-      `)
-      .eq('is_active', true)
-      .gte('contract_end_date', today)
-      .lte('contract_end_date', in90days)
-      .order('contract_end_date', { ascending: true })
-      .limit(20),
-    supabase
-      .from('bt_customers')
-      .select(`
-        id, first_name, last_name, created_at,
-        partner:bt_profiles!partner_id(first_name, last_name)
-      `)
-      .order('created_at', { ascending: false })
-      .limit(10),
-    supabase
-      .from('bt_customers')
-      .select('created_at')
-      .order('created_at', { ascending: true }),
-    adminClient
-      .from('bt_referrals')
-      .select(`
-        id, first_name, last_name, created_at,
-        partner:bt_profiles!partner_id(id, first_name, last_name)
-      `)
-      .eq('status', 'eingegangen')
-      .order('created_at', { ascending: false })
-      .limit(10),
+      .eq('is_active', true),
   ]);
 
   const totalPartners = partners?.length ?? 0;
-  const activePartners = partners?.filter(p => p.is_active).length ?? 0;
   const totalCustomers = allCustomers?.length ?? 0;
-  const expiringSoonCount = expiringCustomers?.length ?? 0;
 
-  const kpiCards: KpiCardProps[] = [
-    { icon: Users, value: totalPartners, label: 'Partner gesamt', iconBg: 'bg-blue-50', iconColor: 'text-blue-600' },
-    { icon: UserCheck, value: activePartners, label: 'Aktive Partner', iconBg: 'bg-green-50', iconColor: 'text-green-600' },
-    { icon: Clock, value: totalCustomers, label: 'Kunden gesamt', iconBg: 'bg-purple-50', iconColor: 'text-purple-600' },
-    { icon: AlertTriangle, value: expiringSoonCount, label: 'Ablaufend (90 Tage)', iconBg: 'bg-amber-50', iconColor: 'text-amber-600' },
-  ];
-
-  // Build monthly data for the stats chart (all-time)
   const customersByMonth: Record<string, number> = {};
   (allCustomers ?? []).forEach(c => {
-    const key = c.created_at.slice(0, 7); // YYYY-MM
-    customersByMonth[key] = (customersByMonth[key] ?? 0) + 1;
+    const k = c.created_at.slice(0, 7);
+    customersByMonth[k] = (customersByMonth[k] ?? 0) + 1;
   });
-
   const partnersByMonth: Record<string, number> = {};
   (partners ?? []).forEach(p => {
-    const key = p.created_at.slice(0, 7);
-    partnersByMonth[key] = (partnersByMonth[key] ?? 0) + 1;
+    const k = p.created_at.slice(0, 7);
+    partnersByMonth[k] = (partnersByMonth[k] ?? 0) + 1;
   });
 
+  // Compute license warnings
+  const expiringLicenses: PartnerWithLicense[] = [];
+  (partnersWithLicense ?? []).forEach((p: any) => {
+    const pp = Array.isArray(p.bt_partner_profiles) ? p.bt_partner_profiles[0] : p.bt_partner_profiles;
+    if (!pp?.license_start || pp?.is_cancelled) return;
+    const info = getLicenseInfo(pp.license_start, pp.license_duration_months ?? 12, false);
+    if (info.status === 'expiring_warning' || info.status === 'auto_renewing') {
+      expiringLicenses.push({
+        id: p.id,
+        first_name: p.first_name,
+        last_name: p.last_name,
+        license_start: pp.license_start,
+        license_duration_months: pp.license_duration_months ?? 12,
+        daysToInitialEnd: info.daysToInitialEnd,
+        status: info.status,
+      });
+    }
+  });
+  expiringLicenses.sort((a, b) => a.daysToInitialEnd - b.daysToInitialEnd);
+
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="mb-2">
+    <div className="max-w-5xl mx-auto space-y-5">
+      <div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-1">Übersicht aller wichtigen Kennzahlen</p>
+        <p className="text-sm text-gray-500 mt-0.5">Übersicht</p>
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {kpiCards.map(card => <KpiCard key={card.label} {...card} />)}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <KpiCard icon={Users}         value={totalPartners}                    label="Partner gesamt"       iconBg="bg-blue-50"   iconColor="text-blue-600"   href="/admin/partners" />
+        <KpiCard icon={UserCheck}     value={totalCustomers}                   label="Kunden gesamt"        iconBg="bg-purple-50" iconColor="text-purple-600" href="/admin/customers" />
+        <KpiCard icon={AlertTriangle} value={expiringCustomers?.length ?? 0}   label="Verträge ablaufend"   iconBg="bg-amber-50"  iconColor="text-amber-600"  href="/admin/customers" />
+        <KpiCard icon={Gift}          value={newReferrals?.length ?? 0}        label="Offene Empfehlungen"  iconBg="bg-orange-50" iconColor="text-orange-500" href="/admin/empfehlungszentrale" />
       </div>
 
-      {/* Expiring contracts + Recently added customers */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Growth chart */}
+      <AdminMonthlyStats customersByMonth={customersByMonth} partnersByMonth={partnersByMonth} />
+
+      {/* Action lists */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
         {/* Expiring contracts */}
         <Card>
           <CardContent className="p-0">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-semibold text-gray-900">Bald ablaufende Verträge</h2>
-                <p className="text-sm text-gray-500 mt-0.5">Nächste 90 Tage</p>
-              </div>
-              <Link href="/admin/customers" className="text-sm text-gray-400 hover:text-gray-700 flex items-center gap-1">
-                Alle <ArrowRight className="w-3.5 h-3.5" />
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-gray-900">Bald ablaufende Verträge</h2>
+              <Link href="/admin/customers" className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1">
+                Alle <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
-            {!expiringCustomers || expiringCustomers.length === 0 ? (
-              <div className="px-6 py-10 text-center">
+            {!expiringCustomers?.length ? (
+              <div className="px-5 py-8 text-center">
+                <Clock className="w-7 h-7 text-gray-100 mx-auto mb-2" />
                 <p className="text-sm text-gray-400">Keine Verträge laufen bald ab</p>
               </div>
             ) : (
@@ -155,22 +155,17 @@ export default async function AdminDashboardPage() {
                   const days = daysUntilEnd(c.contract_end_date);
                   const partner = c.partner as any;
                   return (
-                    <li key={c.id} className="flex items-center justify-between px-6 py-3 hover:bg-gray-50/50">
+                    <li key={c.id} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50/60">
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {c.first_name} {c.last_name}
-                        </p>
+                        <p className="text-sm font-medium text-gray-900 truncate">{c.first_name} {c.last_name}</p>
                         {partner && (
-                          <Link
-                            href={`/admin/partners/${partner.id}`}
-                            className="text-xs text-gray-400 hover:underline hover:text-gray-600 truncate"
-                          >
-                            {partner.first_name} {partner.last_name}
+                          <Link href={`/admin/partners/${partner.id}`} className="text-xs text-gray-400 hover:underline truncate">
+                            via {partner.first_name} {partner.last_name}
                           </Link>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 ml-3 flex-shrink-0">
-                        <span className="text-xs text-gray-500">{formatDate(c.contract_end_date)}</span>
+                      <div className="flex items-center gap-2 ml-3 shrink-0">
+                        <span className="text-xs text-gray-400 hidden sm:inline">{formatDate(c.contract_end_date)}</span>
                         <ExpiryBadge days={days} />
                       </div>
                     </li>
@@ -181,20 +176,18 @@ export default async function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Recently added customers */}
+        {/* Recent customers */}
         <Card>
           <CardContent className="p-0">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-semibold text-gray-900">Zuletzt hinzugefügte Kunden</h2>
-                <p className="text-sm text-gray-500 mt-0.5">Die letzten 10 Kunden</p>
-              </div>
-              <Link href="/admin/customers" className="text-sm text-gray-400 hover:text-gray-700 flex items-center gap-1">
-                Alle <ArrowRight className="w-3.5 h-3.5" />
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-gray-900">Zuletzt hinzugefügte Kunden</h2>
+              <Link href="/admin/customers" className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1">
+                Alle <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
-            {!recentCustomers || recentCustomers.length === 0 ? (
-              <div className="px-6 py-10 text-center">
+            {!recentCustomers?.length ? (
+              <div className="px-5 py-8 text-center">
+                <UserCheck className="w-7 h-7 text-gray-100 mx-auto mb-2" />
                 <p className="text-sm text-gray-400">Noch keine Kunden vorhanden</p>
               </div>
             ) : (
@@ -202,18 +195,19 @@ export default async function AdminDashboardPage() {
                 {recentCustomers.map(c => {
                   const partner = c.partner as any;
                   return (
-                    <li key={c.id} className="flex items-center justify-between px-6 py-3 hover:bg-gray-50/50">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {c.first_name} {c.last_name}
-                        </p>
-                        {partner && (
-                          <p className="text-xs text-gray-400 truncate">
-                            {partner.first_name} {partner.last_name}
-                          </p>
-                        )}
+                    <li key={c.id} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50/60">
+                      <div className="min-w-0 flex-1 flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                          <span className="text-[10px] font-bold text-gray-500">
+                            {(c.first_name?.charAt(0) ?? '?').toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{c.first_name} {c.last_name}</p>
+                          {partner && <p className="text-xs text-gray-400 truncate">via {partner.first_name} {partner.last_name}</p>}
+                        </div>
                       </div>
-                      <span className="text-xs text-gray-400 ml-3 flex-shrink-0">{formatDate(c.created_at)}</span>
+                      <span className="text-xs text-gray-400 ml-3 shrink-0 whitespace-nowrap">{formatDate(c.created_at)}</span>
                     </li>
                   );
                 })}
@@ -221,66 +215,86 @@ export default async function AdminDashboardPage() {
             )}
           </CardContent>
         </Card>
+
       </div>
 
-      {/* New referrals */}
-      {(newReferrals?.length ?? 0) > 0 && (
+      {/* Expiring licenses */}
+      {expiringLicenses.length > 0 && (
         <Card>
           <CardContent className="p-0">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Gift className="w-4 h-4 text-amber-500" />
-                <div>
-                  <h2 className="text-base font-semibold text-gray-900">Neue Empfehlungen</h2>
-                  <p className="text-sm text-gray-500 mt-0.5">Noch nicht bearbeitet</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
-                  {newReferrals!.length}
+                <h2 className="text-sm font-semibold text-gray-900">Lizenzen laufen aus</h2>
+                <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-amber-100 text-amber-700 text-[11px] font-bold">
+                  {expiringLicenses.length}
                 </span>
-                <Link href="/admin/empfehlungszentrale" className="text-sm text-gray-400 hover:text-gray-700 flex items-center gap-1">
-                  Alle <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
               </div>
+              <Link href="/admin/partners" className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1">
+                Alle Partner <ArrowRight className="w-3 h-3" />
+              </Link>
             </div>
             <ul className="divide-y divide-gray-50">
-              {newReferrals!.map((r: any) => {
-                const partner = r.partner;
-                return (
-                  <li key={r.id}>
-                    <Link
-                      href={`/admin/empfehlungszentrale/${r.id}`}
-                      className="flex items-center justify-between px-6 py-3 hover:bg-gray-50/50 transition-colors"
-                    >
-                      <div className="min-w-0 flex-1">
+              {expiringLicenses.map(p => (
+                <li key={p.id}>
+                  <Link href={`/admin/partners/${p.id}`}
+                    className="flex items-center justify-between px-5 py-3 hover:bg-gray-50/60">
+                    <div className="min-w-0 flex-1 flex items-center gap-3">
+                      <CalendarClock className="w-4 h-4 text-gray-300 shrink-0" />
+                      <div className="min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {r.first_name} {r.last_name}
+                          {fullName(p.first_name ?? '', p.last_name ?? '') || '—'}
                         </p>
-                        {partner && (
-                          <p className="text-xs text-gray-400 truncate">
-                            von {partner.first_name} {partner.last_name}
-                          </p>
-                        )}
+                        <p className="text-xs text-gray-400">
+                          {p.status === 'auto_renewing' ? 'Verlängert sich automatisch' : 'Bald verlängerbar'}
+                        </p>
                       </div>
-                      <div className="flex items-center gap-3 ml-3 shrink-0">
-                        <span className="text-xs text-gray-400">{formatDate(r.created_at)}</span>
-                        <Badge variant="neutral">Eingegangen</Badge>
-                      </div>
-                    </Link>
-                  </li>
-                );
-              })}
+                    </div>
+                    <div className="flex items-center gap-2 ml-3 shrink-0">
+                      {p.status === 'auto_renewing'
+                        ? <Badge variant="warning">+{p.daysToInitialEnd}d</Badge>
+                        : <Badge variant="neutral">{p.daysToInitialEnd}d</Badge>
+                      }
+                    </div>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </CardContent>
         </Card>
       )}
 
-      {/* Monthly growth stats */}
-      <AdminMonthlyStats
-        customersByMonth={customersByMonth}
-        partnersByMonth={partnersByMonth}
-      />
+      {/* New referrals */}
+      {(newReferrals?.length ?? 0) > 0 && (
+        <Card>
+          <CardContent className="p-0">
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-gray-900">Neue Empfehlungen</h2>
+                <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-orange-100 text-orange-600 text-[11px] font-bold">
+                  {newReferrals!.length}
+                </span>
+              </div>
+              <Link href="/admin/empfehlungszentrale" className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1">
+                Alle <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+            <ul className="divide-y divide-gray-50">
+              {newReferrals!.map((r: any) => (
+                <li key={r.id}>
+                  <Link href={`/admin/empfehlungszentrale/${r.id}`}
+                    className="flex items-center justify-between px-5 py-3 hover:bg-gray-50/60">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-gray-900 truncate">{r.first_name} {r.last_name}</p>
+                      {r.partner && <p className="text-xs text-gray-400 truncate">von {r.partner.first_name} {r.partner.last_name}</p>}
+                    </div>
+                    <span className="text-xs text-gray-400 ml-3 shrink-0">{formatDate(r.created_at)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

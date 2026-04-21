@@ -54,6 +54,8 @@ export default function CreatePartnerDialog({ open: externalOpen, onOpenChange: 
       email: '',
       send_invite: true,
       password: '',
+      license_start: new Date().toISOString().split('T')[0],
+      license_duration_months: 12,
     },
   });
 
@@ -77,6 +79,8 @@ export default function CreatePartnerDialog({ open: externalOpen, onOpenChange: 
       fd.append('email', data.email);
       fd.append('send_invite', String(data.send_invite));
       if (data.password) fd.append('password', data.password);
+      fd.append('license_start', data.license_start);
+      fd.append('license_duration_months', String(data.license_duration_months ?? 12));
       const result = await createPartnerAction(fd);
       if (result?.error) {
         setServerError(result.error);
@@ -164,6 +168,22 @@ export default function CreatePartnerDialog({ open: externalOpen, onOpenChange: 
               />
               {errors.email && (
                 <p className="text-xs text-red-600">{errors.email.message}</p>
+              )}
+            </div>
+
+            {/* License start */}
+            <div className="space-y-1.5">
+              <label htmlFor="license_start" className="text-sm font-medium text-gray-700">
+                Lizenzstart <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="license_start"
+                type="date"
+                {...register('license_start')}
+                aria-invalid={!!errors.license_start}
+              />
+              {errors.license_start && (
+                <p className="text-xs text-red-600">{errors.license_start.message}</p>
               )}
             </div>
 

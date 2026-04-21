@@ -1,9 +1,4 @@
 'use server';
-/**
- * Admin Partner Management Actions
- * Protected: only callable by admin users.
- * Service role key used only here, server-side.
- */
 import { revalidatePath } from 'next/cache';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { createPartnerSchema } from '@/lib/validations/partner';
@@ -15,17 +10,14 @@ async function requireAdmin() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Nicht authentifiziert');
-
   const { data: profile } = await supabase
     .from('bt_profiles')
     .select('role, is_active')
     .eq('id', user.id)
     .single();
-
   if (!profile || profile.role !== 'admin' || !profile.is_active) {
     throw new Error('Keine Berechtigung');
   }
-
   return { user, profile, supabase };
 }
 
@@ -40,6 +32,8 @@ export async function createPartnerAction(formData: FormData): Promise<ActionRes
       email: formData.get('email'),
       password: formData.get('password') || undefined,
       send_invite: formData.get('send_invite') === 'true',
+      license_start: formData.get('license_start') as string,
+      license_duration_months: Number(formData.get('license_duration_months') ?? 12),
     };
 
     const parsed = createPartnerSchema.safeParse(raw);
@@ -47,57 +41,51 @@ export async function createPartnerAction(formData: FormData): Promise<ActionRes
       return { success: false, error: parsed.error.issues[0]?.message };
     }
 
-    const { first_name, last_name, email, password, send_invite } = parsed.data;
+    const { first_name, last_name, email, password, send_invite, license_start, license_duration_months } = parsed.data;
 
-    // Check for existing user with this email
     const { data: existing } = await adminClient.auth.admin.listUsers();
     if (existing?.users.some((u: { email?: string }) => u.email === email)) {
       return { success: false, error: 'Diese E-Mail-Adresse ist bereits vergeben.' };
     }
 
     let newUserId: string;
-    let inviteUrl: string | undefined;
 
     if (password && !send_invite) {
-      // Admin sets password directly
       const { data, error } = await adminClient.auth.admin.createUser({
         email,
         password,
         email_confirm: true,
         user_metadata: { first_name, last_name, role: 'partner' },
       });
-
       if (error || !data.user) {
         return { success: false, error: 'Benutzer konnte nicht erstellt werden.' };
       }
       newUserId = data.user.id;
     } else {
-      // Send invite link via Supabase magic link / OTP
       const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
         data: { first_name, last_name, role: 'partner' },
         redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/invite`,
       });
-
       if (error || !data.user) {
         return { success: false, error: 'Einladung konnte nicht gesendet werden.' };
       }
       newUserId = data.user.id;
     }
 
-    // Create partner_profile row
-    await supabase.from('bt_partner_profiles').insert({ user_id: newUserId });
+    await adminClient.from('bt_partner_profiles').insert({
+      user_id: newUserId,
+      license_start,
+      license_duration_months,
+    });
 
-    // Audit log
     await supabase.from('bt_audit_logs').insert({
       user_id: adminUser.id,
       action: 'partner.created',
       table_name: 'bt_profiles',
       record_id: newUserId,
-      new_values: { email, first_name, last_name },
+      new_values: { email, first_name, last_name, license_start },
     });
 
-    // Send invite email if using custom email (Supabase also sends its own for inviteUserByEmail)
-    // If password was set directly, send a welcome email
     if (password && !send_invite) {
       const loginUrl = `${process.env.NEXT_PUBLIC_APP_URL}/login`;
       await sendMail({
@@ -123,7 +111,6 @@ export async function togglePartnerStatusAction(
     const { user: adminUser, supabase } = await requireAdmin();
     const adminClient = createAdminClient();
 
-    // Get partner profile for email notification
     const { data: profile } = await supabase
       .from('bt_profiles')
       .select('first_name, last_name, email, is_active')
@@ -135,7 +122,6 @@ export async function togglePartnerStatusAction(
       return { success: false, error: 'Status ist bereits korrekt.' };
     }
 
-    // Update profile
     const { error } = await supabase
       .from('bt_profiles')
       .update({ is_active: activate })
@@ -143,12 +129,10 @@ export async function togglePartnerStatusAction(
 
     if (error) return { success: false, error: 'Status konnte nicht geändert werden.' };
 
-    // Also disable/enable in Supabase Auth
     await adminClient.auth.admin.updateUserById(partnerId, {
-      ban_duration: activate ? 'none' : '87600h', // ~10 years
+      ban_duration: activate ? 'none' : '87600h',
     });
 
-    // Audit log
     await supabase.from('bt_audit_logs').insert({
       user_id: adminUser.id,
       action: activate ? 'partner.activated' : 'partner.deactivated',
@@ -158,7 +142,6 @@ export async function togglePartnerStatusAction(
       new_values: { is_active: activate },
     });
 
-    // Send notification email
     const emailPayload = activate
       ? accountReactivatedEmail({
           firstName: profile.first_name,
@@ -181,16 +164,93 @@ export async function togglePartnerStatusAction(
 export async function updatePartnerNotesAction(partnerId: string, notes: string): Promise<ActionResult> {
   try {
     await requireAdmin();
-    // Use adminClient to bypass RLS and upsert in case the row doesn't exist yet
     const adminClient = createAdminClient();
     const { error } = await adminClient
       .from('bt_partner_profiles')
       .upsert({ user_id: partnerId, admin_notes: notes || null }, { onConflict: 'user_id' });
-    if (error) return { success: false, error: 'Notiz konnte nicht gespeichert werden.' };
+    if (error) {
+      console.error('[updatePartnerNotesAction] upsert error:', JSON.stringify(error));
+      return { success: false, error: 'Notiz konnte nicht gespeichert werden.' };
+    }
     revalidatePath(`/admin/partners/${partnerId}`);
     return { success: true };
   } catch (err) {
     console.error('[updatePartnerNotesAction]', err);
+    return { success: false, error: 'Ein Fehler ist aufgetreten.' };
+  }
+}
+
+export async function cancelPartnerAction(
+  partnerId: string,
+  reason: string,
+): Promise<ActionResult> {
+  try {
+    const { user: adminUser, supabase } = await requireAdmin();
+    const adminClient = createAdminClient();
+
+    const { error } = await adminClient
+      .from('bt_partner_profiles')
+      .update({
+        is_cancelled: true,
+        cancellation_reason: reason.trim() || null,
+        cancellation_date: new Date().toISOString().split('T')[0],
+      })
+      .eq('user_id', partnerId);
+
+    if (error) return { success: false, error: 'Kündigung konnte nicht gespeichert werden.' };
+
+    await supabase.from('bt_audit_logs').insert({
+      user_id: adminUser.id,
+      action: 'partner.cancelled',
+      table_name: 'bt_partner_profiles',
+      record_id: partnerId,
+      new_values: { is_cancelled: true, cancellation_reason: reason.trim() || null },
+    });
+
+    revalidatePath(`/admin/partners/${partnerId}`);
+    revalidatePath('/admin/partners');
+    return { success: true };
+  } catch (err) {
+    console.error('[cancelPartnerAction]', err);
+    return { success: false, error: 'Ein Fehler ist aufgetreten.' };
+  }
+}
+
+export async function reinstatePartnerAction(
+  partnerId: string,
+  newLicenseStart: string,
+  durationMonths: number,
+): Promise<ActionResult> {
+  try {
+    const { user: adminUser, supabase } = await requireAdmin();
+    const adminClient = createAdminClient();
+
+    const { error } = await adminClient
+      .from('bt_partner_profiles')
+      .update({
+        is_cancelled: false,
+        cancellation_reason: null,
+        cancellation_date: null,
+        license_start: newLicenseStart,
+        license_duration_months: durationMonths,
+      })
+      .eq('user_id', partnerId);
+
+    if (error) return { success: false, error: 'Reaktivierung fehlgeschlagen.' };
+
+    await supabase.from('bt_audit_logs').insert({
+      user_id: adminUser.id,
+      action: 'partner.reinstated',
+      table_name: 'bt_partner_profiles',
+      record_id: partnerId,
+      new_values: { is_cancelled: false, license_start: newLicenseStart, license_duration_months: durationMonths },
+    });
+
+    revalidatePath(`/admin/partners/${partnerId}`);
+    revalidatePath('/admin/partners');
+    return { success: true };
+  } catch (err) {
+    console.error('[reinstatePartnerAction]', err);
     return { success: false, error: 'Ein Fehler ist aufgetreten.' };
   }
 }
@@ -208,11 +268,9 @@ export async function deletePartnerAction(partnerId: string): Promise<ActionResu
 
     if (!profile) return { success: false, error: 'Partner nicht gefunden.' };
 
-    // Delete from Supabase Auth (cascades to profiles via FK)
     const { error } = await adminClient.auth.admin.deleteUser(partnerId);
     if (error) return { success: false, error: 'Löschen fehlgeschlagen.' };
 
-    // Audit log (profile already deleted, so log with record_id only)
     await supabase.from('bt_audit_logs').insert({
       user_id: adminUser.id,
       action: 'partner.deleted',
