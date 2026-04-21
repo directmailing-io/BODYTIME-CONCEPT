@@ -19,6 +19,7 @@ export function getLicenseInfo(
   durationMonths: number = 12,
   isCancelled: boolean = false,
   cancellationDate?: string | null,
+  storedNoticeMonths?: number | null,
   today: Date = new Date()
 ): LicenseInfo {
   const start = parseISO(licenseStart);
@@ -29,9 +30,12 @@ export function getLicenseInfo(
   let possibleEnd: Date;
   let cancellationNoticeMonths: number;
 
+  // Use stored notice period if available, otherwise derive from duration
+  const defaultNoticeMonths = durationMonths >= 12 ? 3 : 1;
+
   if (isInInitialPeriod) {
     possibleEnd = initialEnd;
-    cancellationNoticeMonths = durationMonths >= 12 ? 3 : 1;
+    cancellationNoticeMonths = storedNoticeMonths ?? defaultNoticeMonths;
   } else if (isCancelled && cancellationDate) {
     // When cancelled past initial period: fix possibleEnd at the period end at time of cancellation
     const cancelledAt = parseISO(cancellationDate);
@@ -42,7 +46,7 @@ export function getLicenseInfo(
     // Monthly renewal: end = next period end after today
     const monthsPast = differenceInCalendarMonths(today, initialEnd);
     possibleEnd = addMonths(initialEnd, monthsPast + 1);
-    cancellationNoticeMonths = 1;
+    cancellationNoticeMonths = storedNoticeMonths ?? 1;
   }
 
   const cancellationDeadline = addMonths(possibleEnd, -cancellationNoticeMonths);

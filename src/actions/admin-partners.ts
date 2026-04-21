@@ -180,6 +180,41 @@ export async function updatePartnerNotesAction(partnerId: string, notes: string)
   }
 }
 
+export async function updatePartnerLicenseAction(
+  partnerId: string,
+  licenseStart: string,
+  durationMonths: number,
+  noticeMonths: number,
+): Promise<ActionResult> {
+  try {
+    const { user: adminUser, supabase } = await requireAdmin();
+    const adminClient = createAdminClient();
+
+    const { error } = await adminClient
+      .from('bt_partner_profiles')
+      .upsert(
+        { user_id: partnerId, license_start: licenseStart, license_duration_months: durationMonths, cancellation_notice_months: noticeMonths },
+        { onConflict: 'user_id' },
+      );
+
+    if (error) return { success: false, error: 'Lizenzinformationen konnten nicht gespeichert werden.' };
+
+    await supabase.from('bt_audit_logs').insert({
+      user_id: adminUser.id,
+      action: 'partner.license_updated',
+      table_name: 'bt_partner_profiles',
+      record_id: partnerId,
+      new_values: { license_start: licenseStart, license_duration_months: durationMonths, cancellation_notice_months: noticeMonths },
+    });
+
+    revalidatePath(`/admin/partners/${partnerId}`);
+    return { success: true };
+  } catch (err) {
+    console.error('[updatePartnerLicenseAction]', err);
+    return { success: false, error: 'Ein Fehler ist aufgetreten.' };
+  }
+}
+
 export async function cancelPartnerAction(
   partnerId: string,
   reason: string,

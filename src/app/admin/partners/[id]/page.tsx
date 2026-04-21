@@ -8,6 +8,7 @@ import { formatDate, fullName, isExpired, isExpiringSoon } from '@/lib/utils';
 import { getLicenseInfo } from '@/lib/utils/license';
 import PartnerActions from '@/components/admin/PartnerActions';
 import PartnerNotes from '@/components/admin/PartnerNotes';
+import PartnerLicenseEditDialog from '@/components/admin/PartnerLicenseEditDialog';
 
 interface ReferralRow {
   id: string;
@@ -45,7 +46,7 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
       .eq('id', id).eq('role', 'partner').single(),
     supabase
       .from('bt_partner_profiles')
-      .select('company_name, address_street, address_zip, address_city, address_country, phone, website, admin_notes, license_start, license_duration_months, is_cancelled, cancellation_reason, cancellation_date')
+      .select('company_name, address_street, address_zip, address_city, address_country, phone, website, admin_notes, license_start, license_duration_months, cancellation_notice_months, is_cancelled, cancellation_reason, cancellation_date')
       .eq('user_id', id).single(),
     supabase
       .from('bt_customers')
@@ -69,6 +70,7 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
         partnerProfile.license_duration_months ?? 12,
         partnerProfile.is_cancelled ?? false,
         partnerProfile.cancellation_date ?? null,
+        partnerProfile.cancellation_notice_months ?? null,
       )
     : null;
 
@@ -228,7 +230,19 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
 
           {/* License information */}
           <Card>
-            <CardHeader><CardTitle>Lizenzinformationen</CardTitle></CardHeader>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Lizenzinformationen</CardTitle>
+                <PartnerLicenseEditDialog
+                  partnerId={profile.id}
+                  current={{
+                    license_start: partnerProfile?.license_start ?? null,
+                    license_duration_months: partnerProfile?.license_duration_months ?? null,
+                    cancellation_notice_months: partnerProfile?.cancellation_notice_months ?? null,
+                  }}
+                />
+              </div>
+            </CardHeader>
             <CardContent className="space-y-3">
               {!partnerProfile?.license_start ? (
                 <p className="text-sm text-gray-400">Kein Lizenzstart hinterlegt.</p>
@@ -237,6 +251,18 @@ export default async function AdminPartnerDetailPage({ params }: { params: Promi
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-500">Lizenzstart</span>
                     <span className="font-medium text-gray-900">{formatDate(partnerProfile.license_start)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">Laufzeit</span>
+                    <span className="font-medium text-gray-900">
+                      {(partnerProfile.license_duration_months ?? 12) >= 12 ? '12 Monate' : 'Monatlich'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">Kündigungsfrist</span>
+                    <span className="font-medium text-gray-900">
+                      {(partnerProfile.cancellation_notice_months ?? (partnerProfile.license_duration_months === 1 ? 1 : 3)) === 1 ? '1 Monat' : '3 Monate'}
+                    </span>
                   </div>
                   {licenseInfo && (
                     <>
