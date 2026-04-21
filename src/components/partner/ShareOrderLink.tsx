@@ -24,8 +24,8 @@ export default function ShareOrderLink({ url }: { url: string }) {
     <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3 mb-6">
       <p className="text-xs font-medium text-gray-500 mb-2">Dein Bestelllink für Kunden</p>
       <div className="flex items-center gap-2">
-        <div className="flex-1 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 min-w-0">
-          <span className="text-xs text-gray-600 truncate font-mono block">{displayUrl}</span>
+        <div className="flex-1 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 min-w-0 overflow-hidden">
+          <span className="text-xs text-gray-600 font-mono whitespace-nowrap overflow-hidden text-ellipsis block">{displayUrl}</span>
         </div>
         <button
           type="button"
