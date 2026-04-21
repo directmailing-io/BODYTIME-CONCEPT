@@ -6,10 +6,11 @@ import { toast } from 'sonner';
 
 export default function ShareOrderLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
+  const cleanUrl = url.trim();
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(cleanUrl);
       setCopied(true);
       toast.success('Link kopiert!');
       setTimeout(() => setCopied(false), 2500);
@@ -18,7 +19,7 @@ export default function ShareOrderLink({ url }: { url: string }) {
     }
   }
 
-  const displayUrl = url.replace(/^https?:\/\//, '');
+  const displayUrl = cleanUrl.replace(/^https?:\/\//, '');
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3 mb-6">

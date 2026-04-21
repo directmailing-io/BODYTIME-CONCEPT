@@ -48,7 +48,7 @@ export default async function OrderPage() {
         <p className="text-sm text-gray-500 mt-1">Folge diesen 3 Schritten, um eine Bestellung für deinen Kunden aufzugeben.</p>
       </div>
 
-      <ShareOrderLink url={`${process.env.NEXT_PUBLIC_APP_URL}/bestellung/${user.id}`} />
+      <ShareOrderLink url={`${(process.env.NEXT_PUBLIC_APP_URL ?? '').trim()}/bestellung/${user.id}`} />
 
       {/* Steps */}
       <div className="space-y-3 md:space-y-4">
