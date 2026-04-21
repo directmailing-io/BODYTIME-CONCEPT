@@ -100,7 +100,7 @@ export default async function AdminDashboardPage() {
     const pp = Array.isArray(p.bt_partner_profiles) ? p.bt_partner_profiles[0] : p.bt_partner_profiles;
     if (!pp?.license_start || pp?.is_cancelled) return;
     const info = getLicenseInfo(pp.license_start, pp.license_duration_months ?? 12, false);
-    if (info.status === 'expiring_warning' || info.status === 'auto_renewing') {
+    if (info.status === 'auto_renewing') {
       expiringLicenses.push({
         id: p.id,
         first_name: p.first_name,
