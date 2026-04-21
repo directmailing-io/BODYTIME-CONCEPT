@@ -9,7 +9,7 @@ import {
   TrendingUp, Users, Clock, Shield,
   CalendarDays, MessageCircle, CheckCircle2, Plus,
   Building2, ArrowRight, BadgeCheck, Coins, UserX, Layers,
-  Smartphone, MapPin,
+  Smartphone, MapPin, Heart, Dumbbell,
 } from 'lucide-react';
 import Image from 'next/image';
 import { ButtonColorful } from '@/components/ui/ButtonColorful';
@@ -20,10 +20,8 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const B2B_NAV_LINKS = [
   { label: 'Das Konzept',     href: '#konzept' },
   { label: 'Für Studios',     href: '#studio-betreiber' },
-  { label: 'Das Erlebnis',    href: '#kundenerlebnis' },
   { label: 'Was du bekommst', href: '#leistungen' },
   { label: 'Investition',     href: '#preise' },
-  { label: 'Über uns',        href: '#gruender' },
   { label: 'FAQ',             href: '#faq' },
 ];
 
@@ -1652,11 +1650,226 @@ function CTASection() {
 }
 
 /* ─── Page ──────────────────────────────────────────────────────── */
+/* ─── Philosophie Section ───────────────────────────────────────── */
+function PhilosophieSection() {
+  const stagger = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.13 } },
+  };
+  const word = {
+    hidden: { opacity: 0, y: 48 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease } },
+  };
+
+  return (
+    <section
+      style={{ background: '#080c18', borderTop: '1px solid rgba(255,255,255,0.04)' }}
+      className="relative overflow-hidden"
+    >
+      {/* Ambient glow */}
+      <div aria-hidden className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 900px 500px at 50% 40%, rgba(37,168,224,0.07) 0%, transparent 70%)' }} />
+
+      <div className="relative max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 py-20 sm:py-28 lg:py-36">
+
+        {/* ── Label ── */}
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, ease }}
+          className="text-center text-xs font-semibold uppercase tracking-[0.2em] mb-12 sm:mb-16"
+          style={{ color: '#25A8E0' }}
+        >
+          Die Philosophie
+        </motion.p>
+
+        {/* ── Equation ── */}
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="flex flex-col items-center mb-20 sm:mb-28"
+        >
+          {/* BODY + TIME */}
+          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-5 lg:gap-7">
+            <motion.span variants={word}
+              className="font-black tracking-tight text-white leading-none select-none"
+              style={{ fontSize: 'clamp(3.2rem, 13vw, 9rem)' }}
+            >
+              BODY
+            </motion.span>
+            <motion.span variants={word}
+              className="font-black leading-none select-none"
+              style={{ fontSize: 'clamp(2.2rem, 8vw, 6rem)', color: '#25A8E0' }}
+            >
+              +
+            </motion.span>
+            <motion.span variants={word}
+              className="font-black tracking-tight text-white leading-none select-none"
+              style={{ fontSize: 'clamp(3.2rem, 13vw, 9rem)' }}
+            >
+              TIME
+            </motion.span>
+          </div>
+
+          {/* = BODYTIME concept */}
+          <motion.div variants={word}
+            className="flex flex-wrap justify-center items-baseline gap-2 sm:gap-4 mt-3 sm:mt-5"
+          >
+            <span className="font-black leading-none select-none"
+              style={{ fontSize: 'clamp(1.6rem, 5vw, 3.2rem)', color: 'rgba(255,255,255,0.18)' }}>
+              =
+            </span>
+            <span
+              className="font-black tracking-tight leading-none select-none"
+              style={{
+                fontSize: 'clamp(2rem, 7vw, 4.5rem)',
+                background: 'linear-gradient(120deg, #ffffff 0%, #25A8E0 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              BODYTIME
+            </span>
+            <span className="font-light tracking-[0.18em] leading-none select-none"
+              style={{ fontSize: 'clamp(1.2rem, 3.5vw, 2.2rem)', color: 'rgba(255,255,255,0.35)' }}>
+              concept
+            </span>
+          </motion.div>
+
+          <motion.p variants={word}
+            className="text-center text-sm sm:text-base font-light mt-6 sm:mt-8 max-w-md"
+            style={{ color: 'rgba(255,255,255,0.35)' }}
+          >
+            Zwei knappe Ressourcen. Ein intelligentes Konzept.
+          </motion.p>
+        </motion.div>
+
+        {/* ── Two pillar cards ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
+
+          {/* BODY card */}
+          <motion.div
+            initial={{ opacity: 0, y: 36 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.7, ease }}
+            className="relative rounded-3xl overflow-hidden p-8 sm:p-10"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+          >
+            <div aria-hidden className="absolute inset-0 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at -10% -10%, rgba(74,222,128,0.09) 0%, transparent 55%)' }} />
+            <div className="relative">
+              <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-6"
+                style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.2)' }}>
+                <Heart className="w-5 h-5" style={{ color: '#4ADE80' }} />
+              </div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: '#4ADE80' }}>
+                BODY · Körper
+              </p>
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
+                Das wichtigste Gut.
+              </h3>
+              <p className="text-sm sm:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                Ohne Gesundheit ist alles nichts. Der Körper ist die Grundlage für alles, was wir im Leben erreichen wollen — und verdient höchste Priorität.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* TIME card */}
+          <motion.div
+            initial={{ opacity: 0, y: 36 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.7, ease, delay: 0.1 }}
+            className="relative rounded-3xl overflow-hidden p-8 sm:p-10"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+          >
+            <div aria-hidden className="absolute inset-0 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at 110% -10%, rgba(37,168,224,0.1) 0%, transparent 55%)' }} />
+            <div className="relative">
+              <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-6"
+                style={{ background: 'rgba(37,168,224,0.1)', border: '1px solid rgba(37,168,224,0.2)' }}>
+                <Clock className="w-5 h-5" style={{ color: '#25A8E0' }} />
+              </div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: '#25A8E0' }}>
+                TIME · Zeit
+              </p>
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
+                Die knappe Ressource.
+              </h3>
+              <p className="text-sm sm:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                In der schnellen Welt von heute ist Zeit unser wertvollstes Gut. Wer Zeit effizient nutzt, gewinnt Lebensqualität — und genau das ist unser Versprechen.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* ── Addon card ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7, ease, delay: 0.15 }}
+          className="relative rounded-3xl overflow-hidden p-8 sm:p-10"
+          style={{ background: 'rgba(37,168,224,0.04)', border: '1px solid rgba(37,168,224,0.14)' }}
+        >
+          <div aria-hidden className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at 50% 110%, rgba(37,168,224,0.08) 0%, transparent 65%)' }} />
+          <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-16">
+
+            {/* Text */}
+            <div className="flex-1">
+              <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-6"
+                style={{ background: 'rgba(37,168,224,0.12)', border: '1px solid rgba(37,168,224,0.22)' }}>
+                <Layers className="w-5 h-5" style={{ color: '#25A8E0' }} />
+              </div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: '#25A8E0' }}>
+                Dein Add-on
+              </p>
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
+                Passt in dein bestehendes Konzept.
+              </h3>
+              <p className="text-sm sm:text-base leading-relaxed max-w-lg" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                BODYTIME concept ist kein Ersatz — es ist dein Addon. Egal ob du EMS-Studio, Personal Trainer oder Coach bist: Unser Konzept stärkt und erweitert das, was du bereits aufgebaut hast.
+              </p>
+            </div>
+
+            {/* Compatibility chips */}
+            <div className="flex flex-row lg:flex-col gap-3 flex-wrap">
+              {[
+                { label: 'EMS-Studio', icon: <Dumbbell className="w-3.5 h-3.5" /> },
+                { label: 'Personal Trainer', icon: <Users className="w-3.5 h-3.5" /> },
+                { label: 'Coach', icon: <TrendingUp className="w-3.5 h-3.5" /> },
+              ].map(({ label, icon }) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-2.5 px-4 py-3 rounded-2xl whitespace-nowrap"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                >
+                  <span style={{ color: 'rgba(255,255,255,0.4)' }}>{icon}</span>
+                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>{label}</span>
+                  <Plus className="w-3 h-3" style={{ color: 'rgba(37,168,224,0.5)' }} />
+                  <span className="text-xs font-semibold" style={{ color: '#25A8E0' }}>BODYTIME concept</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+
 export default function PartnerWerdenPage() {
   return (
     <div className="min-h-screen" style={{ background: '#071a24' }}>
       <B2BNav />
       <HeroSection />
+      <PhilosophieSection />
       <KonzeptSection />
       <StudioBetreiberSection />
       <KundenerlebnisSection />
