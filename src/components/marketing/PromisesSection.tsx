@@ -1,7 +1,7 @@
 'use client';
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ShieldCheck, Layers } from 'lucide-react';
+import { ShieldCheck, Layers, MapPin } from 'lucide-react';
 
 /* ─── Animated number (supports countdown) ───────────────────── */
 function AnimatedNumber({
@@ -108,34 +108,39 @@ export default function PromisesSection() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         >
 
-          {/* 1 ── 20 Minuten ──────────────────────────── */}
+          {/* 1 ── Grenzenlose Möglichkeiten ─────────── */}
           <BentoCard
             index={0}
-            className="lg:col-span-2 flex flex-col justify-between p-6 sm:p-8 relative bg-[#f8fafc]"
+            className="lg:col-span-2 flex flex-col justify-between p-6 sm:p-8 relative bg-[#f8fafc] overflow-hidden"
             style={{ minHeight: '240px' }}
           >
+            {/* Glow */}
             <div
               aria-hidden="true"
-              className="absolute top-0 left-0 w-48 h-48 pointer-events-none"
+              className="absolute top-0 left-0 w-56 h-56 pointer-events-none"
               style={{
-                background: 'radial-gradient(circle, rgba(37,168,224,0.20) 0%, transparent 70%)',
+                background: 'radial-gradient(circle, rgba(37,168,224,0.18) 0%, transparent 70%)',
                 filter: 'blur(24px)',
               }}
             />
+            {/* Decorative location pins */}
+            <MapPin aria-hidden="true" className="absolute top-5 right-6 w-4 h-4 text-[#25A8E0] opacity-20" />
+            <MapPin aria-hidden="true" className="absolute top-14 right-14 w-3 h-3 text-[#07C8DB] opacity-15" />
+            <MapPin aria-hidden="true" className="absolute bottom-10 right-8 w-5 h-5 text-[#25A8E0] opacity-10" />
+
             <div className="relative">
               <p
-                className="gradient-text-slow font-semibold leading-none tracking-tighter"
-                style={{ fontSize: 'clamp(72px, 14vw, 120px)' }}
+                className="gradient-text-slow font-semibold leading-none"
+                style={{ fontSize: 'clamp(80px, 15vw, 130px)', lineHeight: 0.85 }}
               >
-                <AnimatedNumber from={90} to={20} trigger={bentoInView} />
+                ∞
               </p>
-              <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest mt-1">
-                Minuten pro Training
+              <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest mt-3">
+                Möglichkeiten
               </p>
             </div>
             <p className="text-sm text-gray-500 leading-relaxed mt-4 relative">
-              So lange dauert dein vollständiges Ganzkörpertraining.
-              Was andere in 90 Minuten im Gym versuchen – du erreichst es in 20.
+              Zuhause, im Studio, unterwegs, im Hotel oder an der Raststätte - mit BODYTIME concept hast du grenzenlose Möglichkeiten. Wann und wo du willst.
             </p>
           </BentoCard>
 
@@ -159,7 +164,7 @@ export default function PromisesSection() {
               <p className="text-[17px] font-semibold text-gray-900 mb-2">Anzug anlegen. App öffnen. Loslegen.</p>
               <p className="text-sm text-gray-500 leading-relaxed">
                 Keine Geräte einrichten. Keine Installationen. Anzug anziehen, App öffnen und direkt starten.
-                Beim ersten Training zeigt dir dein Trainer alles – danach läuft das wie von selbst.
+                Beim ersten Training zeigt dir dein Trainer alles, danach läuft das wie von selbst.
                 Wirklich kinderleicht.
               </p>
             </div>
@@ -178,7 +183,7 @@ export default function PromisesSection() {
                 Kombinierbar mit deinem Alltag
               </p>
               <p className="text-sm text-gray-500 leading-relaxed">
-                Zuhause, beim Spaziergang oder selbst in der Mittagspause – das Training passt sich deinem Alltag perfekt an.
+                Zuhause, beim Spaziergang oder selbst in der Mittagspause. Das Training passt sich deinem Alltag an.
               </p>
             </div>
           </BentoCard>
@@ -263,7 +268,7 @@ export default function PromisesSection() {
                   1:1 Begleitung
                 </p>
                 <p className="text-sm text-white/80 leading-relaxed max-w-sm mt-3">
-                  Unsere Berater haben den EMS-Markt mit aufgebaut – über 20 Jahre Erfahrung,
+                  Unsere Berater haben den EMS-Markt mit aufgebaut, über 20 Jahre Erfahrung,
                   die du nirgendwo sonst findest. Du hast 365 Tage einen persönlichen Ansprechpartner,
                   regelmäßige Calls und ein Setup, das exakt auf dich zugeschnitten ist.
                 </p>

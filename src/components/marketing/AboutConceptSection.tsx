@@ -7,19 +7,19 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const CARDS = [
   {
     title: 'Du hast einen persönlichen EMS-Experten',
-    text: 'Du musst in kein Studio und auch keine Selbstversuche machen. Zertifizierte EMS-Trainer begleiten dich – egal ob vor Ort oder online.',
+    text: 'Zertifizierte EMS-Experten begleiten dich von Anfang an, egal ob du zuhause, unterwegs oder in der Mittagspause trainierst. Immer erreichbar, immer für dich da.',
   },
   {
     title: 'Du bleibst flexibel',
     text: 'Du brauchst keine festen verbindlichen Termine. Du trainierst, wann und wo du willst, indem du den Anzug anziehst, die App öffnest und loslegst.',
   },
   {
-    title: 'Erfolge erzielen anstatt zu warten',
-    text: 'Wenn du Rückenschmerzen hast, kannst du wochenlang auf einen Physiotherapeuten warten. Oder du ziehst den EMS Suit an, legst zuhause los und kannst deine Beschwerden lindern.',
+    title: 'Die smarte Ergänzung für deinen Alltag',
+    text: 'BODYTIME concept ergänzt deinen Sport, deine Physiotherapie oder deine Alltagsroutine ideal. Zieh den Suit an, leg zuhause los und bring Bewegung in deinen Tag, wann und wo du willst.',
   },
 ];
 
-const NOT_TAGS = ['Kein EMS-Studio', 'Keine Alleinversuche', 'Keine komplexen Verkabelungen'];
+const PLUS_TAGS = ['Persönliche Begleitung', 'Maximale Flexibilität', 'Ohne Gerätekauf'];
 
 function FadeUp({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
@@ -63,8 +63,8 @@ export default function AboutConceptSection() {
                 BODYTIME concept
               </p>
               <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-white leading-tight tracking-tight mb-5">
-                Kein Studio. Keine Verkabelung.{' '}
-                <span className="text-white/40">Maximaler Erfolg.</span>
+                EMS-Training,{' '}
+                <span className="text-white/40">das sich deinem Leben anpasst.</span>
               </h2>
               <p className="text-base sm:text-lg text-white/60 leading-relaxed font-light mb-8">
                 BODYTIME concept verbindet zertifizierte EMS-Experten mit Menschen,
@@ -72,11 +72,13 @@ export default function AboutConceptSection() {
               </p>
             </FadeUp>
 
-            {/* Strikethrough tags */}
+            {/* Positive tags */}
             <FadeUp delay={0.15} className="flex flex-wrap gap-2 mb-10">
-              {NOT_TAGS.map((tag) => (
-                <span key={tag} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs border border-white/10">
-                  <span className="text-white/30 line-through">{tag}</span>
+              {PLUS_TAGS.map((tag) => (
+                <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border border-white/15"
+                  style={{ background: 'rgba(37,168,224,0.08)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#07C8DB' }} />
+                  <span className="text-white/60">{tag}</span>
                 </span>
               ))}
             </FadeUp>

@@ -6,6 +6,7 @@ import ProductSection from '@/components/marketing/ProductSection';
 import FlexibilitySection from '@/components/marketing/FlexibilitySection';
 import AboutConceptSection from '@/components/marketing/AboutConceptSection';
 import TransformationSection from '@/components/marketing/TransformationSection';
+import SofortloesungSection from '@/components/marketing/SofortloesungSection';
 import TrainerSection from '@/components/marketing/TrainerSection';
 import AboutUsSection from '@/components/marketing/AboutUsSection';
 import NextStepsSection from '@/components/marketing/NextStepsSection';
@@ -54,6 +55,9 @@ export default async function LandingPage() {
 
       {/* ── Produktvorstellung ──────────────────────────────────── */}
       <ProductSection />
+
+      {/* ── Sofortlösung – Anwendungsfälle ──────────────────────── */}
+      <SofortloesungSection />
 
       {/* ── Ortsunabhängig trainieren ────────────────────────────── */}
       <FlexibilitySection />

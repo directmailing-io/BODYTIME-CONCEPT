@@ -8,7 +8,7 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const FAQS = [
   {
     q: 'Was ist EMS Training?',
-    a: 'EMS steht für Elektromyostimulation. Klingt komplizierter als es ist. Stell dir vor, dein Körper bekommt während des Trainings sanfte elektrische Impulse, ähnlich wie die, die dein Gehirn sowieso an deine Muskeln sendet, nur viel stärker und kontrollierter. Das Ergebnis: Bis zu 90 % aller Muskeln arbeiten gleichzeitig. Beim normalen Training sind es vielleicht 30 bis 40 %. Genau deshalb reichen 20 Minuten.',
+    a: 'EMS steht für Elektromyostimulation. Klingt komplizierter als es ist. Stell dir vor, dein Körper bekommt während des Trainings sanfte elektrische Impulse, ähnlich wie die, die dein Gehirn sowieso an deine Muskeln sendet, nur viel stärker und gezielter. Das Ergebnis: Dein gesamter Körper wird in einer einzigen Session intensiv gefordert, einschließlich tiefer Muskelgruppen, die du mit normalem Training kaum erreichst. Genau deshalb reichen 20 Minuten.',
   },
   {
     q: 'Für wen ist EMS Training geeignet?',
@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: 'Wie unterscheidet sich BODYTIME concept von einem EMS Studio?',
-    a: 'Bei einem EMS Studio musst du fixe Termine vereinbaren. Du musst dorthin fahren, und wenn du mal eine Verspätung hast, kürzt sich deine Session. Wenn was dazwischenkommt, fällt das Training einfach aus. Das hat direkte Auswirkungen auf deine Fortschritte, weil Regelmäßigkeit beim Training alles ist. Mit BODYTIME concept trainierst du zuhause, unterwegs oder wo auch immer du möchtest. Du legst den Anzug an, öffnest die App und machst los. Kein Termin, keine Anfahrt, kein Ausfall. Und trotzdem hast du deinen persönlichen Trainer, der dich begleitet.',
+    a: 'Viele unserer Kunden gehen weiterhin ins EMS Studio und nutzen BODYTIME concept einfach zusätzlich. Der Unterschied ist im Grunde einfach: Mit BODYTIME concept bist du nicht an Termine oder Öffnungszeiten gebunden. Du legst den Anzug an, öffnest die App und trainierst, wann und wo du willst. Trotzdem hast du immer deinen persönlichen Trainer an deiner Seite. Für viele ist das die perfekte Kombination aus Freiheit und Begleitung.',
   },
   {
     q: 'Was kostet das Training?',

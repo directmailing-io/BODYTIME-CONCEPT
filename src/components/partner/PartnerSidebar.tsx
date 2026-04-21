@@ -26,19 +26,19 @@ interface PartnerProfile {
   role: string;
 }
 
-// Desktop sidebar — all items
+// Desktop — all items in logical order
 const allNavItems = [
-  { href: '/partner/dashboard',  label: 'Dashboard',        icon: LayoutDashboard },
-  { href: '/partner/customers',  label: 'Kunden',           icon: Users },
-  { href: '/partner/order',      label: 'Neue Bestellung',  icon: ShoppingCart },
-  { href: '/partner/empfehlung', label: 'Empfehlung',       icon: Gift },
-  { href: '/partner/steckbrief', label: 'Profil',           icon: IdCard },
-  { href: '/partner/documents',  label: 'Dokumente',        icon: FileText },
-  { href: '/partner/profile',    label: 'Einstellungen',    icon: Settings },
+  { href: '/partner/dashboard',  label: 'Dashboard',       icon: LayoutDashboard },
+  { href: '/partner/customers',  label: 'Kunden',          icon: Users },
+  { href: '/partner/order',      label: 'Neue Bestellung', icon: ShoppingCart },
+  { href: '/partner/empfehlung', label: 'Empfehlung',      icon: Gift },
+  { href: '/partner/steckbrief', label: 'Profil',          icon: IdCard },
+  { href: '/partner/documents',  label: 'Dokumente',       icon: FileText },
+  { href: '/partner/profile',    label: 'Einstellungen',   icon: Settings },
 ];
 
-// Mobile tab bar — 2 left + center action + 2 right + Mehr
-const leftTabs = [
+// Mobile — 2 left + center action + 2 right = 5 tabs total
+const leftTabs  = [
   { href: '/partner/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/partner/customers', label: 'Kunden',    icon: Users },
 ];
@@ -47,69 +47,48 @@ const rightTabs = [
   { href: '/partner/steckbrief', label: 'Profil',     icon: IdCard },
 ];
 const secondaryItems = [
-  { href: '/partner/documents', label: 'Dokumente',      icon: FileText },
-  { href: '/partner/profile',   label: 'Einstellungen',  icon: Settings },
+  { href: '/partner/documents', label: 'Dokumente',     icon: FileText },
+  { href: '/partner/profile',   label: 'Einstellungen', icon: Settings },
 ];
 
 function getInitials(firstName: string | null, lastName: string | null): string {
-  const first = firstName?.charAt(0)?.toUpperCase() ?? '';
-  const last = lastName?.charAt(0)?.toUpperCase() ?? '';
-  return first + last || '??';
+  return (firstName?.charAt(0)?.toUpperCase() ?? '') + (lastName?.charAt(0)?.toUpperCase() ?? '') || '??';
 }
 
-/* ── Desktop sidebar content ──────────────────────────────── */
+/* ── Desktop sidebar ──────────────────────────────────────── */
 function SidebarContent({ profile }: { profile: PartnerProfile }) {
   const pathname = usePathname();
-
   return (
     <div className="flex flex-col h-full bg-white border-r border-gray-100">
       <div className="flex items-center justify-center px-4 py-4 border-b border-gray-100">
         <Image src="/logo.svg" alt="BODYTIME concept" width={128} height={51} priority />
       </div>
-
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {allNavItems.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(href + '/');
           return (
-            <Link
-              key={href}
-              href={href}
-              className={[
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors',
-                isActive
-                  ? 'bg-gray-100 text-gray-900 font-medium'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700',
-              ].join(' ')}
+            <Link key={href} href={href}
+              className={['flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors',
+                isActive ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'].join(' ')}
             >
-              <Icon
-                className={['w-4 h-4 flex-shrink-0', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
-                strokeWidth={isActive ? 2.5 : 2}
-              />
+              <Icon className={['w-4 h-4 flex-shrink-0', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')} strokeWidth={isActive ? 2.5 : 2} />
               {label}
             </Link>
           );
         })}
       </nav>
-
       <div className="px-3 py-4 border-t border-gray-100">
         <div className="flex items-center gap-3 px-3 py-2 mb-1">
           <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-semibold text-white">
-              {getInitials(profile.first_name, profile.last_name)}
-            </span>
+            <span className="text-xs font-semibold text-white">{getInitials(profile.first_name, profile.last_name)}</span>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-gray-900 truncate">
-              {[profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Partner'}
-            </p>
+            <p className="text-sm font-medium text-gray-900 truncate">{[profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Partner'}</p>
             <p className="text-xs text-gray-500 truncate">{profile.email}</p>
           </div>
         </div>
         <form action={logoutAction}>
-          <button
-            type="submit"
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors text-left"
-          >
+          <button type="submit" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors text-left">
             <LogOut className="w-4 h-4 flex-shrink-0 text-gray-400" strokeWidth={2} />
             Abmelden
           </button>
@@ -124,27 +103,15 @@ function MobileNav({ profile }: { profile: PartnerProfile }) {
   const pathname = usePathname();
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const isSecondaryActive = secondaryItems.some(
-    (i) => pathname === i.href || pathname.startsWith(i.href + '/'),
-  );
-
+  const isSecondaryActive = secondaryItems.some(i => pathname === i.href || pathname.startsWith(i.href + '/'));
   const isOrderActive = pathname === '/partner/order' || pathname.startsWith('/partner/order/');
 
   function renderTab({ href, label, icon: Icon }: typeof leftTabs[0]) {
     const isActive = pathname === href || pathname.startsWith(href + '/');
     return (
-      <Link
-        key={href}
-        href={href}
-        className="flex-1 flex flex-col items-center justify-center gap-1 transition-colors min-w-0"
-      >
-        <Icon
-          className={['w-5 h-5 transition-colors', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
-          strokeWidth={isActive ? 2.5 : 1.8}
-        />
-        <span className={['text-[10px] font-medium leading-none transition-colors truncate', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}>
-          {label}
-        </span>
+      <Link key={href} href={href} className="flex-1 flex flex-col items-center justify-center gap-1 min-w-0 transition-colors">
+        <Icon className={['w-5 h-5', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')} strokeWidth={isActive ? 2.5 : 1.8} />
+        <span className={['text-[10px] font-medium leading-none truncate', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}>{label}</span>
       </Link>
     );
   }
@@ -152,127 +119,97 @@ function MobileNav({ profile }: { profile: PartnerProfile }) {
   return (
     <>
       {/* Bottom tab bar */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100"
-        style={{
-          paddingBottom: 'env(safe-area-inset-bottom)',
-          boxShadow: '0 -1px 0 rgba(0,0,0,0.06), 0 -4px 16px rgba(0,0,0,0.04)',
-        }}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)', boxShadow: '0 -1px 0 rgba(0,0,0,0.06), 0 -4px 16px rgba(0,0,0,0.04)' }}
       >
         <div className="flex items-stretch h-16">
-          {/* Left tabs */}
           {leftTabs.map(renderTab)}
 
-          {/* Center action — "Neue Bestellung" */}
-          <Link
-            href="/partner/order"
-            className="flex-1 flex items-center justify-center px-1 py-2 min-w-0"
-            aria-label="Neue Bestellung"
-          >
+          {/* Center — "Neue Bestellung" blue circle */}
+          <Link href="/partner/order" className="flex-1 flex flex-col items-center justify-center gap-1 min-w-0">
             <div className={[
-              'w-full max-w-[80px] h-11 rounded-2xl flex flex-col items-center justify-center gap-0.5 shadow-md active:scale-95 transition-all',
+              'w-12 h-12 rounded-full flex items-center justify-center shadow-md shadow-blue-500/25 transition-all active:scale-95',
               isOrderActive ? 'bg-blue-600' : 'bg-blue-500',
             ].join(' ')}>
-              <ShoppingCart className="w-4 h-4 text-white" strokeWidth={2.5} />
-              <span className="text-[9px] font-bold text-white leading-none">Bestellung</span>
+              <ShoppingCart className="w-5 h-5 text-white" strokeWidth={2.2} />
             </div>
+            <span className={['text-[10px] font-bold leading-none', isOrderActive ? 'text-blue-600' : 'text-blue-500'].join(' ')}>
+              Bestellung
+            </span>
           </Link>
 
-          {/* Right tabs */}
           {rightTabs.map(renderTab)}
 
-          {/* "Mehr" tab */}
-          <button
-            onClick={() => setSheetOpen(true)}
-            className="flex-1 flex flex-col items-center justify-center gap-1 min-w-0"
-          >
-            <MoreHorizontal
-              className={['w-5 h-5', isSecondaryActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
-              strokeWidth={isSecondaryActive ? 2.5 : 1.8}
-            />
-            <span className={['text-[10px] font-medium leading-none', isSecondaryActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}>
-              Mehr
-            </span>
+          {/* Mehr */}
+          <button onClick={() => setSheetOpen(true)} className="flex-1 flex flex-col items-center justify-center gap-1 min-w-0">
+            <MoreHorizontal className={['w-5 h-5', isSecondaryActive ? 'text-gray-900' : 'text-gray-400'].join(' ')} strokeWidth={isSecondaryActive ? 2.5 : 1.8} />
+            <span className={['text-[10px] font-medium leading-none', isSecondaryActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}>Mehr</span>
           </button>
         </div>
       </nav>
 
       {/* Backdrop */}
-      <div
-        className={[
-          'fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity duration-300',
-          sheetOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
-        ].join(' ')}
-        onClick={() => setSheetOpen(false)}
-        aria-hidden="true"
+      <div className={['fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity duration-300',
+        sheetOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'].join(' ')}
+        onClick={() => setSheetOpen(false)} aria-hidden="true"
       />
 
       {/* Bottom sheet */}
-      <div
-        className={[
-          'fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl transition-transform duration-300 ease-out',
-          sheetOpen ? 'translate-y-0' : 'translate-y-full',
-        ].join(' ')}
+      <div className={['fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl transition-transform duration-300 ease-out',
+        sheetOpen ? 'translate-y-0' : 'translate-y-full'].join(' ')}
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        {/* Handle + header */}
         <div className="flex items-center justify-between px-5 pt-4 pb-2 relative">
           <div className="w-10 h-1 rounded-full bg-gray-200 absolute left-1/2 -translate-x-1/2 top-3" />
           <div className="flex items-center gap-3 pt-3">
             <div className="w-9 h-9 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-semibold text-white">
-                {getInitials(profile.first_name, profile.last_name)}
-              </span>
+              <span className="text-xs font-semibold text-white">{getInitials(profile.first_name, profile.last_name)}</span>
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-900 leading-snug">
-                {[profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Partner'}
-              </p>
+              <p className="text-sm font-semibold text-gray-900 leading-snug">{[profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Partner'}</p>
               <p className="text-xs text-gray-400 truncate">{profile.email}</p>
             </div>
           </div>
-          <button
-            onClick={() => setSheetOpen(false)}
-            className="p-2 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
-            aria-label="Schließen"
-          >
+          <button onClick={() => setSheetOpen(false)} className="p-2 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors" aria-label="Schließen">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Secondary nav items */}
-        <div className="px-4 py-3 space-y-1">
+        {/* Profil link — first in Mehr */}
+        <div className="px-4 pt-3 pb-1">
+          {(() => {
+            const profil = { href: '/partner/steckbrief', label: 'Profil', icon: IdCard };
+            const isActive = pathname === profil.href || pathname.startsWith(profil.href + '/');
+            return (
+              <Link href={profil.href} onClick={() => setSheetOpen(false)}
+                className={['flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-colors',
+                  isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 active:bg-gray-50'].join(' ')}
+              >
+                <profil.icon className={['w-5 h-5 flex-shrink-0', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')} strokeWidth={isActive ? 2.5 : 2} />
+                <span className={['text-[15px]', isActive ? 'font-semibold' : 'font-medium'].join(' ')}>{profil.label}</span>
+              </Link>
+            );
+          })()}
+        </div>
+
+        <div className="px-4 pb-3 space-y-1">
           {secondaryItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href || pathname.startsWith(href + '/');
             return (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setSheetOpen(false)}
-                className={[
-                  'flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-colors',
-                  isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 active:bg-gray-50',
-                ].join(' ')}
+              <Link key={href} href={href} onClick={() => setSheetOpen(false)}
+                className={['flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-colors',
+                  isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 active:bg-gray-50'].join(' ')}
               >
-                <Icon
-                  className={['w-5 h-5 flex-shrink-0', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')}
-                  strokeWidth={isActive ? 2.5 : 2}
-                />
-                <span className={['text-[15px]', isActive ? 'font-semibold' : 'font-medium'].join(' ')}>
-                  {label}
-                </span>
+                <Icon className={['w-5 h-5 flex-shrink-0', isActive ? 'text-gray-900' : 'text-gray-400'].join(' ')} strokeWidth={isActive ? 2.5 : 2} />
+                <span className={['text-[15px]', isActive ? 'font-semibold' : 'font-medium'].join(' ')}>{label}</span>
               </Link>
             );
           })}
         </div>
 
-        {/* Divider + Logout */}
         <div className="mx-4 border-t border-gray-100 pt-2 pb-3">
           <form action={logoutAction}>
-            <button
-              type="submit"
-              className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-red-500 active:bg-red-50 transition-colors"
-            >
+            <button type="submit" className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-red-500 active:bg-red-50 transition-colors">
               <LogOut className="w-5 h-5 flex-shrink-0" strokeWidth={2} />
               <span className="text-[15px] font-medium">Abmelden</span>
             </button>
@@ -283,16 +220,12 @@ function MobileNav({ profile }: { profile: PartnerProfile }) {
   );
 }
 
-/* ── Export ───────────────────────────────────────────────── */
 export default function PartnerSidebar({ profile }: { profile: PartnerProfile }) {
   return (
     <>
-      {/* Desktop sidebar */}
       <aside className="hidden lg:block w-60 flex-shrink-0 h-full" aria-label="Navigation">
         <SidebarContent profile={profile} />
       </aside>
-
-      {/* Mobile bottom nav */}
       <div className="lg:hidden">
         <MobileNav profile={profile} />
       </div>

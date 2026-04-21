@@ -153,7 +153,7 @@ export default function ProductSection() {
             EMS Trainingsanzug
           </p>
           <h2 className="text-xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 tracking-tight">
-            Damit jedes Training zum Erlebnis wird.
+            Damit jede Anwendung zum Erlebnis wird.
           </h2>
         </div>
 

@@ -14,13 +14,13 @@ const STEPS = [
   {
     Icon: Calendar,
     label: 'Training wird\neinfach gemacht',
-    desc: 'Zuhause, unterwegs oder in der Mittagspause – ohne fixen Termin.',
+    desc: 'Zuhause, unterwegs oder in der Mittagspause, ohne fixen Termin.',
     pos: 'top',
   },
   {
     Icon: Zap,
-    label: '20 Minuten\ngenügen',
-    desc: 'Eine kurze, intensive Session bringt mehr als stundenlange Workouts.',
+    label: 'Intensive\nSession',
+    desc: 'Eine EMS-Session aktiviert tief liegende Muskelgruppen, effizient und wirkungsvoll.',
     pos: 'right',
   },
   {
@@ -32,7 +32,7 @@ const STEPS = [
   {
     Icon: TrendingUp,
     label: 'Spürbare\nErgebnisse',
-    desc: 'Dein Körper verändert sich – sichtbar und spürbar.',
+    desc: 'Dein Körper verändert sich, sichtbar und spürbar.',
     pos: 'left',
   },
 ] as const;
@@ -212,11 +212,11 @@ export default function TransformationSection() {
             Das erwartet dich
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-white leading-tight tracking-tight mb-5">
-            Wie aus 20 Minuten{' '}
+            Wie smarte Sessions{' '}
             <span style={{
               background: 'linear-gradient(90deg, #25A8E0, #07C8DB)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            }}>ein neues Leben werden kann.</span>
+            }}>dein Wohlbefinden verändern können.</span>
           </h2>
           <p className="text-base sm:text-lg text-white/55 leading-relaxed font-light">
             Wer das Training zur Gewohnheit macht, der trainiert regelmäßig.

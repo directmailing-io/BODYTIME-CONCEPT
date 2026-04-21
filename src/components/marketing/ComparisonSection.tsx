@@ -50,11 +50,11 @@ const ROWS: Row[] = [
     gym:      { type: 'no', text: 'Nur im Studio' },
   },
   {
-    label: 'Muskelaktivierung',
-    sublabel: 'pro Trainingseinheit',
-    bodytime: { type: 'text', text: 'bis 90 %' },
-    ems:      { type: 'text', text: 'bis 90 %' },
-    gym:      { type: 'text', text: '30-40 %' },
+    label: 'Trainingstiefe',
+    sublabel: 'pro Einheit',
+    bodytime: { type: 'text', text: 'Sehr hoch' },
+    ems:      { type: 'text', text: 'Hoch' },
+    gym:      { type: 'text', text: 'Mittel' },
   },
   {
     label: 'Persönlicher Ansprechpartner',

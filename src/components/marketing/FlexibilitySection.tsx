@@ -165,7 +165,6 @@ export default function FlexibilitySection() {
       className="relative overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #071a24 0%, #080c18 100%)',
-        marginTop: '-24px',
         zIndex: 25,
       }}
     >
@@ -181,7 +180,7 @@ export default function FlexibilitySection() {
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-4" style={{ color: '#07C8DB' }}>
-            Ortsunabhängig trainieren
+            Für jeden Ort
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-white leading-tight tracking-tight mb-5">
             <span style={{
@@ -192,11 +191,10 @@ export default function FlexibilitySection() {
             }}>
               Überall
             </span>
-            {' '}ist dein Studio.
+            {' '}smart trainieren.
           </h2>
           <p className="text-base sm:text-lg text-white/55 leading-relaxed font-light">
-            Vergiss das klassische Studio mit festen Öffnungszeiten und Anfahrtsweg. Mit BODYTIME concept trainierst du
-            wirklich überall — so wie du es noch nie konntest.
+            Mit BODYTIME concept trainierst du wirklich überall, so wie du es noch nie konntest.
           </p>
         </div>
 

@@ -8,10 +8,16 @@ export const metadata: Metadata = {
   description: 'Dein EMS Training für zuhause – persönliche Begleitung von Experten.',
 };
 
+// Runs synchronously before React hydration — redirects invite links instantly
+const inviteRedirectScript = `(function(){var h=window.location.hash;if(!h)return;var p=new URLSearchParams(h.slice(1));if(p.get('type')==='invite'&&p.get('access_token')){window.location.replace('/invite'+h);}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className="h-full">
-      <body className="min-h-full antialiased" suppressHydrationWarning>
+    <html lang="de" className="h-full" style={{ overflowX: 'clip' }}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: inviteRedirectScript }} />
+      </head>
+      <body className="min-h-full antialiased overflow-x-hidden" suppressHydrationWarning>
         {children}
         <CookieConsent />
         <Toaster

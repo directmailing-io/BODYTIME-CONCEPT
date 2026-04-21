@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   Check, ChevronDown, Menu, X, LogIn,
   Zap, Package, HeadphonesIcon, GraduationCap,
@@ -569,8 +571,8 @@ const KONZEPT_STEPS = [
     num: '01',
     tagline: 'Das Produkt',
     title: 'Der EMS-Suit von beurer.',
-    desc: 'Das einzige textile EMS-System, das Shirt und Hose kombiniert und damit gleichzeitig Ober- und Unterkörper trainiert. Kein Kabelgewirr, kein kompliziertes Handling. Deine Kunden kaufen nichts, sie mieten direkt bei beurer.',
-    tags: ['Shirt und Hose', 'Miete statt Kauf', '90% der Muskeln'],
+    desc: 'Das einzige textile EMS-System, das Shirt und Hose kombiniert und damit gleichzeitig Ober- und Unterkörper trainiert. Kein Kabelgewirr, kein kompliziertes Handling. Deine Kunden kaufen nichts, sie mieten direkt bei beurer mit Sonderkonditionen.',
+    tags: ['Shirt und Hose', 'Miete statt Kauf', 'Exklusive Konditionen'],
     visual: 'product',
     accent: false,
   },
@@ -962,25 +964,40 @@ function KundenerlebnisSection() {
         {/* ── Top: 3 stat cards ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
 
-          {/* 20 Minuten */}
+          {/* Sofortlösung */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.55, ease, delay: 0 }}
-            className="p-6 sm:p-7 rounded-2xl flex flex-col gap-3 relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #e8f6fd 0%, #edf4ff 100%)', border: '1px solid rgba(37,168,224,0.2)' }}
+            className="p-6 sm:p-7 rounded-2xl flex flex-col justify-between gap-4 relative overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, #25A8E0 0%, #07C8DB 100%)', minHeight: '240px' }}
           >
-            <div aria-hidden="true" className="absolute top-0 left-0 w-40 h-40 pointer-events-none"
-              style={{ background: 'radial-gradient(circle, rgba(37,168,224,0.25) 0%, transparent 70%)', filter: 'blur(20px)' }} />
-            <div className="relative">
-              <p className="gradient-text-slow font-semibold leading-none tracking-tighter"
-                style={{ fontSize: 'clamp(52px, 10vw, 80px)' }}>20</p>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mt-1 mb-3" style={{ color: '#25A8E0' }}>Minuten pro Training</p>
-              <p className="text-sm leading-relaxed" style={{ color: '#1e6fa0' }}>
-                Einmal pro Woche, 20 Minuten. Mehr braucht es nicht. Das ANTELOPE-System
-                aktiviert dabei 90% der Muskeln gleichzeitig, mehr als ein normales Gym-Training in 90 Minuten.
+            {/* Glow */}
+            <div aria-hidden="true" className="absolute -top-10 -right-10 w-64 h-64 pointer-events-none"
+              style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 65%)', filter: 'blur(32px)' }} />
+            <div className="relative flex flex-col gap-3">
+              <p style={{ lineHeight: 1.0, letterSpacing: '-0.025em' }}>
+                <span className="font-black text-white block"
+                  style={{ fontSize: 'clamp(44px, 7vw, 64px)' }}>
+                  Sofort-
+                </span>
+                <span className="font-black text-white block"
+                  style={{ fontSize: 'clamp(44px, 7vw, 64px)', opacity: 0.55 }}>
+                  lösung.
+                </span>
               </p>
+              <p className="text-sm text-white/80 leading-relaxed">
+                Rückenbeschwerden, Verspannungen, Energiemangel - deine Kunden müssen nicht wochenlang auf einen Termin warten. Sie legen einfach sofort los.
+              </p>
+            </div>
+            <div className="relative flex flex-wrap gap-2">
+              {['Regeneration', 'Wohlbefinden', 'Figur', 'Ausdauer', 'Rücken', 'Energie'].map((tag) => (
+                <span key={tag} className="text-[11px] font-medium px-2.5 py-1 rounded-full"
+                  style={{ background: 'rgba(255,255,255,0.2)', color: 'white', border: '1px solid rgba(255,255,255,0.3)' }}>
+                  {tag}
+                </span>
+              ))}
             </div>
           </motion.div>
 
@@ -1061,7 +1078,9 @@ function KundenerlebnisSection() {
                 Kein Anzug kaufen, einfach mieten.
               </p>
               <p className="text-sm text-gray-500 leading-relaxed">
-                Deine Kunden mieten den Anzug direkt bei beurer, monatlich, ohne Kaufverpflichtung.
+                Deine Kunden mieten den Anzug direkt bei beurer{' '}
+                <span className="font-semibold text-[#25A8E0] underline underline-offset-2">mit Sonderkonditionen</span>,
+                monatlich, ohne Kaufverpflichtung.
                 Kein Risiko, keine Bindung, und bei Nichtgefallen 14 Tage Widerrufsrecht.
               </p>
             </div>
@@ -1279,7 +1298,7 @@ const B2B_FAQS = [
   },
   {
     q: 'Was ist der ANTELOPE EMS-Suit?',
-    a: 'Das Herzstück unseres Konzepts. Der ANTELOPE EMS-Suit von beurer ist das einzige textile EMS-Gerät in diesem Segment, das Shirt und Hose kombiniert und damit gleichzeitig Ober- und Unterkörper trainiert. Kein Kabelgewirr, kein kompliziertes Handling. Deine Kunden mieten ihn direkt bei beurer, kaufen nichts und sind immer auf dem neuesten Stand der Technik.',
+    a: 'Das Herzstück unseres Konzepts. Der ANTELOPE EMS-Suit von beurer ist das einzige textile EMS-Gerät in diesem Segment, das Shirt und Hose kombiniert und damit gleichzeitig Ober- und Unterkörper trainiert. Kein Kabelgewirr, kein kompliziertes Handling. Deine Kunden mieten ihn direkt bei beurer mit Sonderkonditionen, kaufen nichts und sind immer auf dem neuesten Stand der Technik.',
   },
   {
     q: 'Brauche ich eine Ausbildung im EMS-Bereich?',
@@ -1299,7 +1318,7 @@ const B2B_FAQS = [
   },
   {
     q: 'Was haben meine Kunden von dem Konzept?',
-    a: 'Deine Kunden bekommen eine individuelle Einführung und Beratung, einen dauerhaften Ansprechpartner und direkte Schnittstelle zu beurer. Sie trainieren 20 Minuten und aktivieren dabei rund 90% ihrer Muskeln, überall und ohne festen Termin. Und sie haben kein Risiko: 14 Tage Widerrufsrecht und 30 Tage Umtauschrecht beim Anzug.',
+    a: 'Deine Kunden bekommen eine individuelle Einführung und Beratung, einen dauerhaften Ansprechpartner und direkten Zugang zu beurer mit Sonderkonditionen. Sie trainieren flexibel wann und wo sie wollen, spüren echte Ergebnisse und das ganz ohne festen Termin. Und sie haben kein Risiko: 14 Tage Widerrufsrecht und 30 Tage Umtauschrecht beim Anzug.',
   },
   {
     q: 'Wie viele Kunden kann ich betreuen?',
@@ -1652,19 +1671,108 @@ function CTASection() {
 /* ─── Page ──────────────────────────────────────────────────────── */
 /* ─── Philosophie Section ───────────────────────────────────────── */
 function PhilosophieSection() {
-  const [hoveredWord, setHoveredWord] = useState<'body' | 'time' | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const bodyWrapRef = useRef<HTMLDivElement>(null);
+  const plusWrapRef = useRef<HTMLDivElement>(null);
+  const timeWrapRef = useRef<HTMLDivElement>(null);
+  const addonListRef = useRef<HTMLDivElement>(null);
 
-  const stagger = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.15 } },
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const bodyEl = bodyWrapRef.current;
+    const timeEl = timeWrapRef.current;
+    const plusEl = plusWrapRef.current;
+    const sectionEl = sectionRef.current;
+    const addonEl = addonListRef.current;
+    if (!bodyEl || !timeEl || !plusEl || !sectionEl) return;
+
+    // ── BODY / TIME split animation (scrub) ──
+    // Mobile: vertical split (y); Desktop: horizontal split (x)
+    const isMobile = window.innerWidth < 768;
+    const offset = isMobile
+      ? plusEl.offsetHeight * 0.7 + 10
+      : plusEl.offsetWidth * 0.6 + 16;
+
+    if (isMobile) {
+      gsap.set(bodyEl, { y: -offset });
+      gsap.set(timeEl, { y: offset });
+    } else {
+      gsap.set(bodyEl, { x: offset });
+      gsap.set(timeEl, { x: -offset });
+    }
+    gsap.set(plusEl, { opacity: 0, scale: 0.2 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionEl,
+        start: 'top 80%',
+        end: 'top 15%',
+        scrub: 1,
+      },
+    });
+
+    if (isMobile) {
+      tl.to(bodyEl, { y: 0, ease: 'power2.out', duration: 1 }, 0)
+        .to(timeEl, { y: 0, ease: 'power2.out', duration: 1 }, 0)
+        .to(plusEl, { opacity: 1, scale: 1, ease: 'back.out(1.7)', duration: 0.6 }, 0.45);
+    } else {
+      tl.to(bodyEl, { x: 0, ease: 'power2.out', duration: 1 }, 0)
+        .to(timeEl, { x: 0, ease: 'power2.out', duration: 1 }, 0)
+        .to(plusEl, { opacity: 1, scale: 1, ease: 'back.out(1.7)', duration: 0.6 }, 0.45);
+    }
+
+    // ── Addon items stagger bounce-in ──
+    if (addonEl) {
+      const items = addonEl.querySelectorAll('[data-addon-item]');
+      gsap.set(items, { y: 24, opacity: 0, scale: 0.92 });
+      ScrollTrigger.create({
+        trigger: addonEl,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          gsap.to(items, {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+            ease: 'back.out(1.6)',
+            stagger: 0.06,
+          });
+        },
+      });
+    }
+
+    return () => {
+      tl.scrollTrigger?.kill();
+      tl.kill();
+      gsap.set([bodyEl, timeEl, plusEl], { clearProps: 'x,y,opacity,scale,transform' });
+    };
+  }, []);
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease } },
   };
-  const word = {
-    hidden: { opacity: 0, y: 56 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease } },
-  };
+
+  const addons = [
+    { label: 'EMS-Studio', icon: <Dumbbell className="w-3.5 h-3.5" /> },
+    { label: 'Personal Trainer', icon: <Users className="w-3.5 h-3.5" /> },
+    { label: 'Yogastudio', icon: <Layers className="w-3.5 h-3.5" /> },
+    { label: 'Physiotherapeut', icon: <Heart className="w-3.5 h-3.5" /> },
+    { label: 'Heilpraktiker', icon: <Shield className="w-3.5 h-3.5" /> },
+    { label: 'Fitnessstudio', icon: <Building2 className="w-3.5 h-3.5" /> },
+    { label: 'Online-Coach', icon: <Smartphone className="w-3.5 h-3.5" /> },
+    { label: 'Ernährungsberater', icon: <Zap className="w-3.5 h-3.5" /> },
+    { label: 'Coach', icon: <TrendingUp className="w-3.5 h-3.5" /> },
+    { label: 'Osteopath', icon: <MapPin className="w-3.5 h-3.5" /> },
+    { label: 'Sportmediziner', icon: <BadgeCheck className="w-3.5 h-3.5" /> },
+    { label: 'Ausbilder & Trainer', icon: <GraduationCap className="w-3.5 h-3.5" /> },
+  ];
 
   return (
     <section
+      ref={sectionRef}
       id="philosophie"
       style={{ background: '#080c18', borderTop: '1px solid rgba(255,255,255,0.04)' }}
       className="relative overflow-hidden"
@@ -1674,26 +1782,9 @@ function PhilosophieSection() {
           0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(37,168,224,0.5)); }
           50%       { transform: scale(1.12); filter: drop-shadow(0 0 28px rgba(37,168,224,0.9)); }
         }
-        @keyframes heartbeat {
-          0%, 100% { transform: scale(1); }
-          14%       { transform: scale(1.22); }
-          28%       { transform: scale(1); }
-          42%       { transform: scale(1.14); }
-          70%       { transform: scale(1); }
-        }
-        @keyframes timerSpin {
-          0%   { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
         .phil-plus-pulse {
           display: inline-block;
           animation: philosophiePulse 2.4s ease-in-out infinite;
-        }
-        .phil-heart-beat {
-          animation: heartbeat 1.8s ease-in-out infinite;
-        }
-        .phil-timer-spin {
-          animation: timerSpin 6s linear infinite;
         }
       `}</style>
 
@@ -1704,214 +1795,334 @@ function PhilosophieSection() {
       <div className="relative max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 py-20 sm:py-28 lg:py-36">
 
         {/* ── PART 1: Hero Equation ── */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="flex flex-col items-center mb-20 sm:mb-28"
-        >
-          {/* BODY + TIME */}
-          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 lg:gap-6">
+        <div className="flex flex-col items-center mb-20 sm:mb-28">
 
-            {/* BODY word */}
-            <div className="relative flex flex-col items-center">
-              <motion.span
-                variants={word}
-                className="font-black tracking-tight leading-none select-none cursor-default"
-                style={{
-                  fontSize: 'clamp(4rem, 15vw, 11rem)',
-                  color: hoveredWord === 'body' ? '#ffffff' : 'rgba(255,255,255,0.92)',
-                  textShadow: hoveredWord === 'body'
-                    ? '0 0 60px rgba(74,222,128,0.45), 0 0 120px rgba(74,222,128,0.2)'
-                    : 'none',
-                  transition: 'color 0.3s ease, text-shadow 0.3s ease',
-                }}
-                onMouseEnter={() => setHoveredWord('body')}
-                onMouseLeave={() => setHoveredWord(null)}
-                onTouchStart={() => setHoveredWord('body')}
-                onTouchEnd={() => setHoveredWord(null)}
-              >
-                BODY
-              </motion.span>
-              <AnimatePresence>
-                {hoveredWord === 'body' && (
-                  <motion.span
-                    key="body-reveal"
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.22, ease }}
-                    className="absolute -bottom-7 text-xs font-semibold uppercase tracking-[0.2em] whitespace-nowrap"
-                    style={{ color: '#4ADE80' }}
-                  >
-                    Körper · Das wichtigste Gut
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* + pulsing */}
-            <motion.span
-              variants={word}
-              className="font-black leading-none select-none"
-              style={{ fontSize: 'clamp(2.5rem, 9vw, 7rem)', color: '#25A8E0' }}
-            >
-              <span className="phil-plus-pulse">+</span>
-            </motion.span>
-
-            {/* TIME word */}
-            <div className="relative flex flex-col items-center">
-              <motion.span
-                variants={word}
-                className="font-black tracking-tight leading-none select-none cursor-default"
-                style={{
-                  fontSize: 'clamp(4rem, 15vw, 11rem)',
-                  color: hoveredWord === 'time' ? '#ffffff' : 'rgba(255,255,255,0.92)',
-                  textShadow: hoveredWord === 'time'
-                    ? '0 0 60px rgba(37,168,224,0.55), 0 0 120px rgba(37,168,224,0.22)'
-                    : 'none',
-                  transition: 'color 0.3s ease, text-shadow 0.3s ease',
-                }}
-                onMouseEnter={() => setHoveredWord('time')}
-                onMouseLeave={() => setHoveredWord(null)}
-                onTouchStart={() => setHoveredWord('time')}
-                onTouchEnd={() => setHoveredWord(null)}
-              >
-                TIME
-              </motion.span>
-              <AnimatePresence>
-                {hoveredWord === 'time' && (
-                  <motion.span
-                    key="time-reveal"
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.22, ease }}
-                    className="absolute -bottom-7 text-xs font-semibold uppercase tracking-[0.2em] whitespace-nowrap"
-                    style={{ color: '#25A8E0' }}
-                  >
-                    Zeit · Die knappe Ressource
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* Subtitle */}
+          {/* Eyebrow */}
           <motion.p
-            variants={word}
-            className="text-center font-light tracking-[0.22em] uppercase mt-10 sm:mt-12"
-            style={{ color: 'rgba(255,255,255,0.38)', fontSize: 'clamp(0.7rem, 2vw, 0.9rem)' }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease }}
+            className="text-center text-xs font-semibold uppercase tracking-[0.28em] mb-8 sm:mb-10"
+            style={{ color: '#25A8E0' }}
           >
             Unser ganzheitliches Konzept
           </motion.p>
-        </motion.div>
 
-        {/* ── PART 2: Two-Column Visual Philosophy ── */}
+          {/* BODY + TIME
+              Mobile  → vertical stack (BODY / + / TIME), GSAP y-split
+              Desktop → horizontal row,                   GSAP x-split   */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 lg:gap-6 w-full overflow-hidden">
+
+            {/* BODY wrapper */}
+            <div ref={bodyWrapRef} className="flex flex-col items-center gap-2 sm:gap-3">
+              <motion.span
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="font-black tracking-tight leading-none select-none"
+                style={{
+                  fontSize: 'clamp(3.5rem, 20vw, 11rem)',
+                  color: 'rgba(255,255,255,0.92)',
+                  textShadow: '0 0 80px rgba(74,222,128,0.15)',
+                }}
+              >
+                BODY
+              </motion.span>
+              <motion.span
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] whitespace-nowrap"
+                style={{ color: '#4ADE80' }}
+              >
+                Körper · Das wichtigste Gut
+              </motion.span>
+            </div>
+
+            {/* + wrapper */}
+            <div ref={plusWrapRef} className="flex-shrink-0 sm:mt-0">
+              <span
+                className="phil-plus-pulse font-black leading-none select-none"
+                style={{ fontSize: 'clamp(1.8rem, 8vw, 7rem)', color: '#25A8E0', display: 'block' }}
+              >
+                +
+              </span>
+            </div>
+
+            {/* TIME wrapper */}
+            <div ref={timeWrapRef} className="flex flex-col items-center gap-2 sm:gap-3">
+              <motion.span
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="font-black tracking-tight leading-none select-none"
+                style={{
+                  fontSize: 'clamp(3.5rem, 20vw, 11rem)',
+                  color: 'rgba(255,255,255,0.92)',
+                  textShadow: '0 0 80px rgba(37,168,224,0.15)',
+                }}
+              >
+                TIME
+              </motion.span>
+              <motion.span
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] whitespace-nowrap"
+                style={{ color: '#25A8E0' }}
+              >
+                Zeit · Die knappe Ressource
+              </motion.span>
+            </div>
+
+          </div>
+        </div>
+
+        {/* ── PART 2: Two-Column Card ── */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.85, ease }}
-          className="relative mb-10 sm:mb-12"
         >
-          {/* Outer border */}
           <div
             className="rounded-3xl overflow-hidden"
             style={{ border: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.015)' }}
           >
-            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 relative">
 
-              {/* Left: BODY */}
-              <div className="flex flex-col items-center text-center px-8 sm:px-12 py-12 sm:py-16"
-                style={{ background: 'radial-gradient(ellipse at 30% -10%, rgba(74,222,128,0.07) 0%, transparent 65%)' }}
+              {/* Left: Concept copy */}
+              <div className="flex flex-col justify-center px-8 sm:px-12 py-12 sm:py-14"
+                style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(37,168,224,0.05) 0%, transparent 70%)' }}
               >
-                <div className="mb-6">
-                  <Heart
-                    className="phil-heart-beat"
-                    style={{ width: 52, height: 52, color: '#4ADE80', filter: 'drop-shadow(0 0 14px rgba(74,222,128,0.5))' }}
-                  />
-                </div>
-                <p className="text-xs font-bold uppercase tracking-[0.25em] mb-3" style={{ color: '#4ADE80' }}>
-                  KÖRPER
+                <p className="text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: '#25A8E0' }}>
+                  Die Philosophie
                 </p>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 leading-tight">
-                  Das wichtigste Gut
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 leading-snug">
+                  Körper und Zeit verbinden.
                 </h3>
-                <p className="text-sm font-light leading-relaxed max-w-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                  Ohne Gesundheit ist alles nichts.
-                </p>
+                <div className="flex flex-col gap-4 text-sm font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  <p>
+                    Ohne Gesundheit ist alles nichts. Das klingt banal, wird aber im Alltag ständig hintenangestellt. Und Zeit? Die haben deine Kunden schlicht nicht ohne Ende.
+                  </p>
+                  <p>
+                    Genau da setzt BODYTIME concept an. Ein Konzept, das echte Ergebnisse liefert und trotzdem ins Leben der Menschen passt, nicht dagegen.
+                  </p>
+                  <p>
+                    Für dich als Partner bedeutet das: Du musst nichts umbauen. Du erweiterst einfach dein bestehendes Angebot um eine Leistung, die deine Kunden wirklich wollen.
+                  </p>
+                </div>
               </div>
 
-              {/* Center divider + connector */}
-              <div className="hidden sm:flex flex-col items-center justify-center px-4 py-12">
-                <div className="flex-1 w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.08) 70%, transparent)' }} />
-                <div
-                  className="my-4 w-9 h-9 rounded-full flex items-center justify-center font-black text-base flex-shrink-0"
-                  style={{
-                    background: 'rgba(37,168,224,0.1)',
-                    border: '1px solid rgba(37,168,224,0.3)',
-                    color: '#25A8E0',
-                    boxShadow: '0 0 20px rgba(37,168,224,0.2)',
-                  }}
-                >
-                  +
-                </div>
-                <div className="flex-1 w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.08) 70%, transparent)' }} />
-              </div>
+              {/* Vertical divider */}
+              <div className="hidden sm:block absolute inset-y-0 left-1/2 w-px -translate-x-px"
+                style={{ background: 'rgba(255,255,255,0.06)' }} />
 
               {/* Mobile divider */}
               <div className="sm:hidden h-px mx-8" style={{ background: 'rgba(255,255,255,0.06)' }} />
 
-              {/* Right: TIME */}
-              <div className="flex flex-col items-center text-center px-8 sm:px-12 py-12 sm:py-16"
-                style={{ background: 'radial-gradient(ellipse at 70% -10%, rgba(37,168,224,0.08) 0%, transparent 65%)' }}
+              {/* Right: Addon list — bounce-in stagger, fades at bottom */}
+              <div className="flex flex-col items-center relative px-5 sm:px-8 py-10 overflow-hidden"
+                style={{ background: 'radial-gradient(ellipse at 60% 10%, rgba(37,168,224,0.07) 0%, transparent 60%)' }}
               >
-                <div className="mb-6">
-                  <Timer
-                    className="phil-timer-spin"
-                    style={{ width: 52, height: 52, color: '#25A8E0', filter: 'drop-shadow(0 0 14px rgba(37,168,224,0.55))' }}
-                  />
+                <p className="text-[10px] font-bold uppercase tracking-[0.28em] mb-5 text-center" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                  Perfekt als Zusatz für
+                </p>
+                <div ref={addonListRef} className="flex flex-col items-center gap-1.5 w-full">
+                  {addons.slice(0, 9).map(({ label, icon }) => (
+                    <div
+                      key={label}
+                      data-addon-item
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
+                      style={{
+                        width: 'fit-content',
+                        minWidth: '220px',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.07)',
+                        backdropFilter: 'blur(4px)',
+                      }}
+                    >
+                      <span className="flex-shrink-0 w-4" style={{ color: 'rgba(255,255,255,0.35)' }}>{icon}</span>
+                      <span className="text-xs font-medium w-24 truncate" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</span>
+                      <div className="flex items-center gap-1 ml-1">
+                        <Plus className="w-2 h-2 flex-shrink-0" style={{ color: 'rgba(37,168,224,0.45)' }} />
+                        <span className="text-xs font-semibold whitespace-nowrap" style={{ color: 'rgba(37,168,224,0.8)' }}>BODYTIME concept</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <p className="text-xs font-bold uppercase tracking-[0.25em] mb-3" style={{ color: '#25A8E0' }}>
-                  ZEIT
-                </p>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 leading-tight">
-                  Die knappe Ressource
-                </h3>
-                <p className="text-sm font-light leading-relaxed max-w-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                  Zeit ist begrenzt — nutze sie weise.
-                </p>
+                {/* Gradient fades last 2-3 items into background */}
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 pointer-events-none"
+                  style={{ height: '160px', background: 'linear-gradient(to bottom, transparent 0%, rgba(8,12,24,0.5) 30%, #080c18 68%)' }}
+                />
               </div>
+
             </div>
           </div>
         </motion.div>
 
-        {/* ── PART 3: Addon row (compact chips) ── */}
+      </div>
+    </section>
+  );
+}
+
+/* ─── SchmerzSection ────────────────────────────────────────────── */
+const SCHMERZ_PAIRS = [
+  {
+    pain: 'Kein Privatleben mehr',
+    painDesc: 'Du bist der erste der kommt und der letzte der geht. Urlaub? Fast kaum möglich.',
+    fix: 'Du bestimmst deine Zeiten selbst',
+    fixDesc: 'Kein Pflichtbetrieb, kein fixer Standort. Du arbeitest wann und so viel du willst.',
+  },
+  {
+    pain: 'Personalprobleme ohne Ende',
+    painDesc: 'Krankmeldungen, Fluktuation, Einarbeitung. Das frisst Zeit und Nerven.',
+    fix: 'Du brauchst kein eigenes Personal',
+    fixDesc: 'Starte solo oder im kleinen Team. Keine Abhängigkeiten, kein Stress mit Mitarbeitern.',
+  },
+  {
+    pain: 'Fixkosten die jeden Monat drücken',
+    painDesc: 'Miete, Equipment, Versicherungen. Die Last bleibt, egal wie der Monat läuft.',
+    fix: 'Kaum Fixkosten, kein großes Investment',
+    fixDesc: 'Kein teures Studio, kein eigenes Equipment. Du startest mit überschaubarem Aufwand.',
+  },
+  {
+    pain: 'Kapazitäten immer ausgereizt',
+    painDesc: 'Du kannst nur so viele Kunden betreuen, wie du Stunden hast. Mehr geht nicht.',
+    fix: 'Skalieren so weit du willst',
+    fixDesc: 'Mehr Partner, mehr Kunden, mehr Umsatz. Ohne dass der Aufwand proportional mitsteigt.',
+  },
+  {
+    pain: 'Gefangen im goldenen Hamsterrad',
+    painDesc: 'Läuft gut, aber du kommst nicht raus. Jede Woche dieselbe Routine.',
+    fix: 'Ein Konzept das echte Freiheit gibt',
+    fixDesc: 'Dein Aufbau, deine Regeln. Kein Standortrisiko, keine fremden Abhängigkeiten.',
+  },
+];
+
+function SchmerzSection() {
+  return (
+    <section
+      id="schmerz"
+      className="relative bg-white"
+      style={{ marginTop: '-1px' }}
+    >
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-24">
+
+        {/* ── Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6, ease }}
-          className="flex flex-wrap justify-center items-center gap-3"
+          className="text-center max-w-2xl mx-auto mb-14"
         >
-          {[
-            { label: 'EMS-Studio', icon: <Dumbbell className="w-3.5 h-3.5" /> },
-            { label: 'Personal Trainer', icon: <Users className="w-3.5 h-3.5" /> },
-            { label: 'Coach', icon: <TrendingUp className="w-3.5 h-3.5" /> },
-          ].map(({ label, icon }) => (
-            <div
-              key={label}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-full"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#25A8E0] mb-4">
+            Für alle, die es kennen
+          </p>
+          <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-gray-900 leading-tight tracking-tight mb-5">
+            Du kennst das sicher.
+          </h2>
+          <p className="text-base sm:text-lg text-gray-500 leading-relaxed font-light">
+            Wer ein Studio betreibt weiß: irgendwann fühlt sich das Hamsterrad echter an als die Freiheit,
+            für die man mal gestartet ist. Das muss nicht sein.
+          </p>
+        </motion.div>
+
+        {/* ── Comparison rows ── */}
+        <div className="flex flex-col gap-3 mb-10">
+          {SCHMERZ_PAIRS.map((pair, i) => (
+            <motion.div
+              key={pair.pain}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.5, ease, delay: i * 0.07 }}
+              className="grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden border border-gray-100"
+              style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}
             >
-              <span style={{ color: 'rgba(255,255,255,0.35)' }}>{icon}</span>
-              <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</span>
-              <Plus className="w-2.5 h-2.5" style={{ color: 'rgba(37,168,224,0.45)' }} />
-              <span className="text-xs font-semibold" style={{ color: 'rgba(37,168,224,0.75)' }}>BODYTIME concept</span>
-            </div>
+              {/* Problem */}
+              <div className="flex gap-4 p-5 sm:p-6" style={{ background: '#fef7f7' }}>
+                <div
+                  className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
+                  style={{ background: '#fee2e2' }}
+                >
+                  <X className="w-3 h-3 text-red-500" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-[14px] sm:text-[15px] font-semibold text-gray-900 mb-1 leading-snug">{pair.pain}</p>
+                  <p className="text-[12px] sm:text-[13px] text-gray-400 leading-relaxed">{pair.painDesc}</p>
+                </div>
+              </div>
+              {/* Solution */}
+              <div
+                className="flex gap-4 p-5 sm:p-6 border-t border-gray-100 lg:border-t-0 lg:border-l"
+                style={{ background: '#f0f9ff', borderColor: 'rgba(37,168,224,0.12)' }}
+              >
+                <div
+                  className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
+                  style={{ background: 'rgba(37,168,224,0.15)' }}
+                >
+                  <Check className="w-3 h-3" style={{ color: '#25A8E0' }} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-[14px] sm:text-[15px] font-semibold text-gray-900 mb-1 leading-snug">{pair.fix}</p>
+                  <p className="text-[12px] sm:text-[13px] text-gray-400 leading-relaxed">{pair.fixDesc}</p>
+                </div>
+              </div>
+            </motion.div>
           ))}
+        </div>
+
+        {/* ── Einsteiger callout ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.6, ease, delay: 0.2 }}
+          className="rounded-2xl overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #25A8E0 0%, #07C8DB 100%)',
+            boxShadow: '0 8px 40px rgba(37,168,224,0.25)',
+          }}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center p-7 sm:p-8 lg:p-10">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60 mb-3">
+                Für Einsteiger
+              </p>
+              <h3 className="text-2xl sm:text-3xl font-semibold text-white leading-tight tracking-tight mb-4">
+                Noch kein Studio?<br />Kein Problem.
+              </h3>
+              <p className="text-white/80 text-[15px] leading-relaxed">
+                Du musst nicht erst ein Studio aufbauen, um mit BODYTIME concept durchzustarten.
+                Viele unserer Partner haben bei null angefangen. Ohne Standort, ohne Equipment, ohne großes Startkapital.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3">
+              {[
+                { Icon: Zap,       text: 'Du kannst sofort loslegen' },
+                { Icon: TrendingUp, text: 'Ab dem ersten Kunden verdienst du' },
+                { Icon: Shield,    text: 'Kein Risiko, kein großes Startkapital' },
+              ].map(({ Icon, text }) => (
+                <div
+                  key={text}
+                  className="flex items-center gap-3 rounded-xl px-4 py-3"
+                  style={{ background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.25)' }}
+                >
+                  <Icon className="w-4 h-4 text-white flex-shrink-0" strokeWidth={2} />
+                  <p className="text-white font-medium text-[15px]">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
 
       </div>
@@ -1924,8 +2135,9 @@ export default function PartnerWerdenPage() {
     <div className="min-h-screen" style={{ background: '#071a24' }}>
       <B2BNav />
       <HeroSection />
-      <PhilosophieSection />
       <KonzeptSection />
+      <SchmerzSection />
+      <PhilosophieSection />
       <StudioBetreiberSection />
       <KundenerlebnisSection />
       <LeistungenSection />

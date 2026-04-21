@@ -2,9 +2,9 @@ import { CheckCircle2 } from 'lucide-react';
 import { ButtonColorful } from '@/components/ui/ButtonColorful';
 
 const BENEFITS = [
-  'Du trainierst, wann und wo es in deinen Alltag passt – ohne feste Termine.',
-  'Du aktivierst bis zu 90 % aller Muskeln in nur 20 Minuten.',
-  'Dein persönlicher EMS-Experte begleitet dich – immer erreichbar.',
+  'Trainieren wann und wo du willst - perfekt als Ergänzung zu deinem Sport.',
+  'Sofortlösung bei Beschwerden, Verspannungen, Muskelaufbau und mehr.',
+  'Dein persönlicher EMS-Experte, immer an deiner Seite.',
 ];
 
 export default function HeroSection() {
@@ -62,8 +62,7 @@ export default function HeroSection() {
 
           {/* Subtext */}
           <p className="text-white/65 text-base sm:text-[17px] leading-relaxed mb-9 max-w-md font-light">
-            In 20 Minuten trainierst du deinen ganzen Körper. Wann immer du willst, wo immer du gerade bist.
-            EMS-Training, das sich deinem Leben anpasst und nicht umgekehrt.
+            Suit an, App auf, Trainer dabei. BODYTIME concept bringt professionelles EMS-Training zu dir - wann und wo du willst, ganz ohne feste Termine.
           </p>
 
           {/* Benefits */}
