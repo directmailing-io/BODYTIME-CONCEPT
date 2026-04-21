@@ -2025,7 +2025,7 @@ function SchmerzSection() {
           className="text-center max-w-2xl mx-auto mb-14"
         >
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#25A8E0] mb-4">
-            Für alle, die es kennen
+            Die Realität im Fitnessmarkt
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-gray-900 leading-tight tracking-tight mb-5">
             Du kennst das sicher.
