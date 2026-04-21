@@ -600,7 +600,7 @@ function KonzeptSection() {
   return (
     <section
       id="konzept"
-      className="relative bg-white z-10"
+      className="relative bg-white z-10 overflow-hidden"
       style={{
         marginTop: '-24px',
         borderRadius: '24px 24px 0 0',
@@ -835,7 +835,7 @@ function LeistungenSection() {
   return (
     <section
       id="leistungen"
-      className="relative"
+      className="relative overflow-hidden"
       style={{ background: '#080c18' }}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-24 lg:py-32">
@@ -931,7 +931,7 @@ function KundenerlebnisSection() {
   return (
     <section
       id="kundenerlebnis"
-      className="relative z-10"
+      className="relative z-10 overflow-hidden"
       style={{
         background: '#f7fbff',
         marginTop: '-24px',
@@ -1331,7 +1331,7 @@ function B2BFAQSection() {
   return (
     <section
       id="faq"
-      className="relative bg-white"
+      className="relative bg-white overflow-hidden"
       style={{ marginTop: '-24px', borderRadius: '24px 24px 0 0', zIndex: 30 }}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-14 sm:py-20 lg:py-24">
@@ -1449,7 +1449,7 @@ function B2BFoundersSection() {
   return (
     <section
       id="gruender"
-      className="relative"
+      className="relative overflow-hidden"
       style={{ background: '#071a24', borderTop: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* subtle glow */}
@@ -2003,7 +2003,7 @@ function SchmerzSection() {
   return (
     <section
       id="schmerz"
-      className="relative bg-white"
+      className="relative bg-white overflow-hidden"
       style={{ marginTop: '-1px' }}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-24">

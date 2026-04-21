@@ -85,20 +85,31 @@ export default function SofortloesungSection() {
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
     if (!section || cards.length === 0) return;
 
-    gsap.set(cards, { y: 56, opacity: 0, scale: 0.93 });
+    // If the section is already visible on load, animate immediately without ScrollTrigger
+    const rect = section.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      gsap.fromTo(cards,
+        { y: 40, opacity: 0, scale: 0.95 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: 'back.out(1.4)', stagger: { each: 0.06, from: 'start' } }
+      );
+      return () => { gsap.set(cards, { clearProps: 'all' }); };
+    }
+
+    gsap.set(cards, { y: 40, opacity: 0, scale: 0.95 });
 
     const trigger = ScrollTrigger.create({
       trigger: section,
-      start: 'top 72%',
+      // Fire as soon as the section enters the bottom of the viewport
+      start: 'top bottom',
       once: true,
       onEnter: () => {
         gsap.to(cards, {
           y: 0,
           opacity: 1,
           scale: 1,
-          duration: 0.65,
-          ease: 'back.out(1.5)',
-          stagger: { each: 0.08, grid: [2, 4], from: 'start' },
+          duration: 0.55,
+          ease: 'back.out(1.4)',
+          stagger: { each: 0.06, from: 'start' },
         });
       },
     });
