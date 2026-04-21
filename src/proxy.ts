@@ -8,8 +8,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
 import { createServerClient } from '@supabase/ssr';
 
-const PUBLIC_ROUTES = ['/login', '/forgot-password', '/reset-password', '/register'];
-const MARKETING_ROUTES = ['/', '/trainer', '/b2b']; // publicly accessible, no auth required or redirect
+const PUBLIC_ROUTES = ['/login', '/forgot-password', '/reset-password', '/register', '/invite'];
+const MARKETING_ROUTES = ['/', '/trainer', '/b2b', '/bestellung']; // publicly accessible, no auth required or redirect
 const ADMIN_ROUTES = ['/admin'];
 const PARTNER_ROUTES = ['/partner'];
 
@@ -47,7 +47,7 @@ export async function proxy(request: NextRequest) {
     }
 
     // Authenticated user on public pages → go to their dashboard (only if active)
-    if (isPublicRoute && pathname !== '/reset-password') {
+    if (isPublicRoute && pathname !== '/reset-password' && pathname !== '/invite') {
       if (role === null) return supabaseResponse; // deactivated, stay on login
       const destination = role === 'admin' ? '/admin/dashboard' : '/partner/dashboard';
       return NextResponse.redirect(new URL(destination, request.url));

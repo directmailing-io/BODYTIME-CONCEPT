@@ -46,6 +46,22 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
         <ArrowLeft className="h-4 w-4" /> Alle Kunden
       </Link>
 
+      {/* Profile incomplete banner */}
+      {customer.profile_complete === false && (
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 flex items-start gap-3">
+          <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-amber-800">Profil unvollständig</p>
+            <p className="text-xs text-amber-600 mt-0.5">
+              Dieser Kunde wurde über deinen Bestelllink angelegt. Bitte vervollständige das Profil.
+            </p>
+          </div>
+          <Link href={`/partner/customers/${customer.id}/edit`} className="ml-auto shrink-0 text-xs font-medium text-amber-700 hover:text-amber-900 underline">
+            Profil bearbeiten
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>

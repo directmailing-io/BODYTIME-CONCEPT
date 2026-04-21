@@ -47,6 +47,22 @@ export default async function OrderPage() {
         <p className="text-sm text-gray-500 mt-1">Folge diesen 3 Schritten, um eine Bestellung für deinen Kunden aufzugeben.</p>
       </div>
 
+      {/* Share link section */}
+      <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden mb-6">
+        <div className="px-4 pt-4 pb-3 border-b border-gray-100">
+          <h3 className="font-semibold text-gray-900 text-sm">Dein persönlicher Bestelllink</h3>
+          <p className="text-xs text-gray-400 mt-0.5">Schick diesen Link direkt an deine Kunden</p>
+        </div>
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-gray-50 border border-gray-100">
+            <span className="flex-1 text-xs text-gray-600 truncate font-mono">
+              {`${process.env.NEXT_PUBLIC_APP_URL}/bestellung/${user.id}`}
+            </span>
+            <CopyCodeButton code={`${process.env.NEXT_PUBLIC_APP_URL}/bestellung/${user.id}`} />
+          </div>
+        </div>
+      </div>
+
       {/* Steps */}
       <div className="space-y-3 md:space-y-4">
 

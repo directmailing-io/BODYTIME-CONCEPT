@@ -57,6 +57,9 @@ export default function CustomersTable({ customers }: { customers: any[] }) {
   };
 
   function StatusBadge({ customer }: { customer: any }) {
+    if (customer.profile_complete === false) {
+      return <Badge variant="warning">Profil vervollständigen</Badge>;
+    }
     if (isExpired(customer.contract_end_date)) return <Badge variant="danger">Abgelaufen</Badge>;
     if (isExpiringSoon(customer.contract_end_date)) return <Badge variant="warning">Läuft bald ab</Badge>;
     return <Badge variant="success">Aktiv</Badge>;
