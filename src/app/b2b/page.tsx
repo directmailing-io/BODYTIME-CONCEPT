@@ -835,7 +835,7 @@ function LeistungenSection() {
   return (
     <section
       id="leistungen"
-      className="relative overflow-hidden"
+      className="relative"
       style={{ background: '#080c18' }}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-24 lg:py-32">
@@ -1331,7 +1331,7 @@ function B2BFAQSection() {
   return (
     <section
       id="faq"
-      className="relative bg-white overflow-hidden"
+      className="relative bg-white"
       style={{ marginTop: '-24px', borderRadius: '24px 24px 0 0', zIndex: 30 }}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-14 sm:py-20 lg:py-24">
