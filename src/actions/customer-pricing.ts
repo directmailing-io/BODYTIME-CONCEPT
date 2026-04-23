@@ -130,24 +130,26 @@ export async function markPaymentUnpaidAction(entryId: string, customerId: strin
   }
 }
 
-// Called after a contract renewal to regenerate payment entries for the new period
+// Called after a contract renewal to regenerate payment entries for the new period.
+// rechargeOnceItemIds: IDs of once-items to re-bill (e.g. setup fee on equipment upgrade).
+// Monthly items are always regenerated; once items only if explicitly included.
 export async function regeneratePaymentsAfterRenewalAction(
   customerId: string,
   newOrderDate: string,
-  newDurationMonths: number
+  newDurationMonths: number,
+  rechargeOnceItemIds: string[] = []
 ): Promise<void> {
   try {
     const supabase = await (await import('@/lib/supabase/server')).createClient();
-    // Get customer's current price items
     const { data: items } = await supabase.from('bt_customer_price_items').select('*').eq('customer_id', customerId).order('sort_order');
     if (!items || items.length === 0) return;
 
-    // Delete pending entries (keep paid)
     await supabase.from('bt_payment_entries').delete().eq('customer_id', customerId).eq('status', 'pending');
 
-    // Generate new entries for the new contract period — skip one-time items (already paid in original contract)
-    const monthlyItems = items.filter((i: { billing_type: string }) => i.billing_type === 'monthly');
-    const entries = buildPaymentEntries(customerId, monthlyItems, newOrderDate, newDurationMonths);
+    const itemsToGenerate = items.filter((i: any) =>
+      i.billing_type === 'monthly' || rechargeOnceItemIds.includes(i.id)
+    );
+    const entries = buildPaymentEntries(customerId, itemsToGenerate, newOrderDate, newDurationMonths);
     if (entries.length > 0) await supabase.from('bt_payment_entries').insert(entries);
   } catch (err) {
     console.error('[regeneratePaymentsAfterRenewalAction]', err);

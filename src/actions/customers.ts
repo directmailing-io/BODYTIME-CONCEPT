@@ -223,7 +223,9 @@ export async function renewContractAction(
     revalidatePath('/partner/customers');
     revalidatePath('/partner/dashboard');
     // Regenerate payment entries for the new contract period
-    regeneratePaymentsAfterRenewalAction(customerId, order_date, rental_duration_months).catch(console.error);
+    const rechargeRaw = formData.get('recharge_once_item_ids');
+    const rechargeOnceItemIds: string[] = rechargeRaw ? JSON.parse(rechargeRaw as string) : [];
+    regeneratePaymentsAfterRenewalAction(customerId, order_date, rental_duration_months, rechargeOnceItemIds).catch(console.error);
     return { success: true };
   } catch (err) {
     console.error('[renewContractAction]', err);
