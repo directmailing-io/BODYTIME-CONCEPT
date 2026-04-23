@@ -109,12 +109,12 @@ function B2BNav() {
                 <LogIn className="w-3.5 h-3.5" />
                 Partner Zugang
               </Link>
-              <ButtonColorful href="#kontakt" label="Gespräch buchen" />
+              <ButtonColorful href="/b2b/beratung" label="Gespräch buchen" />
             </div>
 
             {/* Mobile: CTA + Hamburger */}
             <div className="flex items-center gap-2 lg:hidden">
-              <ButtonColorful href="#kontakt" label="Gespräch" className="h-9 px-4 text-xs" />
+              <ButtonColorful href="/b2b/beratung" label="Gespräch" className="h-9 px-4 text-xs" />
               <button
                 onClick={() => setMenuOpen(o => !o)}
                 className={`p-2 rounded-lg transition-colors ${
@@ -167,7 +167,7 @@ function B2BNav() {
               Partner Zugang zur Plattform
             </Link>
             <ButtonColorful
-              href="#kontakt"
+              href="/b2b/beratung"
               label="Kostenloses Gespräch buchen"
               className="w-full justify-center"
               onClick={() => setMenuOpen(false)}
@@ -268,7 +268,7 @@ function HeroSection() {
           </ul>
 
           <ButtonColorful
-            href="#kontakt"
+            href="/b2b/beratung"
             label="Kostenloses Gespräch buchen"
             className="h-12 px-7 text-[15px]"
           />
@@ -556,7 +556,7 @@ function StudioBetreiberSection() {
           transition={{ duration: 0.5, ease, delay: 0.15 }}
           className="flex flex-col items-center gap-3"
         >
-          <ButtonColorful href="#kontakt" label="Gespräch für Studio-Betreiber buchen" className="h-12 px-8 text-[15px]" />
+          <ButtonColorful href="/b2b/beratung" label="Gespräch für Studio-Betreiber buchen" className="h-12 px-8 text-[15px]" />
           <p className="text-[11px] text-white/25 tracking-widest uppercase">Unverbindlich · Kostenlos · In 30 Minuten</p>
         </motion.div>
 
@@ -1654,7 +1654,7 @@ function CTASection() {
 
           <div className="flex flex-col items-center gap-3">
             <ButtonColorful
-              href="#kontakt"
+              href="/b2b/beratung"
               label="Jetzt kostenloses Erstgespräch buchen"
               className="h-12 px-8 text-[15px]"
             />

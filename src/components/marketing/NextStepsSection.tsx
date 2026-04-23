@@ -244,7 +244,7 @@ export default function NextStepsSection() {
           {/* CTA */}
           <div className="flex flex-col items-center gap-3">
             <ButtonColorful
-              href="#beratung"
+              href="/beratung"
               label="Jetzt kostenlose Beratung buchen"
               className="h-12 px-8 text-[15px]"
             />

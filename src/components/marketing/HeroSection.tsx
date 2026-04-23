@@ -83,7 +83,7 @@ export default function HeroSection() {
 
           {/* CTA */}
           <ButtonColorful
-            href="#beratung"
+            href="/beratung"
             label="Jetzt kostenlose Beratung sichern"
             className="h-12 px-7 text-[15px]"
           />

@@ -149,3 +149,86 @@ export function accountReactivatedEmail(params: {
     html: baseLayout(content, 'Konto reaktiviert'),
   };
 }
+
+// ── Contact request helpers ──────────────────────────────────────────────────
+
+function row(label: string, value: string): string {
+  return `
+    <tr>
+      <td style="padding:8px 0;font-size:13px;color:#6b6b6b;width:140px;vertical-align:top;">${label}</td>
+      <td style="padding:8px 0;font-size:14px;color:#1d1d1f;font-weight:500;vertical-align:top;">${value || '—'}</td>
+    </tr>`;
+}
+
+function badge(text: string, color: string): string {
+  return `<span style="display:inline-block;padding:4px 12px;border-radius:20px;background:${color};color:#fff;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">${text}</span>`;
+}
+
+export function b2cContactEmail(params: {
+  first_name: string;
+  last_name: string;
+  email?: string;
+  phone: string;
+  phone_country: string;
+}): { subject: string; html: string } {
+  const content = `
+    <div style="margin-bottom:24px;">${badge('B2C – Endkunde', '#25A8E0')}</div>
+    ${h1('Neue Beratungsanfrage')}
+    ${p('Eine neue Anfrage ist über das B2C-Kontaktformular eingegangen.')}
+    <table style="width:100%;border-collapse:collapse;margin-top:16px;margin-bottom:8px;">
+      ${row('Vorname', params.first_name)}
+      ${row('Nachname', params.last_name)}
+      ${row('Telefon', `${params.phone_country} ${params.phone}`)}
+      ${row('E-Mail', params.email || '—')}
+    </table>
+    <div style="margin-top:8px;padding:12px 16px;background:#f5f5f7;border-radius:10px;">
+      <p style="margin:0;font-size:12px;color:#6b6b6b;">Eingegangen am ${new Date().toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })} Uhr</p>
+    </div>
+  `;
+  return {
+    subject: `Neue B2C-Anfrage: ${params.first_name} ${params.last_name}`,
+    html: baseLayout(content, 'Neue Beratungsanfrage'),
+  };
+}
+
+export function b2bContactEmail(params: {
+  first_name: string;
+  last_name: string;
+  email?: string;
+  phone: string;
+  phone_country: string;
+  employment_status?: string;
+  business_area?: string;
+  business_area_custom?: string;
+}): { subject: string; html: string } {
+  const areaDisplay = params.business_area === 'Sonstiges' && params.business_area_custom
+    ? `Sonstiges: ${params.business_area_custom}`
+    : (params.business_area || '—');
+
+  const statusLabel: Record<string, string> = {
+    selbststaendig: 'Ja, bereits selbstständig',
+    angestellt: 'Nein, noch angestellt',
+    noch_nicht: 'Noch nicht, aber interessiert',
+  };
+
+  const content = `
+    <div style="margin-bottom:24px;">${badge('B2B – Partner', '#2563EB')}</div>
+    ${h1('Neue Partner-Anfrage')}
+    ${p('Eine neue Anfrage ist über das B2B-Kontaktformular eingegangen.')}
+    <table style="width:100%;border-collapse:collapse;margin-top:16px;margin-bottom:8px;">
+      ${row('Vorname', params.first_name)}
+      ${row('Nachname', params.last_name)}
+      ${row('Telefon', `${params.phone_country} ${params.phone}`)}
+      ${row('E-Mail', params.email || '—')}
+      ${params.employment_status ? row('Selbstständig?', statusLabel[params.employment_status] || params.employment_status) : ''}
+      ${params.employment_status === 'selbststaendig' ? row('Bereich', areaDisplay) : ''}
+    </table>
+    <div style="margin-top:8px;padding:12px 16px;background:#f5f5f7;border-radius:10px;">
+      <p style="margin:0;font-size:12px;color:#6b6b6b;">Eingegangen am ${new Date().toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })} Uhr</p>
+    </div>
+  `;
+  return {
+    subject: `Neue B2B-Anfrage: ${params.first_name} ${params.last_name}`,
+    html: baseLayout(content, 'Neue Partner-Anfrage'),
+  };
+}

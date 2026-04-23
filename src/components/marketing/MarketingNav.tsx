@@ -96,12 +96,12 @@ export default function MarketingNav() {
                 <LogIn className="w-3.5 h-3.5" />
                 Partner Zugang
               </Link>
-              <ButtonColorful href="#beratung" label="Beratung sichern" />
+              <ButtonColorful href="/beratung" label="Beratung sichern" />
             </div>
 
             {/* ── Mobile: CTA + Hamburger ── */}
             <div className="flex items-center gap-2 lg:hidden">
-              <ButtonColorful href="#beratung" label="Beratung" className="h-9 px-4 text-xs" />
+              <ButtonColorful href="/beratung" label="Beratung" className="h-9 px-4 text-xs" />
               <button
                 onClick={() => setMenuOpen(o => !o)}
                 className={`p-2 rounded-lg transition-colors ${
