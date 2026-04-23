@@ -1,43 +1,24 @@
 /**
- * Nodemailer transporter configuration.
+ * Email sending via Resend API.
  * All credentials come from server-side environment variables only.
  * Never import this file in client components.
  */
-import nodemailer, { type Transporter } from 'nodemailer';
+import { Resend } from 'resend';
 
-let transporter: Transporter | null = null;
-
-export function getTransporter(): Transporter {
-  if (transporter) return transporter;
-
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT ?? 587),
-    secure: process.env.SMTP_SECURE === 'true',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-
-  return transporter;
-}
-
-export const FROM_ADDRESS = `"${process.env.SMTP_FROM_NAME ?? 'BODYTIME concept'}" <${process.env.SMTP_FROM_EMAIL ?? 'noreply@bodytime-concept.de'}>`;
+const FROM_ADDRESS = 'onboarding@resend.dev';
 
 /** Send a pre-built mail options object; throws on failure */
 export async function sendMail(options: {
   to: string;
   subject: string;
   html: string;
-  text?: string;
 }): Promise<void> {
-  const t = getTransporter();
-  await t.sendMail({
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const { error } = await resend.emails.send({
     from: FROM_ADDRESS,
     to: options.to,
     subject: options.subject,
     html: options.html,
-    text: options.text ?? options.html.replace(/<[^>]+>/g, ''),
   });
+  if (error) throw new Error(error.message);
 }

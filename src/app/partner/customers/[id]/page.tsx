@@ -25,7 +25,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
   // Security: verify ownership
   if (customer.partner_id !== user.id) notFound();
 
-  const [{ data: history }, { data: notes }] = await Promise.all([
+  const [{ data: history }, { data: notes }, { data: priceItems }, { data: paymentEntries }, { data: packages }] = await Promise.all([
     supabase.from('bt_contract_history')
       .select('*')
       .eq('customer_id', id)
@@ -34,6 +34,9 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
       .select('*')
       .eq('customer_id', id)
       .order('created_at', { ascending: false }),
+    supabase.from('bt_customer_price_items').select('*').eq('customer_id', id).order('sort_order'),
+    supabase.from('bt_payment_entries').select('*').eq('customer_id', id).order('due_date'),
+    supabase.from('bt_partner_packages').select('*, bt_package_items(*)').eq('partner_id', user.id).eq('is_active', true),
   ]);
 
   const days = daysUntilEnd(customer.contract_end_date);
@@ -107,6 +110,9 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
         customer={customer}
         history={history ?? []}
         notes={notes ?? []}
+        priceItems={priceItems ?? []}
+        paymentEntries={paymentEntries ?? []}
+        packages={packages ?? []}
       />
     </div>
   );

@@ -1,6 +1,8 @@
 'use server';
 import { createAdminClient } from '@/lib/supabase/server';
 import { calcContractEnd } from '@/lib/utils';
+import { sendMail } from '@/lib/email/mailer';
+import { newCustomerEmail } from '@/lib/email/templates';
 
 export interface PublicOrderInput {
   partnerId: string;
@@ -27,7 +29,7 @@ export async function createPublicOrderAction(input: PublicOrderInput): Promise<
     // Verify partner exists and is active
     const { data: partner } = await adminClient
       .from('bt_profiles')
-      .select('id, is_active, role')
+      .select('id, is_active, role, email, first_name')
       .eq('id', input.partnerId)
       .eq('role', 'partner')
       .single();
@@ -77,6 +79,19 @@ export async function createPublicOrderAction(input: PublicOrderInput): Promise<
       change_type: 'initial',
       changed_by: null,
     });
+
+    // Notify partner about new customer (fire-and-forget)
+    if (partner.email) {
+      const template = newCustomerEmail({
+        partnerFirstName: partner.first_name ?? 'Partner',
+        customerFirstName: input.first_name.trim(),
+        customerLastName: input.last_name.trim(),
+        customerEmail: input.email.trim(),
+        dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/partner/customers/${customer.id}`,
+      });
+      sendMail({ to: partner.email, subject: template.subject, html: template.html })
+        .catch(err => console.error('[createPublicOrderAction] notify email failed:', err));
+    }
 
     return { success: true };
   } catch (err) {

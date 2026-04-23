@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Clock, AlertTriangle, UserPlus, ArrowRight, CalendarDays, Cake } from 'lucide-react';
+import { Users, Clock, AlertTriangle, UserPlus, ArrowRight, CalendarDays, Cake, TrendingUp } from 'lucide-react';
 import { formatDate, daysUntilEnd } from '@/lib/utils';
 
 interface KpiCardProps {
@@ -58,11 +58,30 @@ export default async function PartnerDashboardPage() {
   // Fetch all active customers for this partner
   const { data: allCustomers } = await supabase
     .from('bt_customers')
-    .select('id, first_name, last_name, contract_end_date, is_active, created_at, birth_date')
+    .select('id, first_name, last_name, contract_end_date, is_active, created_at, birth_date, rental_duration_months')
     .eq('partner_id', user.id)
     .eq('is_active', true);
 
   const customers = allCustomers ?? [];
+
+  // Fetch customer price items to calculate total Kundenwert
+  const customerIds = customers.map(c => c.id);
+  let totalKundenwert = 0;
+  if (customerIds.length > 0) {
+    const { data: allPriceItems } = await supabase
+      .from('bt_customer_price_items')
+      .select('customer_id, billing_type, amount')
+      .in('customer_id', customerIds);
+
+    if (allPriceItems) {
+      for (const customer of customers) {
+        const items = allPriceItems.filter(i => i.customer_id === customer.id);
+        const once = items.filter(i => i.billing_type === 'once').reduce((s, i) => s + Number(i.amount), 0);
+        const monthly = items.filter(i => i.billing_type === 'monthly').reduce((s, i) => s + Number(i.amount), 0);
+        totalKundenwert += once + monthly * (customer.rental_duration_months ?? 12);
+      }
+    }
+  }
   const now = new Date();
 
   // KPI: total active customers
@@ -150,6 +169,26 @@ export default async function PartnerDashboardPage() {
         {kpiCards.map((card) => (
           <KpiCard key={card.label} {...card} />
         ))}
+      </div>
+
+      {/* Kundenwert total */}
+      <div className="mb-8">
+        <Card className="border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-blue-700 mb-1">Gesamter Kundenwert (aktive Kunden)</p>
+                <p className="text-3xl font-bold text-gray-900 tracking-tight">
+                  {totalKundenwert.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}
+                </p>
+                <p className="text-xs text-blue-600 mt-1">Summe aller Vertragswerte anhand Laufzeit und Preisposten</p>
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-6 h-6 text-white" strokeWidth={2} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

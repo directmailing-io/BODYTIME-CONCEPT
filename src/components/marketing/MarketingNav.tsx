@@ -1,28 +1,35 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X, LogIn } from 'lucide-react';
 import { ButtonColorful } from '@/components/ui/ButtonColorful';
 
 const NAV_LINKS = [
-  { label: 'Wie es funktioniert', href: '#wie-es-funktioniert' },
-  { label: 'Das Produkt',          href: '#produkt' },
-  { label: 'Trainer finden',       href: '#trainer' },
-  { label: 'Über uns',             href: '#team' },
-  { label: 'FAQ',                  href: '#faq' },
+  { label: 'Wie es funktioniert', anchor: 'wie-es-funktioniert' },
+  { label: 'Das Produkt',          anchor: 'produkt' },
+  { label: 'Trainer finden',       anchor: 'trainer' },
+  { label: 'Über uns',             anchor: 'team' },
+  { label: 'FAQ',                  anchor: 'faq' },
 ];
 
 export default function MarketingNav() {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(!isHome); // non-home pages start solid
 
   useEffect(() => {
+    if (!isHome) {
+      setScrolled(true);
+      return;
+    }
     const onScroll = () => setScrolled(window.scrollY > 40);
-    // Check on mount in case page is already scrolled
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [isHome]);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -30,6 +37,9 @@ export default function MarketingNav() {
   }, [menuOpen]);
 
   const transparent = !scrolled && !menuOpen;
+
+  // On homepage use anchor links; on other pages link back to homepage section
+  const linkHref = (anchor: string) => isHome ? `#${anchor}` : `/#${anchor}`;
 
   return (
     <>
@@ -47,12 +57,11 @@ export default function MarketingNav() {
             <Link href="/" className="flex-shrink-0" aria-label="BODYTIME concept">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/logo.svg"
+                src={transparent ? '/logo-white.svg' : '/logo.svg'}
                 alt="BODYTIME concept"
                 width={64}
                 height={64}
                 className="h-14 lg:h-16 w-auto block transition-all duration-300"
-                style={transparent ? { filter: 'brightness(0) invert(1)' } : undefined}
               />
             </Link>
 
@@ -60,8 +69,8 @@ export default function MarketingNav() {
             <nav className="hidden lg:flex items-center gap-8" aria-label="Hauptnavigation">
               {NAV_LINKS.map(link => (
                 <a
-                  key={link.href}
-                  href={link.href}
+                  key={link.anchor}
+                  href={linkHref(link.anchor)}
                   className={`text-sm font-medium transition-colors duration-200 ${
                     transparent
                       ? 'text-white/85 hover:text-white'
@@ -96,7 +105,12 @@ export default function MarketingNav() {
                 <LogIn className="w-3.5 h-3.5" />
                 Partner Zugang
               </Link>
-              <ButtonColorful href="/beratung" label="Beratung sichern" />
+              {!isHome && (
+                <ButtonColorful href="/beratung" label="Beratung sichern" />
+              )}
+              {isHome && (
+                <ButtonColorful href="/beratung" label="Beratung sichern" />
+              )}
             </div>
 
             {/* ── Mobile: CTA + Hamburger ── */}
@@ -134,8 +148,8 @@ export default function MarketingNav() {
         <nav className="max-w-7xl mx-auto px-5 py-4 flex flex-col gap-1">
           {NAV_LINKS.map(link => (
             <a
-              key={link.href}
-              href={link.href}
+              key={link.anchor}
+              href={linkHref(link.anchor)}
               onClick={() => setMenuOpen(false)}
               className="block px-4 py-3.5 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors"
             >
@@ -159,7 +173,7 @@ export default function MarketingNav() {
               Partner Zugang zur Plattform
             </Link>
             <ButtonColorful
-              href="#beratung"
+              href="/beratung"
               label="Kostenlose Beratung sichern"
               className="w-full justify-center"
               onClick={() => setMenuOpen(false)}

@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
-import MarketingNav from '@/components/marketing/MarketingNav';
 import SiteFooter from '@/components/marketing/SiteFooter';
 import { ContactForm } from '@/components/marketing/ContactForm';
 
@@ -18,18 +17,22 @@ const BENEFITS = [
 export default function BeratungPage() {
   return (
     <>
-      <MarketingNav />
+      {/* Minimal nav */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/96 backdrop-blur-xl border-b border-gray-100/80 shadow-sm"
+        style={{ height: '72px' }}>
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 h-full flex items-center justify-between">
+          <Link href="/" aria-label="BODYTIME concept">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.svg" alt="BODYTIME concept" className="h-12 w-auto" />
+          </Link>
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors">
+            <ArrowLeft className="h-4 w-4" /> Zurück
+          </Link>
+        </div>
+      </nav>
 
       <main className="min-h-screen bg-gray-50 pt-24 pb-16">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 lg:px-12">
-
-          {/* Back link */}
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-8"
-          >
-            <ArrowLeft className="h-4 w-4" /> Zurück zur Startseite
-          </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 

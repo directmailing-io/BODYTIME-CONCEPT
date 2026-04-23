@@ -24,7 +24,7 @@ export default function B2BBeratungPage() {
           style={{ height: '72px' }}>
           <Link href="/b2b" className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.svg" alt="BODYTIME concept" className="h-7" style={{ filter: 'brightness(0) invert(1)' }} />
+            <img src="/logo-white.svg" alt="BODYTIME concept" className="h-11" />
           </Link>
           <Link
             href="/b2b"
@@ -94,31 +94,7 @@ export default function B2BBeratungPage() {
                 Felder mit <span className="text-red-400">*</span> sind Pflichtfelder.
               </p>
 
-              {/* Override input styles for dark bg via a wrapper */}
-              <div className="b2b-form-wrapper">
-                <style>{`
-                  .b2b-form-wrapper input,
-                  .b2b-form-wrapper button[type=button]:not([data-toggle]) {
-                    background: rgba(255,255,255,0.06) !important;
-                    border-color: rgba(255,255,255,0.12) !important;
-                    color: #fff !important;
-                  }
-                  .b2b-form-wrapper input::placeholder { color: rgba(255,255,255,0.3) !important; }
-                  .b2b-form-wrapper input:focus {
-                    border-color: #25A8E0 !important;
-                    box-shadow: 0 0 0 3px rgba(37,168,224,0.15) !important;
-                    background: rgba(255,255,255,0.08) !important;
-                  }
-                  .b2b-form-wrapper label { color: rgba(255,255,255,0.7) !important; }
-                  .b2b-form-wrapper .text-gray-400 { color: rgba(255,255,255,0.3) !important; }
-                  .b2b-form-wrapper .text-gray-500 { color: rgba(255,255,255,0.4) !important; }
-                  .b2b-form-wrapper .text-gray-600 { color: rgba(255,255,255,0.6) !important; }
-                  .b2b-form-wrapper .text-gray-700 { color: rgba(255,255,255,0.7) !important; }
-                  .b2b-form-wrapper .text-xs.text-gray-400 { color: rgba(255,255,255,0.3) !important; }
-                  .b2b-form-wrapper p.text-center { color: rgba(255,255,255,0.3) !important; }
-                `}</style>
-                <ContactForm variant="b2b" />
-              </div>
+              <ContactForm variant="b2b" dark={true} />
             </div>
 
           </div>

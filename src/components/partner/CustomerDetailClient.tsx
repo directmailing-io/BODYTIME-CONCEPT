@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { renewContractAction, addCrmNoteAction, deleteCrmNoteAction } from '@/actions/customers';
+import CustomerPricingSection from './CustomerPricingSection';
 import { renewalSchema, type RenewalInput } from '@/lib/validations/customer';
 import { formatDate } from '@/lib/utils';
 
@@ -22,10 +23,13 @@ const changeTypeLabel: Record<string, string> = {
   modification: 'Änderung',
 };
 
-export default function CustomerDetailClient({ customer, history, notes, readOnly = false }: {
+export default function CustomerDetailClient({ customer, history, notes, priceItems, paymentEntries, packages, readOnly = false }: {
   customer: any;
   history: any[];
   notes: any[];
+  priceItems?: any[];
+  paymentEntries?: any[];
+  packages?: any[];
   readOnly?: boolean;
 }) {
   const router = useRouter();
@@ -130,6 +134,16 @@ export default function CustomerDetailClient({ customer, history, notes, readOnl
           ))}
         </CardContent>
       </Card>
+
+      {/* Preise & Zahlungen */}
+      <CustomerPricingSection
+        customerId={customer.id}
+        priceItems={priceItems ?? []}
+        paymentEntries={paymentEntries ?? []}
+        packages={packages ?? []}
+        rentalDurationMonths={customer.rental_duration_months ?? 12}
+        readOnly={readOnly}
+      />
 
       {/* Vertragsverlauf */}
       {history.length > 0 && (

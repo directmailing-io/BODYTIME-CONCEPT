@@ -6,8 +6,10 @@
  */
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { loginSchema, forgotPasswordSchema, resetPasswordSchema } from '@/lib/validations/auth';
+import { sendMail } from '@/lib/email/mailer';
+import { resetPasswordEmail } from '@/lib/email/templates';
 import type { ActionResult } from '@/types';
 
 export async function loginAction(formData: FormData): Promise<ActionResult> {
@@ -90,13 +92,24 @@ export async function forgotPasswordAction(formData: FormData): Promise<ActionRe
     return { success: false, error: 'Ungültige E-Mail-Adresse.' };
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?next=/reset-password`,
+  // Generate reset link via admin API, then send via our custom mailer (Resend)
+  const adminClient = createAdminClient();
+  const { data: linkData, error } = await adminClient.auth.admin.generateLink({
+    type: 'recovery',
+    email: parsed.data.email,
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?next=/reset-password`,
+    },
   });
 
   // Always return success to prevent email enumeration
-  if (error) console.error('[forgotPassword]', error);
+  if (error) {
+    console.error('[forgotPassword] generateLink error:', error);
+  } else if (linkData?.properties?.action_link) {
+    const template = resetPasswordEmail({ firstName: '', resetUrl: linkData.properties.action_link });
+    sendMail({ to: parsed.data.email, subject: template.subject, html: template.html })
+      .catch(err => console.error('[forgotPassword] sendMail error:', err));
+  }
 
   return {
     success: true,

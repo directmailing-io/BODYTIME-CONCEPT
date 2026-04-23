@@ -20,92 +20,108 @@ const COUNTRIES = [
   { code: '+420', flag: '🇨🇿', label: 'CZ' },
 ];
 
-// ── B2B business areas ───────────────────────────────────────────────────────
-
 const BUSINESS_AREAS = [
-  'EMS-Studio',
-  'Fitnessstudio',
-  'Personal Training',
-  'Ernährungsberatung',
-  'Heilpraktiker',
-  'Yoga-Studio',
-  'Pilates-Studio',
-  'Physiotherapie',
-  'Massagepraxis',
-  'Wellness & Spa',
-  'Crossfit / Functional',
-  'Sportverein',
-  'Gesundheitscoaching',
-  'Osteopathie',
-  'Sonstiges',
+  'EMS-Studio', 'Fitnessstudio', 'Personal Training', 'Ernährungsberatung',
+  'Heilpraktiker', 'Yoga-Studio', 'Pilates-Studio', 'Physiotherapie',
+  'Massagepraxis', 'Wellness & Spa', 'Crossfit / Functional', 'Sportverein',
+  'Gesundheitscoaching', 'Osteopathie', 'Sonstiges',
 ];
 
-// ── Shared field styles ──────────────────────────────────────────────────────
+const EMPLOYMENT_OPTIONS = [
+  { value: 'selbststaendig', label: 'Selbstständig', icon: '💼' },
+  { value: 'noch_nicht',     label: 'Noch nicht',    icon: '🌱' },
+];
 
-const inputClass = (err?: string) =>
-  `w-full h-12 px-4 rounded-xl border text-[15px] text-gray-900 bg-white placeholder:text-gray-400 outline-none transition-all duration-200 focus:ring-2 ${
-    err
-      ? 'border-red-400 focus:ring-red-200 focus:border-red-400'
-      : 'border-gray-200 focus:ring-blue-100 focus:border-blue-400'
-  }`;
+// ── Theme tokens ─────────────────────────────────────────────────────────────
 
-function FieldError({ msg }: { msg?: string }) {
-  if (!msg) return null;
-  return (
-    <p className="mt-1.5 flex items-center gap-1 text-xs text-red-500">
-      <AlertCircle className="h-3 w-3 shrink-0" /> {msg}
-    </p>
-  );
+function theme(dark: boolean) {
+  return {
+    label:       dark ? 'rgba(255,255,255,0.7)'  : '#374151',
+    labelMuted:  dark ? 'rgba(255,255,255,0.35)' : '#9ca3af',
+    inputBg:     dark ? 'rgba(255,255,255,0.07)' : '#ffffff',
+    inputBorder: dark ? 'rgba(255,255,255,0.14)' : '#d1d5db',
+    inputFocus:  dark ? '#25A8E0'                : '#3b82f6',
+    inputText:   dark ? '#ffffff'                : '#111827',
+    inputPh:     dark ? 'rgba(255,255,255,0.3)'  : '#9ca3af',
+    cardBg:      dark ? 'rgba(255,255,255,0.07)' : '#ffffff',
+    cardBorder:  dark ? 'rgba(255,255,255,0.14)' : '#e5e7eb',
+    cardText:    dark ? 'rgba(255,255,255,0.7)'  : '#374151',
+    cardSelBg:   dark ? 'rgba(37,168,224,0.22)'  : '#eff6ff',
+    cardSelBdr:  dark ? '#25A8E0'                : '#3b82f6',
+    cardSelTxt:  dark ? '#60C8F0'                : '#2563EB',
+    checkBg:     dark ? 'rgba(255,255,255,0.08)' : '#ffffff',
+    checkBorder: dark ? 'rgba(255,255,255,0.3)'  : '#d1d5db',
+    privacyText: dark ? 'rgba(255,255,255,0.6)'  : '#4b5563',
+    hintText:    dark ? 'rgba(255,255,255,0.3)'  : '#9ca3af',
+    dropdownBg:  dark ? '#1e293b'                : '#ffffff',
+    dropdownBdr: dark ? 'rgba(255,255,255,0.12)' : '#e5e7eb',
+  };
 }
 
-// ── Phone input with country selector ───────────────────────────────────────
+// ── Phone input ───────────────────────────────────────────────────────────────
 
-function PhoneInput({
-  country, setCountry, phone, setPhone, error,
-}: {
+function PhoneInput({ country, setCountry, phone, setPhone, error, dark }: {
   country: typeof COUNTRIES[number];
   setCountry: (c: typeof COUNTRIES[number]) => void;
   phone: string;
   setPhone: (v: string) => void;
   error?: string;
+  dark: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const t = theme(dark);
+  const borderColor = error ? '#f87171' : t.inputBorder;
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1.5">
-        Telefonnummer <span className="text-red-500">*</span>
+      <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: t.label, marginBottom: '6px' }}>
+        Telefonnummer <span style={{ color: '#f87171' }}>*</span>
       </label>
-      <div className="flex gap-2">
+      <div style={{ display: 'flex', gap: '8px' }}>
         {/* Country selector */}
-        <div ref={ref} className="relative">
+        <div style={{ position: 'relative' }}>
           <button
             type="button"
             onClick={() => setOpen(!open)}
-            className={`flex items-center gap-1.5 h-12 px-3 rounded-xl border bg-white text-sm font-medium text-gray-700 outline-none transition-all whitespace-nowrap ${
-              error ? 'border-red-400' : 'border-gray-200 hover:border-gray-300'
-            }`}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              height: '48px', padding: '0 12px',
+              borderRadius: '12px', border: `1px solid ${borderColor}`,
+              background: t.inputBg, color: t.inputText,
+              fontSize: '14px', fontWeight: 500, whiteSpace: 'nowrap',
+              cursor: 'pointer', outline: 'none',
+            }}
           >
-            <span className="text-lg leading-none">{country.flag}</span>
-            <span className="text-gray-600">{country.code}</span>
-            <ChevronDown className={`h-3.5 w-3.5 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+            <span style={{ fontSize: '18px', lineHeight: 1 }}>{country.flag}</span>
+            <span>{country.code}</span>
+            <ChevronDown style={{ width: '14px', height: '14px', opacity: 0.5, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }} />
           </button>
 
           {open && (
-            <div className="absolute top-full left-0 mt-1 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden py-1">
+            <div style={{
+              position: 'absolute', top: 'calc(100% + 4px)', left: 0, zIndex: 50,
+              width: '160px', background: t.dropdownBg,
+              border: `1px solid ${t.dropdownBdr}`,
+              borderRadius: '12px', overflow: 'hidden', padding: '4px 0',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+            }}>
               {COUNTRIES.map(c => (
                 <button
                   key={c.code}
                   type="button"
                   onClick={() => { setCountry(c); setOpen(false); }}
-                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                    c.code === country.code ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
-                  }`}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
+                    padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
+                    background: c.code === country.code ? t.cardSelBg : 'transparent',
+                    color: c.code === country.code ? t.cardSelTxt : t.cardText,
+                    fontWeight: c.code === country.code ? 600 : 400,
+                    border: 'none', outline: 'none',
+                  }}
                 >
-                  <span className="text-base">{c.flag}</span>
+                  <span style={{ fontSize: '15px' }}>{c.flag}</span>
                   <span>{c.label}</span>
-                  <span className="ml-auto text-gray-400 text-xs">{c.code}</span>
+                  <span style={{ marginLeft: 'auto', fontSize: '12px', opacity: 0.5 }}>{c.code}</span>
                 </button>
               ))}
             </div>
@@ -118,73 +134,54 @@ function PhoneInput({
           value={phone}
           onChange={e => setPhone(e.target.value.replace(/[^0-9\s\-()]/g, ''))}
           placeholder="0151 23456789"
-          className={`flex-1 ${inputClass(error)}`}
           inputMode="tel"
+          style={{
+            flex: 1, height: '48px', padding: '0 16px',
+            borderRadius: '12px', border: `1px solid ${borderColor}`,
+            background: t.inputBg, color: t.inputText, fontSize: '15px',
+            outline: 'none',
+          }}
+          onFocus={e => (e.target.style.borderColor = t.inputFocus)}
+          onBlur={e => (e.target.style.borderColor = error ? '#f87171' : t.inputBorder)}
         />
       </div>
-      <FieldError msg={error} />
+      {error && (
+        <p style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#f87171' }}>
+          <AlertCircle style={{ width: '12px', height: '12px' }} /> {error}
+        </p>
+      )}
     </div>
   );
 }
 
-// ── B2B Business area selector ───────────────────────────────────────────────
+// ── Main form ─────────────────────────────────────────────────────────────────
 
-function BusinessAreaSelector({
-  value, onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="grid grid-cols-2 gap-1.5">
-      {BUSINESS_AREAS.map(area => (
-        <button
-          key={area}
-          type="button"
-          onClick={() => onChange(area)}
-          className={`px-2.5 py-2 rounded-lg border text-xs font-medium text-left leading-snug transition-all duration-150 ${
-            value === area
-              ? 'border-blue-500 bg-blue-50 text-blue-700'
-              : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-          }`}
-        >
-          {area}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-// ── Main form component ──────────────────────────────────────────────────────
-
-export function ContactForm({ variant }: { variant: 'b2c' | 'b2b' }) {
+export function ContactForm({ variant, dark = false }: { variant: 'b2c' | 'b2b'; dark?: boolean }) {
   const router = useRouter();
+  const t = theme(dark);
 
-  // Base fields
   const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [country, setCountry] = useState(COUNTRIES[0]);
-  const [privacy, setPrivacy] = useState(false);
+  const [lastName,  setLastName]  = useState('');
+  const [email,     setEmail]     = useState('');
+  const [phone,     setPhone]     = useState('');
+  const [country,   setCountry]   = useState(COUNTRIES[0]);
+  const [privacy,   setPrivacy]   = useState(false);
 
-  // B2B extra fields
-  const [employmentStatus, setEmploymentStatus] = useState<string>('');
-  const [businessArea, setBusinessArea] = useState('');
-  const [businessAreaCustom, setBusinessAreaCustom] = useState('');
+  const [employmentStatus,  setEmploymentStatus]  = useState('');
+  const [businessArea,      setBusinessArea]      = useState('');
+  const [businessAreaCustom,setBusinessAreaCustom]= useState('');
 
-  // UI state
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitting, setSubmitting] = useState(false);
+  const [errors,      setErrors]      = useState<Record<string, string>>({});
+  const [submitting,  setSubmitting]  = useState(false);
   const [globalError, setGlobalError] = useState('');
 
   function validate() {
     const e: Record<string, string> = {};
     if (!firstName.trim()) e.firstName = 'Vorname ist erforderlich.';
-    if (!lastName.trim()) e.lastName = 'Nachname ist erforderlich.';
+    if (!lastName.trim())  e.lastName  = 'Nachname ist erforderlich.';
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Bitte eine gültige E-Mail-Adresse eingeben.';
-    if (!phone.trim()) e.phone = 'Telefonnummer ist erforderlich.';
-    else if (phone.replace(/[\s\-()]/g, '').length < 6) e.phone = 'Bitte eine gültige Telefonnummer eingeben.';
+    if (!phone.trim())                                         e.phone = 'Telefonnummer ist erforderlich.';
+    else if (phone.replace(/[\s\-()]/g, '').length < 6)       e.phone = 'Bitte eine gültige Telefonnummer eingeben.';
     if (!privacy) e.privacy = 'Bitte akzeptiere die Datenschutzerklärung.';
     return e;
   }
@@ -193,107 +190,81 @@ export function ContactForm({ variant }: { variant: 'b2c' | 'b2b' }) {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
-    setErrors({});
-    setGlobalError('');
-    setSubmitting(true);
-
+    setErrors({}); setGlobalError(''); setSubmitting(true);
     try {
-      let result;
-      if (variant === 'b2c') {
-        result = await submitB2CContact({
-          first_name: firstName.trim(),
-          last_name: lastName.trim(),
-          email: email.trim() || undefined,
-          phone: phone.trim(),
-          phone_country: country.code,
-        });
-      } else {
-        result = await submitB2BContact({
-          first_name: firstName.trim(),
-          last_name: lastName.trim(),
-          email: email.trim() || undefined,
-          phone: phone.trim(),
-          phone_country: country.code,
-          employment_status: employmentStatus || undefined,
-          business_area: businessArea || undefined,
-          business_area_custom: businessArea === 'Sonstiges' ? businessAreaCustom.trim() || undefined : undefined,
-        });
-      }
-
-      if (result.success) {
-        router.push(`/danke?type=${variant}`);
-      } else {
-        setGlobalError(result.error ?? 'Ein Fehler ist aufgetreten.');
-      }
-    } finally {
-      setSubmitting(false);
-    }
+      const payload = {
+        first_name: firstName.trim(), last_name: lastName.trim(),
+        email: email.trim() || undefined, phone: phone.trim(),
+        phone_country: country.code,
+      };
+      const result = variant === 'b2c'
+        ? await submitB2CContact(payload)
+        : await submitB2BContact({
+            ...payload,
+            employment_status:   employmentStatus || undefined,
+            business_area:       businessArea || undefined,
+            business_area_custom: businessArea === 'Sonstiges' ? businessAreaCustom.trim() || undefined : undefined,
+          });
+      if (result.success) router.push(`/danke?type=${variant}`);
+      else setGlobalError(result.error ?? 'Ein Fehler ist aufgetreten.');
+    } finally { setSubmitting(false); }
   }
 
-  const EMPLOYMENT_OPTIONS = [
-    { value: 'selbststaendig', label: 'Selbstständig', icon: '💼' },
-    { value: 'angestellt', label: 'Angestellt', icon: '🏢' },
-    { value: 'noch_nicht', label: 'Noch nicht', icon: '🌱' },
-  ];
+  // Helper: styled input
+  const styledInput = (value: string, onChange: (v: string) => void, props: React.InputHTMLAttributes<HTMLInputElement>, errKey: string) => (
+    <input
+      {...props}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      style={{
+        width: '100%', height: '48px', padding: '0 16px',
+        borderRadius: '12px', border: `1px solid ${errors[errKey] ? '#f87171' : t.inputBorder}`,
+        background: t.inputBg, color: t.inputText, fontSize: '15px', outline: 'none',
+        boxSizing: 'border-box',
+      }}
+      onFocus={e => (e.target.style.borderColor = errors[errKey] ? '#f87171' : t.inputFocus)}
+      onBlur={e => (e.target.style.borderColor = errors[errKey] ? '#f87171' : t.inputBorder)}
+    />
+  );
+
+  const fieldError = (key: string) => errors[key] ? (
+    <p style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#f87171' }}>
+      <AlertCircle style={{ width: '12px', height: '12px' }} /> {errors[key]}
+    </p>
+  ) : null;
+
+  const fieldLabel = (text: string, required?: boolean, optional?: boolean) => (
+    <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: t.label, marginBottom: '6px' }}>
+      {text}{required && <span style={{ color: '#f87171' }}> *</span>}
+      {optional && <span style={{ fontSize: '12px', fontWeight: 400, color: t.labelMuted, marginLeft: '6px' }}>(optional)</span>}
+    </label>
+  );
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+    <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-      {/* Name row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Name */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Vorname <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={firstName}
-            onChange={e => setFirstName(e.target.value)}
-            placeholder="Max"
-            autoComplete="given-name"
-            className={inputClass(errors.firstName)}
-          />
-          <FieldError msg={errors.firstName} />
+          {fieldLabel('Vorname', true)}
+          {styledInput(firstName, setFirstName, { type: 'text', placeholder: 'Max', autoComplete: 'given-name' }, 'firstName')}
+          {fieldError('firstName')}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Nachname <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={e => setLastName(e.target.value)}
-            placeholder="Mustermann"
-            autoComplete="family-name"
-            className={inputClass(errors.lastName)}
-          />
-          <FieldError msg={errors.lastName} />
+          {fieldLabel('Nachname', true)}
+          {styledInput(lastName, setLastName, { type: 'text', placeholder: 'Mustermann', autoComplete: 'family-name' }, 'lastName')}
+          {fieldError('lastName')}
         </div>
       </div>
 
       {/* Phone */}
-      <PhoneInput
-        country={country}
-        setCountry={setCountry}
-        phone={phone}
-        setPhone={setPhone}
-        error={errors.phone}
-      />
+      <PhoneInput country={country} setCountry={setCountry} phone={phone} setPhone={setPhone} error={errors.phone} dark={dark} />
 
-      {/* Email (optional) */}
+      {/* Email */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          E-Mail-Adresse <span className="text-gray-400 font-normal text-xs ml-1">(optional)</span>
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="max@beispiel.de"
-          autoComplete="email"
-          className={inputClass(errors.email)}
-        />
-        <FieldError msg={errors.email} />
+        {fieldLabel('E-Mail-Adresse', false, true)}
+        {styledInput(email, setEmail, { type: 'email', placeholder: 'max@beispiel.de', autoComplete: 'email' }, 'email')}
+        {fieldError('email')}
       </div>
 
       {/* B2B extras */}
@@ -301,42 +272,71 @@ export function ContactForm({ variant }: { variant: 'b2c' | 'b2b' }) {
         <>
           {/* Employment status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Bist du bereits selbstständig? <span className="text-gray-400 font-normal text-xs ml-1">(optional)</span>
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {EMPLOYMENT_OPTIONS.map(opt => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setEmploymentStatus(employmentStatus === opt.value ? '' : opt.value)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all duration-150 ${
-                    employmentStatus === opt.value
-                      ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
-                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  <span>{opt.icon}</span>
-                  <span>{opt.label}</span>
-                </button>
-              ))}
+            {fieldLabel('Bist du bereits selbstständig?', false, true)}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {EMPLOYMENT_OPTIONS.map(opt => {
+                const selected = employmentStatus === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setEmploymentStatus(selected ? '' : opt.value)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      padding: '10px 16px', borderRadius: '12px', cursor: 'pointer',
+                      border: `1.5px solid ${selected ? t.cardSelBdr : t.cardBorder}`,
+                      background: selected ? t.cardSelBg : t.cardBg,
+                      color: selected ? t.cardSelTxt : t.cardText,
+                      fontSize: '14px', fontWeight: 500, outline: 'none',
+                      transition: 'all .15s',
+                    }}
+                  >
+                    <span>{opt.icon}</span>
+                    <span>{opt.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Business area — only if selbstständig */}
+          {/* Business area */}
           {employmentStatus === 'selbststaendig' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                In welchem Bereich bist du tätig? <span className="text-gray-400 font-normal text-xs ml-1">(optional)</span>
-              </label>
-              <BusinessAreaSelector value={businessArea} onChange={setBusinessArea} />
+              {fieldLabel('In welchem Bereich bist du tätig?', false, true)}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                {BUSINESS_AREAS.map(area => {
+                  const selected = businessArea === area;
+                  return (
+                    <button
+                      key={area}
+                      type="button"
+                      onClick={() => setBusinessArea(selected ? '' : area)}
+                      style={{
+                        padding: '9px 12px', borderRadius: '10px', cursor: 'pointer',
+                        border: `1.5px solid ${selected ? t.cardSelBdr : t.cardBorder}`,
+                        background: selected ? t.cardSelBg : t.cardBg,
+                        color: selected ? t.cardSelTxt : t.cardText,
+                        fontSize: '13px', fontWeight: 500, textAlign: 'left',
+                        outline: 'none', transition: 'all .15s',
+                      }}
+                    >
+                      {area}
+                    </button>
+                  );
+                })}
+              </div>
               {businessArea === 'Sonstiges' && (
                 <input
                   type="text"
                   value={businessAreaCustom}
                   onChange={e => setBusinessAreaCustom(e.target.value)}
                   placeholder="Dein Bereich…"
-                  className={`mt-2 ${inputClass()}`}
+                  style={{
+                    marginTop: '8px', width: '100%', height: '48px', padding: '0 16px',
+                    borderRadius: '12px', border: `1px solid ${t.inputBorder}`,
+                    background: t.inputBg, color: t.inputText, fontSize: '15px',
+                    outline: 'none', boxSizing: 'border-box',
+                  }}
                 />
               )}
             </div>
@@ -344,47 +344,54 @@ export function ContactForm({ variant }: { variant: 'b2c' | 'b2b' }) {
         </>
       )}
 
-      {/* Privacy opt-in */}
+      {/* Privacy */}
       <div>
-        <label className={`flex items-start gap-3 cursor-pointer group ${errors.privacy ? 'text-red-600' : ''}`}>
-          <div className="relative flex-shrink-0 mt-0.5">
-            <input
-              type="checkbox"
-              checked={privacy}
-              onChange={e => setPrivacy(e.target.checked)}
-              className="sr-only"
-            />
-            <div
-              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                errors.privacy
-                  ? 'border-red-400 bg-red-50'
-                  : privacy
-                  ? 'border-blue-500 bg-blue-500'
-                  : 'border-gray-300 bg-white group-hover:border-gray-400'
-              }`}
-            >
-              {privacy && (
-                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-            </div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+          <div
+            role="checkbox"
+            aria-checked={privacy}
+            tabIndex={0}
+            onClick={() => setPrivacy(!privacy)}
+            onKeyDown={e => (e.key === ' ' || e.key === 'Enter') && setPrivacy(!privacy)}
+            style={{
+              flexShrink: 0, marginTop: '2px', cursor: 'pointer',
+              width: '20px', height: '20px', borderRadius: '6px',
+              border: `2px solid ${errors.privacy ? '#f87171' : privacy ? '#25A8E0' : t.checkBorder}`,
+              background: privacy ? '#25A8E0' : (errors.privacy ? 'rgba(248,113,113,0.1)' : t.checkBg),
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'all .15s',
+            }}
+          >
+            {privacy && (
+              <svg width="12" height="12" fill="none" viewBox="0 0 12 12">
+                <path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
           </div>
-          <span className="text-sm text-gray-600 leading-relaxed">
+          <span
+            onClick={() => setPrivacy(!privacy)}
+            style={{ fontSize: '14px', color: t.privacyText, lineHeight: 1.6, cursor: 'pointer' }}
+          >
             Ich habe die{' '}
-            <a href="/datenschutz" target="_blank" className="text-blue-600 hover:underline font-medium">
+            <a
+              href="/datenschutz"
+              target="_blank"
+              onClick={e => e.stopPropagation()}
+              style={{ color: '#25A8E0', textDecoration: 'underline', fontWeight: 500 }}
+            >
               Datenschutzerklärung
             </a>{' '}
-            gelesen und stimme der Verarbeitung meiner Daten zur Kontaktaufnahme zu. <span className="text-red-500">*</span>
+            gelesen und stimme der Verarbeitung meiner Daten zur Kontaktaufnahme zu.{' '}
+            <span style={{ color: '#f87171' }}>*</span>
           </span>
-        </label>
-        <FieldError msg={errors.privacy} />
+        </div>
+        {fieldError('privacy')}
       </div>
 
       {/* Global error */}
       {globalError && (
-        <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700">
-          <AlertCircle className="h-4 w-4 shrink-0" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px', borderRadius: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', fontSize: '14px', color: '#f87171' }}>
+          <AlertCircle style={{ width: '16px', height: '16px', flexShrink: 0 }} />
           {globalError}
         </div>
       )}
@@ -393,32 +400,22 @@ export function ContactForm({ variant }: { variant: 'b2c' | 'b2b' }) {
       <button
         type="submit"
         disabled={submitting}
-        className="relative w-full h-13 rounded-xl font-semibold text-white text-[15px] overflow-hidden transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed group"
-        style={{ height: '52px' }}
+        style={{
+          width: '100%', height: '52px', borderRadius: '12px',
+          border: 'none', cursor: submitting ? 'not-allowed' : 'pointer',
+          background: 'linear-gradient(135deg, #25A8E0 0%, #2563EB 100%)',
+          color: '#fff', fontSize: '15px', fontWeight: 600,
+          opacity: submitting ? 0.7 : 1, transition: 'opacity .2s',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+        }}
       >
-        <span
-          aria-hidden="true"
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(135deg, #25A8E0 0%, #2563EB 100%)' }}
-        />
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ background: 'linear-gradient(135deg, #1a96cc 0%, #1d50c9 100%)' }}
-        />
-        <span className="relative z-10 flex items-center justify-center gap-2">
-          {submitting ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Wird gesendet…
-            </>
-          ) : (
-            variant === 'b2c' ? 'Kostenlose Beratung sichern →' : 'Kostenloses Erstgespräch buchen →'
-          )}
-        </span>
+        {submitting
+          ? <><Loader2 style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }} /> Wird gesendet…</>
+          : (variant === 'b2c' ? 'Kostenlose Beratung sichern →' : 'Kostenloses Erstgespräch buchen →')
+        }
       </button>
 
-      <p className="text-center text-xs text-gray-400">
+      <p style={{ textAlign: 'center', fontSize: '12px', color: t.hintText }}>
         Kostenlos & unverbindlich · Persönliche Beratung auf Augenhöhe
       </p>
     </form>

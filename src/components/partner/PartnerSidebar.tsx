@@ -14,6 +14,7 @@ import {
   Gift,
   MoreHorizontal,
   X,
+  Package,
 } from 'lucide-react';
 import Image from 'next/image';
 import { logoutAction } from '@/actions/auth';
@@ -30,6 +31,7 @@ interface PartnerProfile {
 const allNavItems = [
   { href: '/partner/dashboard',  label: 'Dashboard',       icon: LayoutDashboard },
   { href: '/partner/customers',  label: 'Kunden',          icon: Users },
+  { href: '/partner/pakete',     label: 'Pakete',          icon: Package },
   { href: '/partner/order',      label: 'Neue Bestellung', icon: ShoppingCart },
   { href: '/partner/empfehlung', label: 'Empfehlung',      icon: Gift },
   { href: '/partner/steckbrief', label: 'Profil',          icon: IdCard },
@@ -47,6 +49,7 @@ const rightTabs = [
   { href: '/partner/steckbrief', label: 'Profil',     icon: IdCard },
 ];
 const secondaryItems = [
+  { href: '/partner/pakete',    label: 'Pakete',        icon: Package },
   { href: '/partner/documents', label: 'Dokumente',     icon: FileText },
   { href: '/partner/profile',   label: 'Einstellungen', icon: Settings },
 ];

@@ -9,7 +9,7 @@ import { updateSession } from '@/lib/supabase/middleware';
 import { createServerClient } from '@supabase/ssr';
 
 const PUBLIC_ROUTES = ['/login', '/forgot-password', '/reset-password', '/register', '/invite'];
-const MARKETING_ROUTES = ['/', '/trainer', '/b2b', '/bestellung']; // publicly accessible, no auth required or redirect
+const MARKETING_ROUTES = ['/', '/trainer', '/b2b', '/bestellung', '/beratung', '/danke', '/datenschutz', '/impressum']; // publicly accessible, no auth required or redirect
 const ADMIN_ROUTES = ['/admin'];
 const PARTNER_ROUTES = ['/partner'];
 
@@ -23,11 +23,20 @@ export async function proxy(request: NextRequest) {
   // Marketing pages: always pass through, no auth checks
   if (isMarketingRoute) return supabaseResponse;
 
-  // No session → send to login
-  if (!user && !isPublicRoute) {
+  // No session → send to login only for protected routes
+  const isProtectedRoute =
+    ADMIN_ROUTES.some((r) => pathname.startsWith(r)) ||
+    PARTNER_ROUTES.some((r) => pathname.startsWith(r));
+
+  if (!user && !isPublicRoute && isProtectedRoute) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // Unknown routes: pass through so Next.js can render the 404 page
+  if (!user && !isPublicRoute && !isProtectedRoute) {
+    return supabaseResponse;
   }
 
   if (user) {

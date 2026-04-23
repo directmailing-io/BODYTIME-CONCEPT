@@ -62,14 +62,24 @@ export async function createPartnerAction(formData: FormData): Promise<ActionRes
       }
       newUserId = data.user.id;
     } else {
-      const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
-        data: { first_name, last_name, role: 'partner' },
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/invite`,
+      const { data, error } = await adminClient.auth.admin.generateLink({
+        type: 'invite',
+        email,
+        options: {
+          data: { first_name, last_name, role: 'partner' },
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/invite`,
+        },
       });
-      if (error || !data.user) {
+      if (error || !data?.user) {
         return { success: false, error: 'Einladung konnte nicht gesendet werden.' };
       }
       newUserId = data.user.id;
+      const inviteUrl = data.properties?.action_link ?? `${process.env.NEXT_PUBLIC_APP_URL}/invite`;
+      sendMail({
+        to: email,
+        subject: invitePartnerEmail({ firstName: first_name, lastName: last_name, inviteUrl }).subject,
+        html: invitePartnerEmail({ firstName: first_name, lastName: last_name, inviteUrl }).html,
+      }).catch(e => console.error('[createPartner invite email]', e));
     }
 
     await adminClient.from('bt_partner_profiles').insert({

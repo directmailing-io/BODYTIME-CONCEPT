@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server';
 import { customerSchema, renewalSchema, crmNoteSchema } from '@/lib/validations/customer';
 import { calcContractEnd } from '@/lib/utils';
 import type { ActionResult, RentalDuration } from '@/types';
+import { regeneratePaymentsAfterRenewalAction } from '@/actions/customer-pricing';
 
 async function requirePartner() {
   const supabase = await createClient();
@@ -221,6 +222,8 @@ export async function renewContractAction(
     revalidatePath(`/partner/customers/${customerId}`);
     revalidatePath('/partner/customers');
     revalidatePath('/partner/dashboard');
+    // Regenerate payment entries for the new contract period
+    regeneratePaymentsAfterRenewalAction(customerId, order_date, rental_duration_months).catch(console.error);
     return { success: true };
   } catch (err) {
     console.error('[renewContractAction]', err);

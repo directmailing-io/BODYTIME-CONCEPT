@@ -232,3 +232,27 @@ export function b2bContactEmail(params: {
     html: baseLayout(content, 'Neue Partner-Anfrage'),
   };
 }
+
+export function newCustomerEmail(params: {
+  partnerFirstName: string;
+  customerFirstName: string;
+  customerLastName: string;
+  customerEmail: string;
+  dashboardUrl: string;
+}): { subject: string; html: string } {
+  const content = `
+    <div style="display:inline-block;margin-bottom:20px;padding:6px 14px;background:#e8f5e9;border-radius:20px;">
+      <span style="font-size:12px;font-weight:700;letter-spacing:0.08em;color:#2e7d32;">NEUER KUNDE</span>
+    </div>
+    ${h1(`Hallo ${params.partnerFirstName}, du hast einen neuen Kunden!`)}
+    ${p(`<strong>${params.customerFirstName} ${params.customerLastName}</strong> hat sich soeben über deinen persönlichen Bestelllink registriert.`)}
+    ${p(`E-Mail: ${params.customerEmail}`)}
+    ${p('Öffne dein Dashboard, um das Profil zu vervollständigen und den Kunden zu betreuen.')}
+    ${button(params.dashboardUrl, 'Zum Dashboard')}
+    <p style="margin:20px 0 0;font-size:13px;color:#a1a1aa;">Der Kunde wurde automatisch deinem Konto zugeordnet.</p>
+  `;
+  return {
+    subject: `Neuer Kunde: ${params.customerFirstName} ${params.customerLastName}`,
+    html: baseLayout(content, 'Neuer Kunde'),
+  };
+}
