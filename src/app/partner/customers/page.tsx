@@ -12,7 +12,7 @@ export default async function CustomersPage() {
 
   const { data: customers } = await supabase
     .from('bt_customers')
-    .select('*')
+    .select('*, bt_customer_price_items(*)')
     .eq('partner_id', user.id)
     .eq('is_active', true)
     .order('created_at', { ascending: false });

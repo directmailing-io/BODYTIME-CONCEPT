@@ -10,6 +10,21 @@ import { daysUntilEnd, isExpiringSoon, isExpired, formatDate } from '@/lib/utils
 type FilterType = 'all' | 'expiring' | 'expired' | 'active';
 type SortKey = 'name' | 'contract_end_date' | 'order_date';
 
+function formatEur(amount: number) {
+  return amount.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+}
+
+function calcKundenwert(customer: any): number {
+  const items: any[] = customer.bt_customer_price_items ?? [];
+  const once = items.filter((i: any) => i.billing_type === 'once').reduce((s: number, i: any) => s + Number(i.amount), 0);
+  const monthly = items.filter((i: any) => i.billing_type === 'monthly').reduce((s: number, i: any) => s + Number(i.amount), 0);
+  return once + monthly * (customer.rental_duration_months ?? 0);
+}
+
+function getPackageName(customer: any): string | null {
+  return customer.bt_customer_price_items?.[0]?.package_name ?? null;
+}
+
 export default function CustomersTable({ customers }: { customers: any[] }) {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
@@ -117,6 +132,8 @@ export default function CustomersTable({ customers }: { customers: any[] }) {
                     </button>
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-gray-500 hidden lg:table-cell">Laufzeit</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-500 hidden xl:table-cell">Paket</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-500 hidden xl:table-cell">Kundenwert</th>
                   <th className="text-left px-4 py-3 font-medium text-gray-500">
                     <button className="flex items-center gap-1 hover:text-gray-900" onClick={() => toggleSort('contract_end_date')}>
                       Vertragsende <ArrowUpDown className="h-3 w-3" />
@@ -138,6 +155,18 @@ export default function CustomersTable({ customers }: { customers: any[] }) {
                       <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{customer.email}</td>
                       <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{formatDate(customer.order_date)}</td>
                       <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{customer.rental_duration_months} Mon.</td>
+                      <td className="px-4 py-3 hidden xl:table-cell">
+                        {getPackageName(customer)
+                          ? <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700">{getPackageName(customer)}</span>
+                          : <span className="text-xs text-gray-300">–</span>
+                        }
+                      </td>
+                      <td className="px-4 py-3 hidden xl:table-cell">
+                        {calcKundenwert(customer) > 0
+                          ? <span className="text-sm font-semibold text-gray-900">{formatEur(calcKundenwert(customer))}</span>
+                          : <span className="text-xs text-gray-300">–</span>
+                        }
+                      </td>
                       <td className="px-4 py-3">
                         <div className="flex flex-col">
                           <span className={isExpired(customer.contract_end_date) ? 'text-red-600 font-medium' : isExpiringSoon(customer.contract_end_date) ? 'text-amber-600 font-medium' : 'text-gray-700'}>
