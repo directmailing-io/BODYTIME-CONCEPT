@@ -39,6 +39,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
   const days = daysUntilEnd(customer.contract_end_date);
   const expired = isExpired(customer.contract_end_date);
   const expiringSoon = isExpiringSoon(customer.contract_end_date);
+  const profileIncomplete = !customer.order_date || !customer.first_name || !customer.last_name || !customer.email || !customer.rental_duration_months;
 
   return (
     <div className="max-w-3xl">
@@ -47,7 +48,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
       </Link>
 
       {/* Profile incomplete banner */}
-      {customer.profile_complete === false && (
+      {profileIncomplete && (
         <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 flex items-start gap-3">
           <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
           <div>
