@@ -84,26 +84,79 @@ export default function CustomerDetailClient({ customer, history, notes, priceIt
 
   return (
     <div className="space-y-4">
-      {/* Persönliche Daten */}
-      <Card>
-        <CardHeader><CardTitle>Persönliche Daten</CardTitle></CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4 text-sm">
-          {[
-            ['Anrede', customer.salutation || '—'],
-            ['Vorname', customer.first_name],
-            ['Nachname', customer.last_name],
-            ['Geburtsdatum', formatDate(customer.birth_date)],
-            ['E-Mail', customer.email],
-            ['Telefon', customer.phone || '—'],
-            ['Adresse', [customer.address_street, customer.address_zip, customer.address_city].filter(Boolean).join(', ') || '—'],
-          ].map(([label, value]) => (
-            <div key={label}>
-              <p className="text-gray-500 text-xs mb-0.5">{label}</p>
-              <p className="text-gray-900 font-medium">{value}</p>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      {/* Persönliche Daten + Notizen nebeneinander */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        <Card>
+          <CardHeader><CardTitle>Persönliche Daten</CardTitle></CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4 text-sm">
+            {[
+              ['Anrede', customer.salutation || '—'],
+              ['Vorname', customer.first_name],
+              ['Nachname', customer.last_name],
+              ['Geburtsdatum', formatDate(customer.birth_date)],
+              ['E-Mail', customer.email],
+              ['Telefon', customer.phone || '—'],
+              ['Adresse', [customer.address_street, customer.address_zip, customer.address_city].filter(Boolean).join(', ') || '—'],
+            ].map(([label, value]) => (
+              <div key={label}>
+                <p className="text-gray-500 text-xs mb-0.5">{label}</p>
+                <p className="text-gray-900 font-medium">{value}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* CRM-Notizen */}
+        {(!readOnly || notes.length > 0) && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Notizen</CardTitle>
+                <span className="text-xs text-gray-400">{notes.length} Eintr{notes.length === 1 ? 'ag' : 'äge'}</span>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {!readOnly && (
+                <div className="flex gap-3">
+                  <textarea
+                    value={noteText}
+                    onChange={e => setNoteText(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter' && e.metaKey) handleAddNote(); }}
+                    placeholder="Neue Notiz… (⌘+Enter zum Speichern)"
+                    rows={2}
+                    className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
+                  />
+                  <Button onClick={handleAddNote} disabled={!noteText.trim() || isPending} className="self-end" size="sm">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+              {notes.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-4">Noch keine Notizen vorhanden.</p>
+              ) : (
+                <div className="space-y-2">
+                  {notes.map((note: any) => (
+                    <div key={note.id} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 group">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-400 mb-0.5">{formatDate(note.created_at)}</p>
+                        <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
+                      </div>
+                      {!readOnly && (
+                        <button
+                          onClick={() => handleDeleteNote(note.id)}
+                          className="text-gray-300 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 p-1 rounded shrink-0"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
       {/* Vertrag */}
       <Card>
@@ -181,59 +234,6 @@ export default function CustomerDetailClient({ customer, history, notes, priceIt
         </Card>
       )}
 
-      {/* CRM-Notizen */}
-      {(!readOnly || notes.length > 0) && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Notizen</CardTitle>
-              <span className="text-xs text-gray-400">{notes.length} Eintr{notes.length === 1 ? 'ag' : 'äge'}</span>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Add note – only for partners */}
-            {!readOnly && (
-              <div className="flex gap-3">
-                <textarea
-                  value={noteText}
-                  onChange={e => setNoteText(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter' && e.metaKey) handleAddNote(); }}
-                  placeholder="Neue Notiz hinzufügen… (⌘+Enter zum Speichern)"
-                  rows={2}
-                  className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
-                />
-                <Button onClick={handleAddNote} disabled={!noteText.trim() || isPending} className="self-end" size="sm">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
-
-            {/* Notes list */}
-            {notes.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-4">Noch keine Notizen vorhanden.</p>
-            ) : (
-              <div className="space-y-2">
-                {notes.map((note: any) => (
-                  <div key={note.id} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 group">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-400 mb-0.5">{formatDate(note.created_at)}</p>
-                      <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
-                    </div>
-                    {!readOnly && (
-                      <button
-                        onClick={() => handleDeleteNote(note.id)}
-                        className="text-gray-300 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 p-1 rounded shrink-0"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
 
       {/* Renewal Dialog */}
       <Dialog open={renewalOpen} onOpenChange={setRenewalOpen}>
