@@ -11,8 +11,8 @@ export const metadata = {
 
 const BENEFITS = [
   'Persönliches Gespräch – telefonisch oder per Video',
-  'Wir finden den passenden Trainer für dich',
-  'Keine Verpflichtungen, kein Kleingedrucktes',
+  'Wir finden gemeinsam heraus, was am besten zu dir passt',
+  'Das Gespräch findet komplett ohne Druck statt',
 ];
 
 export default function BeratungPage() {
@@ -58,7 +58,7 @@ export default function BeratungPage() {
               </h1>
 
               <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                Du interessierst dich für EMS-Training von zuhause? In einem persönlichen Gespräch erklären wir dir alles – ohne Druck, ohne Verpflichtung.
+                Gerne beraten wir dich persönlich und überprüfen gemeinsam, ob unser BODYTIME concept und dessen zahlreiche Vorteile genau das Richtige für dich sind. Das Gespräch findet komplett ohne Druck und ohne Verpflichtungen statt.
               </p>
 
               {/* Benefits */}

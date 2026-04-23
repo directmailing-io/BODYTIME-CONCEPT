@@ -8,9 +8,9 @@ export const metadata = {
 };
 
 const BENEFITS = [
-  { icon: <TrendingUp className="h-4 w-4" />, text: 'Monatlich wiederkehrende Einnahmen aufbauen' },
-  { icon: <Zap className="h-4 w-4" />, text: 'EMS-Equipment ohne Investitionskosten nutzen' },
-  { icon: <Users className="h-4 w-4" />, text: 'Exklusives Partnerprogramm mit vollständigem Support' },
+  { icon: <TrendingUp className="h-4 w-4" />, text: 'Verdiene direkt ab dem ersten Kunden – ohne lange Anlaufzeit' },
+  { icon: <Zap className="h-4 w-4" />, text: 'Kein Equipment kaufen – deine Kunden mieten den EMS-Anzug direkt bei beurer' },
+  { icon: <Users className="h-4 w-4" />, text: '100 % ortsunabhängig – skalierbar von 2 bis 10.000 Kunden, ohne neue Fixkosten' },
 ];
 
 export default function B2BBeratungPage() {
@@ -62,7 +62,7 @@ export default function B2BBeratungPage() {
               </h1>
 
               <p className="text-lg leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                Du willst ein skalierbares Business im Gesundheitsmarkt aufbauen? Lass uns in einem persönlichen Gespräch herausfinden, wie BODYTIME concept zu dir und deinen Zielen passt.
+                Gerne beraten wir dich persönlich und überprüfen gemeinsam, ob unser BODYTIME concept und dessen zahlreiche Vorteile genau das Richtige für dich sind. Das Gespräch findet komplett ohne Druck und ohne Verpflichtungen statt.
               </p>
 
               {/* Benefits */}

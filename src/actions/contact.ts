@@ -17,18 +17,15 @@ export async function submitB2CContact(data: {
   phone: string;
   phone_country: string;
 }): Promise<ContactResult> {
-  try {
-    const { first_name, last_name, phone } = data;
-    if (!first_name?.trim() || !last_name?.trim() || !phone?.trim()) {
-      return { success: false, error: 'Bitte alle Pflichtfelder ausfüllen.' };
-    }
-    const template = b2cContactEmail(data);
-    await sendMail({ to: CONTACT_EMAIL, subject: template.subject, html: template.html });
-    return { success: true };
-  } catch (err) {
-    console.error('[submitB2CContact]', err);
-    return { success: false, error: 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.' };
+  const { first_name, last_name, phone } = data;
+  if (!first_name?.trim() || !last_name?.trim() || !phone?.trim()) {
+    return { success: false, error: 'Bitte alle Pflichtfelder ausfüllen.' };
   }
+  // Fire email but never let it block the success response
+  const template = b2cContactEmail(data);
+  sendMail({ to: CONTACT_EMAIL, subject: template.subject, html: template.html })
+    .catch(err => console.error('[submitB2CContact] email failed:', err));
+  return { success: true };
 }
 
 export async function submitB2BContact(data: {
@@ -41,16 +38,13 @@ export async function submitB2BContact(data: {
   business_area?: string;
   business_area_custom?: string;
 }): Promise<ContactResult> {
-  try {
-    const { first_name, last_name, phone } = data;
-    if (!first_name?.trim() || !last_name?.trim() || !phone?.trim()) {
-      return { success: false, error: 'Bitte alle Pflichtfelder ausfüllen.' };
-    }
-    const template = b2bContactEmail(data);
-    await sendMail({ to: CONTACT_EMAIL, subject: template.subject, html: template.html });
-    return { success: true };
-  } catch (err) {
-    console.error('[submitB2BContact]', err);
-    return { success: false, error: 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.' };
+  const { first_name, last_name, phone } = data;
+  if (!first_name?.trim() || !last_name?.trim() || !phone?.trim()) {
+    return { success: false, error: 'Bitte alle Pflichtfelder ausfüllen.' };
   }
+  // Fire email but never let it block the success response
+  const template = b2bContactEmail(data);
+  sendMail({ to: CONTACT_EMAIL, subject: template.subject, html: template.html })
+    .catch(err => console.error('[submitB2BContact] email failed:', err));
+  return { success: true };
 }

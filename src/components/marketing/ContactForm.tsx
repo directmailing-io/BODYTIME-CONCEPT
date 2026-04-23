@@ -136,13 +136,13 @@ function BusinessAreaSelector({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 gap-1.5">
       {BUSINESS_AREAS.map(area => (
         <button
           key={area}
           type="button"
           onClick={() => onChange(area)}
-          className={`px-3 py-2.5 rounded-xl border text-sm font-medium text-left transition-all duration-150 ${
+          className={`px-2.5 py-2 rounded-lg border text-xs font-medium text-left leading-snug transition-all duration-150 ${
             value === area
               ? 'border-blue-500 bg-blue-50 text-blue-700'
               : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
@@ -231,9 +231,9 @@ export function ContactForm({ variant }: { variant: 'b2c' | 'b2b' }) {
   }
 
   const EMPLOYMENT_OPTIONS = [
-    { value: 'selbststaendig', label: 'Ja, ich bin selbstständig', icon: '💼' },
-    { value: 'angestellt', label: 'Nein, ich bin angestellt', icon: '🏢' },
-    { value: 'noch_nicht', label: 'Noch nicht, aber interessiert', icon: '🌱' },
+    { value: 'selbststaendig', label: 'Selbstständig', icon: '💼' },
+    { value: 'angestellt', label: 'Angestellt', icon: '🏢' },
+    { value: 'noch_nicht', label: 'Noch nicht', icon: '🌱' },
   ];
 
   return (
@@ -304,20 +304,20 @@ export function ContactForm({ variant }: { variant: 'b2c' | 'b2b' }) {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Bist du bereits selbstständig? <span className="text-gray-400 font-normal text-xs ml-1">(optional)</span>
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="flex flex-wrap gap-2">
               {EMPLOYMENT_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
                   type="button"
                   onClick={() => setEmploymentStatus(employmentStatus === opt.value ? '' : opt.value)}
-                  className={`flex flex-col items-center gap-1.5 px-3 py-3.5 rounded-xl border text-sm font-medium transition-all duration-150 ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all duration-150 ${
                     employmentStatus === opt.value
                       ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
                       : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
                   }`}
                 >
-                  <span className="text-xl">{opt.icon}</span>
-                  <span className="text-center leading-tight">{opt.label}</span>
+                  <span>{opt.icon}</span>
+                  <span>{opt.label}</span>
                 </button>
               ))}
             </div>
@@ -419,7 +419,7 @@ export function ContactForm({ variant }: { variant: 'b2c' | 'b2b' }) {
       </button>
 
       <p className="text-center text-xs text-gray-400">
-        Kostenlos & unverbindlich · Keine Werbung · Nur persönliche Beratung
+        Kostenlos & unverbindlich · Persönliche Beratung auf Augenhöhe
       </p>
     </form>
   );
