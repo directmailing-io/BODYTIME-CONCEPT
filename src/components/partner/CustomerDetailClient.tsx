@@ -72,7 +72,7 @@ export default function CustomerDetailClient({ customer, history, notes, readOnl
 
   const handleDeleteNote = (noteId: string) => {
     startTransition(async () => {
-      const result = await deleteCrmNoteAction(noteId);
+      const result = await deleteCrmNoteAction(noteId, customer.id);
       if (result.success) router.refresh();
       else toast.error(result.error ?? 'Fehler');
     });

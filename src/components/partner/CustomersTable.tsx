@@ -57,7 +57,8 @@ export default function CustomersTable({ customers }: { customers: any[] }) {
   };
 
   function StatusBadge({ customer }: { customer: any }) {
-    if (customer.profile_complete === false) {
+    const missingFields = !customer.order_date || !customer.first_name || !customer.last_name || !customer.email || !customer.rental_duration_months;
+    if (missingFields) {
       return <Badge variant="warning">Profil vervollständigen</Badge>;
     }
     if (isExpired(customer.contract_end_date)) return <Badge variant="danger">Abgelaufen</Badge>;

@@ -297,7 +297,7 @@ export async function deleteCustomerAction(customerId: string): Promise<ActionRe
   }
 }
 
-export async function deleteCrmNoteAction(noteId: string): Promise<ActionResult> {
+export async function deleteCrmNoteAction(noteId: string, customerId?: string): Promise<ActionResult> {
   try {
     const { user, supabase } = await requirePartner();
 
@@ -310,6 +310,7 @@ export async function deleteCrmNoteAction(noteId: string): Promise<ActionResult>
 
     if (error) return { success: false, error: 'Notiz konnte nicht gelöscht werden.' };
 
+    if (customerId) revalidatePath(`/partner/customers/${customerId}`);
     return { success: true };
   } catch (err) {
     console.error('[deleteCrmNoteAction]', err);
