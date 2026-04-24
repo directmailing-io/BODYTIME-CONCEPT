@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { ArrowLeft, Package, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Package, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,7 +13,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { createCustomerAction } from '@/actions/customers';
-import { saveCustomerPricingAction } from '@/actions/customer-pricing';
+import { saveCustomerPricingAction, type CustomerPriceItemInput } from '@/actions/customer-pricing';
 import { customerSchema, type CustomerInput } from '@/lib/validations/customer';
 
 interface PackageItem {
@@ -38,7 +38,7 @@ export default function NewCustomerForm({ packages }: { packages: PackageTemplat
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [selectedPackageId, setSelectedPackageId] = useState<string>('none');
-  const [packageExpanded, setPackageExpanded] = useState(true);
+  const [customItems, setCustomItems] = useState<CustomerPriceItemInput[]>([]);
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<CustomerInput>({
     resolver: zodResolver(customerSchema),
@@ -46,9 +46,31 @@ export default function NewCustomerForm({ packages }: { packages: PackageTemplat
   });
 
   const selectedPackage = packages.find(p => p.id === selectedPackageId);
-  const sortedItems = selectedPackage
+  const isCustom = selectedPackageId === 'custom';
+  const previewItems = selectedPackage
     ? [...selectedPackage.bt_package_items].sort((a, b) => a.sort_order - b.sort_order)
     : [];
+
+  function onPackageChange(value: string) {
+    setSelectedPackageId(value);
+    if (value === 'custom') {
+      setCustomItems([{ name: '', billing_type: 'monthly', amount: 0, sort_order: 0 }]);
+    } else {
+      setCustomItems([]);
+    }
+  }
+
+  function addCustomItem() {
+    setCustomItems(prev => [...prev, { name: '', billing_type: 'monthly', amount: 0, sort_order: prev.length }]);
+  }
+
+  function removeCustomItem(idx: number) {
+    setCustomItems(prev => prev.filter((_, i) => i !== idx));
+  }
+
+  function updateCustomItem(idx: number, field: keyof CustomerPriceItemInput, value: string | number) {
+    setCustomItems(prev => prev.map((item, i) => i === idx ? { ...item, [field]: value } : item));
+  }
 
   const onSubmit = (data: CustomerInput) => {
     startTransition(async () => {
@@ -60,22 +82,28 @@ export default function NewCustomerForm({ packages }: { packages: PackageTemplat
         return;
       }
 
-      // Optionally assign package pricing
+      const customerId = result.data.id;
+
       if (selectedPackage) {
-        await saveCustomerPricingAction(result.data.id, {
+        await saveCustomerPricingAction(customerId, {
           packageId: selectedPackage.id,
           packageName: selectedPackage.name,
-          items: sortedItems.map((item, i) => ({
+          items: previewItems.map((item, i) => ({
             name: item.name,
             billing_type: item.billing_type,
             amount: item.amount,
             sort_order: i,
           })),
         });
+      } else if (isCustom) {
+        const validItems = customItems.filter(i => i.name.trim());
+        if (validItems.length > 0) {
+          await saveCustomerPricingAction(customerId, { items: validItems });
+        }
       }
 
       toast.success('Kunde erfolgreich angelegt');
-      router.push(`/partner/customers/${result.data.id}`);
+      router.push(`/partner/customers/${customerId}`);
     });
   };
 
@@ -163,66 +191,99 @@ export default function NewCustomerForm({ packages }: { packages: PackageTemplat
           </CardContent>
         </Card>
 
-        {/* Package assignment – partner only, not shown to customers on order form */}
-        {packages.length > 0 && (
-          <Card className="border-blue-100">
-            <CardHeader>
-              <button
-                type="button"
-                className="flex items-center justify-between w-full text-left"
-                onClick={() => setPackageExpanded(e => !e)}
-              >
-                <div className="flex items-center gap-2.5">
-                  <Package className="h-4 w-4 text-blue-500" />
-                  <CardTitle>Paket zuweisen</CardTitle>
-                  <span className="text-xs text-gray-400 font-normal">optional</span>
-                </div>
-                {packageExpanded
-                  ? <ChevronUp className="h-4 w-4 text-gray-400" />
-                  : <ChevronDown className="h-4 w-4 text-gray-400" />
-                }
-              </button>
-            </CardHeader>
+        {/* Package assignment – partner only */}
+        <Card className="border-blue-100">
+          <CardHeader>
+            <div className="flex items-center gap-2.5">
+              <Package className="h-4 w-4 text-blue-500 flex-shrink-0" />
+              <CardTitle>Preispaket</CardTitle>
+              <span className="text-xs text-gray-400 font-normal">optional</span>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Select value={selectedPackageId} onValueChange={onPackageChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Paket wählen…" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Kein Paket</SelectItem>
+                <SelectItem value="custom">Individuell (Sonderkonditionen)</SelectItem>
+                {packages.map(p => (
+                  <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-            {packageExpanded && (
-              <CardContent className="space-y-4">
-                <Select value={selectedPackageId} onValueChange={setSelectedPackageId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Paket wählen…" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Kein Paket</SelectItem>
-                    {packages.map(p => (
-                      <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {selectedPackage && sortedItems.length > 0 && (
-                  <div className="rounded-xl bg-blue-50/60 border border-blue-100 p-3 space-y-1.5">
-                    {sortedItems.map(item => (
-                      <div key={item.id} className="flex items-center justify-between text-sm">
-                        <span className="text-gray-700">{item.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-gray-900">{formatEur(item.amount)}</span>
-                          <Badge variant="neutral" className="text-xs">
-                            {item.billing_type === 'once' ? 'einmalig' : '/Monat'}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
+            {/* Package preview */}
+            {selectedPackage && previewItems.length > 0 && (
+              <div className="rounded-xl bg-blue-50/60 border border-blue-100 p-3 space-y-1.5">
+                {previewItems.map(item => (
+                  <div key={item.id} className="flex items-center justify-between text-sm">
+                    <span className="text-gray-700">{item.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900">{formatEur(item.amount)}</span>
+                      <Badge variant="neutral" className="text-xs">
+                        {item.billing_type === 'once' ? 'einmalig' : '/Monat'}
+                      </Badge>
+                    </div>
                   </div>
-                )}
-
-                {selectedPackageId === 'none' && (
-                  <p className="text-xs text-gray-400">
-                    Du kannst das Paket auch nach dem Anlegen jederzeit in der Kundenansicht zuweisen.
-                  </p>
-                )}
-              </CardContent>
+                ))}
+              </div>
             )}
-          </Card>
-        )}
+
+            {/* Custom items editor */}
+            {isCustom && (
+              <div className="space-y-2">
+                {customItems.map((item, idx) => (
+                  <div key={idx} className="rounded-xl bg-gray-50 border border-gray-100 p-3 space-y-2">
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        placeholder="Postenname (z. B. Onboarding, Sondergebühr)"
+                        value={item.name}
+                        onChange={e => updateCustomItem(idx, 'name', e.target.value)}
+                        className="flex-1 h-9 rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                      />
+                      <button type="button" onClick={() => removeCustomItem(idx)} className="text-gray-300 hover:text-red-500 transition-colors flex-shrink-0">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <Select value={item.billing_type} onValueChange={v => updateCustomItem(idx, 'billing_type', v)}>
+                        <SelectTrigger className="w-36 flex-shrink-0"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="once">einmalig</SelectItem>
+                          <SelectItem value="monthly">monatlich</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <div className="flex items-center flex-1 border border-gray-200 rounded-lg bg-white overflow-hidden focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent">
+                        <input
+                          type="number"
+                          placeholder="0,00"
+                          step="0.01"
+                          min="0"
+                          value={item.amount || ''}
+                          onChange={e => updateCustomItem(idx, 'amount', parseFloat(e.target.value) || 0)}
+                          className="flex-1 h-9 px-3 text-sm text-gray-900 bg-transparent focus:outline-none placeholder:text-gray-400"
+                        />
+                        <span className="px-3 text-sm font-medium text-gray-400 bg-gray-50 border-l border-gray-200 h-9 flex items-center">€</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <Button type="button" size="sm" variant="outline" onClick={addCustomItem} className="w-full">
+                  <Plus className="h-3.5 w-3.5" /> Posten hinzufügen
+                </Button>
+              </div>
+            )}
+
+            {selectedPackageId === 'none' && (
+              <p className="text-xs text-gray-400">
+                Kein Paket – du kannst es jederzeit in der Kundenansicht nachträglich zuweisen.
+              </p>
+            )}
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader><CardTitle>Bemerkungen</CardTitle></CardHeader>
