@@ -120,9 +120,12 @@ export default function CustomerDetailClient({ customer, history, notes, priceIt
   };
 
   return (
-    <div className="space-y-4">
-      {/* Persönliche Daten + Notizen nebeneinander */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+    <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-4 items-start">
+
+      {/* ── Left column: all main cards ── */}
+      <div className="space-y-4">
+
+        {/* Persönliche Daten */}
         <Card>
           <CardHeader><CardTitle>Persönliche Daten</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-2 gap-4 text-sm">
@@ -143,8 +146,86 @@ export default function CustomerDetailClient({ customer, history, notes, priceIt
           </CardContent>
         </Card>
 
-        {/* CRM-Notizen */}
-        {(!readOnly || notes.length > 0) && (
+        {/* Vertrag */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Vertrag</CardTitle>
+              {!readOnly && (
+                <Button size="sm" onClick={openRenewal}>
+                  <RefreshCw className="h-3.5 w-3.5" /> Verlängern
+                </Button>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4 text-sm">
+            {[
+              ['Bestellnummer', customer.order_number || '—'],
+              ['Bestelldatum', formatDate(customer.order_date)],
+              ['Laufzeit', `${customer.rental_duration_months} Monate`],
+              ['Vertragsende', formatDate(customer.contract_end_date)],
+              ['EMS-Anzug', customer.ems_suit_type || '—'],
+              ['Größe Oberteil', customer.size_top || '—'],
+              ['Größe Hose', customer.size_pants || '—'],
+            ].map(([label, value]) => (
+              <div key={label}>
+                <p className="text-gray-500 text-xs mb-0.5">{label}</p>
+                <p className="text-gray-900 font-medium">{value}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Preise & Zahlungen */}
+        <CustomerPricingSection
+          customerId={customer.id}
+          priceItems={priceItems ?? []}
+          paymentEntries={paymentEntries ?? []}
+          packages={packages ?? []}
+          rentalDurationMonths={customer.rental_duration_months ?? 12}
+          readOnly={readOnly}
+        />
+
+        {/* Vertragsverlauf */}
+        {history.length > 0 && (
+          <Card>
+            <CardHeader><CardTitle>Vertragsverlauf</CardTitle></CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {history.map((entry: any, i: number) => (
+                  <div key={entry.id} className={`flex gap-4 pb-3 ${i < history.length - 1 ? 'border-b border-gray-50' : ''}`}>
+                    <div className="w-2 h-2 bg-gray-300 rounded-full mt-1.5 shrink-0" />
+                    <div className="flex-1 text-sm">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge variant={entry.change_type === 'renewal' ? 'success' : entry.change_type === 'initial' ? 'info' : 'neutral'}>
+                          {changeTypeLabel[entry.change_type] ?? entry.change_type}
+                        </Badge>
+                        <span className="text-gray-400 text-xs">{formatDate(entry.created_at)}</span>
+                      </div>
+                      <p className="text-gray-700">
+                        Bestelldatum: {formatDate(entry.order_date)} · Laufzeit: {entry.rental_duration_months} Mon. · Ende: {formatDate(entry.contract_end_date)}
+                      </p>
+                      {entry.change_notes && <p className="text-gray-500 mt-0.5 text-xs">{entry.change_notes}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Bemerkungen */}
+        {customer.notes && (
+          <Card>
+            <CardHeader><CardTitle>Bemerkungen</CardTitle></CardHeader>
+            <CardContent><p className="text-sm text-gray-700 whitespace-pre-wrap">{customer.notes}</p></CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* ── Right column: Notizen ── */}
+      {(!readOnly || notes.length > 0) && (
+        <div className="sticky top-24">
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -152,15 +233,15 @@ export default function CustomerDetailClient({ customer, history, notes, priceIt
                 <span className="text-xs text-gray-400">{notes.length} Eintr{notes.length === 1 ? 'ag' : 'äge'}</span>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
               {!readOnly && (
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <textarea
                     value={noteText}
                     onChange={e => setNoteText(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter' && e.metaKey) handleAddNote(); }}
-                    placeholder="Neue Notiz… (⌘+Enter zum Speichern)"
-                    rows={2}
+                    placeholder="Neue Notiz… (⌘+Enter)"
+                    rows={3}
                     className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
                   />
                   <Button onClick={handleAddNote} disabled={!noteText.trim() || isPending} className="self-end" size="sm">
@@ -169,11 +250,11 @@ export default function CustomerDetailClient({ customer, history, notes, priceIt
                 </div>
               )}
               {notes.length === 0 ? (
-                <p className="text-sm text-gray-400 text-center py-4">Noch keine Notizen vorhanden.</p>
+                <p className="text-sm text-gray-400 text-center py-6">Noch keine Notizen.</p>
               ) : (
                 <div className="space-y-2">
                   {notes.map((note: any) => (
-                    <div key={note.id} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 group">
+                    <div key={note.id} className="flex items-start gap-2 p-3 rounded-xl bg-gray-50 group">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-400 mb-0.5">{formatDate(note.created_at)}</p>
                         <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
@@ -192,83 +273,7 @@ export default function CustomerDetailClient({ customer, history, notes, priceIt
               )}
             </CardContent>
           </Card>
-        )}
-      </div>
-
-      {/* Vertrag */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Vertrag</CardTitle>
-            {!readOnly && (
-              <Button size="sm" onClick={openRenewal}>
-                <RefreshCw className="h-3.5 w-3.5" /> Verlängern
-              </Button>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4 text-sm">
-          {[
-            ['Bestellnummer', customer.order_number || '—'],
-            ['Bestelldatum', formatDate(customer.order_date)],
-            ['Laufzeit', `${customer.rental_duration_months} Monate`],
-            ['Vertragsende', formatDate(customer.contract_end_date)],
-            ['EMS-Anzug', customer.ems_suit_type || '—'],
-            ['Größe Oberteil', customer.size_top || '—'],
-            ['Größe Hose', customer.size_pants || '—'],
-          ].map(([label, value]) => (
-            <div key={label}>
-              <p className="text-gray-500 text-xs mb-0.5">{label}</p>
-              <p className="text-gray-900 font-medium">{value}</p>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* Preise & Zahlungen */}
-      <CustomerPricingSection
-        customerId={customer.id}
-        priceItems={priceItems ?? []}
-        paymentEntries={paymentEntries ?? []}
-        packages={packages ?? []}
-        rentalDurationMonths={customer.rental_duration_months ?? 12}
-        readOnly={readOnly}
-      />
-
-      {/* Vertragsverlauf */}
-      {history.length > 0 && (
-        <Card>
-          <CardHeader><CardTitle>Vertragsverlauf</CardTitle></CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {history.map((entry: any, i: number) => (
-                <div key={entry.id} className={`flex gap-4 pb-3 ${i < history.length - 1 ? 'border-b border-gray-50' : ''}`}>
-                  <div className="w-2 h-2 bg-gray-300 rounded-full mt-1.5 shrink-0" />
-                  <div className="flex-1 text-sm">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge variant={entry.change_type === 'renewal' ? 'success' : entry.change_type === 'initial' ? 'info' : 'neutral'}>
-                        {changeTypeLabel[entry.change_type] ?? entry.change_type}
-                      </Badge>
-                      <span className="text-gray-400 text-xs">{formatDate(entry.created_at)}</span>
-                    </div>
-                    <p className="text-gray-700">
-                      Bestelldatum: {formatDate(entry.order_date)} · Laufzeit: {entry.rental_duration_months} Mon. · Ende: {formatDate(entry.contract_end_date)}
-                    </p>
-                    {entry.change_notes && <p className="text-gray-500 mt-0.5 text-xs">{entry.change_notes}</p>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Bemerkungen */}
-      {customer.notes && (
-        <Card>
-          <CardHeader><CardTitle>Bemerkungen</CardTitle></CardHeader>
-          <CardContent><p className="text-sm text-gray-700 whitespace-pre-wrap">{customer.notes}</p></CardContent>
-        </Card>
+        </div>
       )}
 
 

@@ -45,7 +45,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
   const profileIncomplete = !customer.order_date || !customer.first_name || !customer.last_name || !customer.email || !customer.rental_duration_months;
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-5xl">
       <Link href="/partner/customers" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-6">
         <ArrowLeft className="h-4 w-4" /> Alle Kunden
       </Link>

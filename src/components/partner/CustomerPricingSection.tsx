@@ -122,9 +122,6 @@ export default function CustomerPricingSection({
   const monthlyTotal = priceItems.filter(i => i.billing_type === 'monthly').reduce((s, i) => s + Number(i.amount), 0);
   const kundenwert = onceTotal + monthlyTotal * rentalDurationMonths;
 
-  const paidTotal = paymentEntries.filter(e => e.status === 'paid').reduce((s, e) => s + Number(e.amount), 0);
-  const pendingTotal = paymentEntries.filter(e => e.status === 'pending').reduce((s, e) => s + Number(e.amount), 0);
-
   const today = new Date().toISOString().split('T')[0];
   const sortedEntries = [...paymentEntries].sort((a, b) => a.due_date.localeCompare(b.due_date));
   const visibleEntries = showAllPayments ? sortedEntries : sortedEntries.slice(0, 8);
@@ -177,19 +174,12 @@ export default function CustomerPricingSection({
               </div>
 
               {/* Kundenwert summary */}
-              <div className="grid grid-cols-3 gap-3 pt-2">
-                <div className="p-3 rounded-xl bg-gray-50 text-center">
-                  <p className="text-xs text-gray-400 mb-0.5">Kundenwert</p>
-                  <p className="text-base font-bold text-gray-900">{formatEur(kundenwert)}</p>
-                </div>
-                <div className="p-3 rounded-xl bg-green-50 text-center">
-                  <p className="text-xs text-green-600 mb-0.5">Bezahlt</p>
-                  <p className="text-base font-bold text-green-700">{formatEur(paidTotal)}</p>
-                </div>
-                <div className="p-3 rounded-xl bg-amber-50 text-center">
-                  <p className="text-xs text-amber-600 mb-0.5">Ausstehend</p>
-                  <p className="text-base font-bold text-amber-700">{formatEur(pendingTotal)}</p>
-                </div>
+              <div className="flex items-center justify-between pt-3 mt-1 border-t border-gray-100">
+                <span className="text-sm text-gray-500">
+                  Kundenwert
+                  <span className="text-gray-400 font-normal ml-1">({rentalDurationMonths} Monate)</span>
+                </span>
+                <span className="text-xl font-bold text-gray-900 tracking-tight">{formatEur(kundenwert)}</span>
               </div>
             </div>
           )}
