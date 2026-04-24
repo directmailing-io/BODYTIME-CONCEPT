@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { saveCustomerPricingAction, type CustomerPriceItemInput } from '@/actions/customer-pricing';
+import { getPackageColor } from '@/lib/package-colors';
 
 interface PriceItem {
   id: string;
@@ -17,6 +18,7 @@ interface PriceItem {
   billing_type: 'once' | 'monthly';
   amount: number;
   package_name?: string | null;
+  package_id?: string | null;
   sort_order: number;
 }
 
@@ -153,12 +155,20 @@ export default function CustomerPricingSection({
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Package name */}
-              {priceItems[0]?.package_name && (
-                <p className="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg w-fit">
-                  Paket: {priceItems[0].package_name}
-                </p>
-              )}
+              {/* Package name chip */}
+              {priceItems[0]?.package_name && (() => {
+                const pkgId = priceItems[0].package_id;
+                const color = pkgId ? getPackageColor(pkgId) : null;
+                return (
+                  <span
+                    className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-lg w-fit"
+                    style={color ? { backgroundColor: color.bg, color: color.text } : { backgroundColor: '#eff6ff', color: '#1d4ed8' }}
+                  >
+                    {color && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color.accent }} />}
+                    {priceItems[0].package_name}
+                  </span>
+                );
+              })()}
 
               {/* Price items */}
               <div className="space-y-1.5">

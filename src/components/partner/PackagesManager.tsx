@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { upsertPackageAction, deletePackageAction, type PackageItemInput } from '@/actions/partner-packages';
+import { getPackageColor } from '@/lib/package-colors';
 
 interface PackageItem {
   id: string;
@@ -129,13 +130,17 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
           const pkgItems = pkg.bt_package_items.sort((a, b) => a.sort_order - b.sort_order);
           const monthlyTotal = pkgItems.filter(i => i.billing_type === 'monthly').reduce((s, i) => s + i.amount, 0);
           const onceTotal = pkgItems.filter(i => i.billing_type === 'once').reduce((s, i) => s + i.amount, 0);
+          const color = getPackageColor(pkg.id);
           return (
-            <Card key={pkg.id}>
+            <Card key={pkg.id} style={{ borderLeftColor: color.accent }} className="border-l-4">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="font-semibold text-gray-900 text-base">{pkg.name}</h3>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: color.accent }} />
+                      <h3 className="font-semibold text-gray-900 text-base">{pkg.name}</h3>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-0.5 ml-[18px]">
                       {onceTotal > 0 && <span>{formatEur(onceTotal)} einmalig · </span>}
                       {monthlyTotal > 0 && <span>{formatEur(monthlyTotal)}/Monat</span>}
                     </p>

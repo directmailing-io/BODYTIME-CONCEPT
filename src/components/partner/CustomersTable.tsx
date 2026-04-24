@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { daysUntilEnd, isExpiringSoon, isExpired, formatDate } from '@/lib/utils';
+import { getPackageColor } from '@/lib/package-colors';
 
 type FilterType = 'all' | 'expiring' | 'expired' | 'active';
 type SortKey = 'name' | 'contract_end_date' | 'order_date';
@@ -21,8 +22,10 @@ function calcKundenwert(customer: any): number {
   return once + monthly * (customer.rental_duration_months ?? 0);
 }
 
-function getPackageName(customer: any): string | null {
-  return customer.bt_customer_price_items?.[0]?.package_name ?? null;
+function getPackageInfo(customer: any): { name: string; id: string | null } | null {
+  const item = customer.bt_customer_price_items?.[0];
+  if (!item?.package_name) return null;
+  return { name: item.package_name, id: item.package_id ?? null };
 }
 
 export default function CustomersTable({ customers }: { customers: any[] }) {
@@ -156,10 +159,20 @@ export default function CustomersTable({ customers }: { customers: any[] }) {
                       <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{formatDate(customer.order_date)}</td>
                       <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{customer.rental_duration_months} Mon.</td>
                       <td className="px-4 py-3 hidden xl:table-cell">
-                        {getPackageName(customer)
-                          ? <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700">{getPackageName(customer)}</span>
-                          : <span className="text-xs text-gray-300">–</span>
-                        }
+                        {(() => {
+                          const pkg = getPackageInfo(customer);
+                          if (!pkg) return <span className="text-xs text-gray-300">–</span>;
+                          const color = pkg.id ? getPackageColor(pkg.id) : null;
+                          return (
+                            <span
+                              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium"
+                              style={color ? { backgroundColor: color.bg, color: color.text } : { backgroundColor: '#f3f4f6', color: '#6b7280' }}
+                            >
+                              {color && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color.accent }} />}
+                              {pkg.name}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td className="px-4 py-3 hidden xl:table-cell">
                         {calcKundenwert(customer) > 0

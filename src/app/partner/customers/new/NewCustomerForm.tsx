@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { getPackageColor } from '@/lib/package-colors';
 import { createCustomerAction } from '@/actions/customers';
 import { saveCustomerPricingAction, type CustomerPriceItemInput } from '@/actions/customer-pricing';
 import { customerSchema, type CustomerInput } from '@/lib/validations/customer';
@@ -207,16 +208,26 @@ export default function NewCustomerForm({ packages }: { packages: PackageTemplat
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">Kein Paket</SelectItem>
-                <SelectItem value="custom">Individuell (Sonderkonditionen)</SelectItem>
-                {packages.map(p => (
-                  <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                ))}
+                <SelectItem value="custom">Individuell</SelectItem>
+                {packages.map(p => {
+                  const color = getPackageColor(p.id);
+                  return (
+                    <SelectItem key={p.id} value={p.id}>
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: color.accent }} />
+                        {p.name}
+                      </span>
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
 
             {/* Package preview */}
-            {selectedPackage && previewItems.length > 0 && (
-              <div className="rounded-xl bg-blue-50/60 border border-blue-100 p-3 space-y-1.5">
+            {selectedPackage && previewItems.length > 0 && (() => {
+              const color = getPackageColor(selectedPackage.id);
+              return (
+              <div className="rounded-xl p-3 space-y-1.5" style={{ backgroundColor: color.bg, border: `1px solid ${color.accent}30` }}>
                 {previewItems.map(item => (
                   <div key={item.id} className="flex items-center justify-between text-sm">
                     <span className="text-gray-700">{item.name}</span>
@@ -229,7 +240,8 @@ export default function NewCustomerForm({ packages }: { packages: PackageTemplat
                   </div>
                 ))}
               </div>
-            )}
+              );
+            })()}
 
             {/* Custom items editor */}
             {isCustom && (
