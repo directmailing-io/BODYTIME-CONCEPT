@@ -18,7 +18,7 @@ export default function MarketingNav() {
   const isHome = pathname === '/';
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(!isHome); // non-home pages start solid
+  const [scrolled, setScrolled] = useState(false); // always start transparent; effect corrects immediately
 
   useEffect(() => {
     if (!isHome) {
