@@ -1,6 +1,6 @@
 'use client';
 import { useState, useTransition } from 'react';
-import { Plus, Trash2, Pencil, Package, X, Check } from 'lucide-react';
+import { Plus, Trash2, Pencil, Package, X, Check, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,6 +34,8 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
   const [packages, setPackages] = useState<Package[]>(initialPackages);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPackage, setEditingPackage] = useState<Package | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<Package | null>(null);
+  const [deleteCustomerPrices, setDeleteCustomerPrices] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   // Form state
@@ -85,13 +87,20 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
     });
   }
 
-  function handleDelete(pkg: Package) {
-    if (!confirm(`Paket "${pkg.name}" wirklich löschen?`)) return;
+  function openDeleteDialog(pkg: Package) {
+    setDeleteCustomerPrices(false);
+    setDeleteDialog(pkg);
+  }
+
+  function confirmDelete() {
+    if (!deleteDialog) return;
+    const pkg = deleteDialog;
     startTransition(async () => {
-      const result = await deletePackageAction(pkg.id);
+      const result = await deletePackageAction(pkg.id, deleteCustomerPrices);
       if (result.success) {
         setPackages(prev => prev.filter(p => p.id !== pkg.id));
         toast.success('Paket gelöscht');
+        setDeleteDialog(null);
       } else {
         toast.error(result.error ?? 'Fehler');
       }
@@ -135,7 +144,7 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
                     <Button size="sm" variant="outline" onClick={() => openEdit(pkg)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleDelete(pkg)} className="text-red-500 hover:text-red-600">
+                    <Button size="sm" variant="outline" onClick={() => openDeleteDialog(pkg)} className="text-red-500 hover:text-red-600">
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -160,6 +169,86 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
           );
         })
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!deleteDialog} onOpenChange={open => { if (!open) setDeleteDialog(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+              </div>
+              <div>
+                <DialogTitle className="text-base">Paket löschen</DialogTitle>
+                <p className="text-sm text-gray-500 mt-1">
+                  <span className="font-medium text-gray-900">„{deleteDialog?.name}"</span> wird unwiderruflich gelöscht.
+                </p>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="mt-2 space-y-2">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Was soll mit Kunden-Preisen passieren?</p>
+
+            <button
+              type="button"
+              onClick={() => setDeleteCustomerPrices(false)}
+              className={`w-full flex items-start gap-3 rounded-xl border p-3.5 text-left transition-colors ${
+                !deleteCustomerPrices ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                !deleteCustomerPrices ? 'border-blue-600 bg-blue-600' : 'border-gray-300'
+              }`}>
+                {!deleteCustomerPrices && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              </div>
+              <div>
+                <p className={`text-sm font-medium ${!deleteCustomerPrices ? 'text-blue-900' : 'text-gray-700'}`}>
+                  Preise bei Kunden beibehalten
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Kunden behalten ihre Preisposten und Zahlungspläne. Das Paket wird nur als Vorlage entfernt.
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setDeleteCustomerPrices(true)}
+              className={`w-full flex items-start gap-3 rounded-xl border p-3.5 text-left transition-colors ${
+                deleteCustomerPrices ? 'bg-red-50 border-red-200' : 'bg-white border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                deleteCustomerPrices ? 'border-red-500 bg-red-500' : 'border-gray-300'
+              }`}>
+                {deleteCustomerPrices && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              </div>
+              <div>
+                <p className={`text-sm font-medium ${deleteCustomerPrices ? 'text-red-800' : 'text-gray-700'}`}>
+                  Preise bei allen Kunden löschen
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Alle Preisposten und ausstehenden Zahlungen bei Kunden mit diesem Paket werden ebenfalls gelöscht.
+                </p>
+              </div>
+            </button>
+          </div>
+
+          <div className="flex gap-3 justify-end pt-2">
+            <Button type="button" variant="outline" onClick={() => setDeleteDialog(null)}>
+              Abbrechen
+            </Button>
+            <Button
+              onClick={confirmDelete}
+              loading={isPending}
+              className="bg-red-600 hover:bg-red-700 text-white border-red-600 hover:border-red-700"
+            >
+              <Trash2 className="h-4 w-4" /> Löschen
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

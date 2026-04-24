@@ -63,11 +63,32 @@ export async function upsertPackageAction(
   }
 }
 
-export async function deletePackageAction(packageId: string): Promise<ActionResult> {
+export async function deletePackageAction(
+  packageId: string,
+  deleteCustomerPrices: boolean = false
+): Promise<ActionResult> {
   try {
     const { user, supabase } = await requirePartner();
     const { data: existing } = await supabase.from('bt_partner_packages').select('partner_id').eq('id', packageId).single();
     if (!existing || existing.partner_id !== user.id) return { success: false, error: 'Keine Berechtigung.' };
+
+    if (deleteCustomerPrices) {
+      // Find affected customers (those whose price items reference this package)
+      const { data: affectedItems } = await supabase
+        .from('bt_customer_price_items')
+        .select('customer_id')
+        .eq('package_id', packageId);
+
+      if (affectedItems && affectedItems.length > 0) {
+        const customerIds = [...new Set(affectedItems.map(i => i.customer_id))];
+        // Delete pending payment entries for affected customers
+        await supabase.from('bt_payment_entries').delete().in('customer_id', customerIds).eq('status', 'pending');
+        // Delete customer price items linked to this package
+        await supabase.from('bt_customer_price_items').delete().eq('package_id', packageId);
+      }
+    }
+
+    // Delete the package (FK ON DELETE SET NULL keeps customer items if deleteCustomerPrices=false)
     await supabase.from('bt_partner_packages').delete().eq('id', packageId);
     revalidatePath('/partner/pakete');
     return { success: true };
