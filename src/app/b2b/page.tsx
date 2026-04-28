@@ -1017,10 +1017,9 @@ function KundenerlebnisSection() {
               <MapPin className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-[17px] font-semibold text-gray-900 leading-snug mb-1.5">Kein Studio nötig.</p>
+              <p className="text-[17px] font-semibold text-gray-900 leading-snug mb-1.5">Studio oder flexibel – dein Kunde entscheidet.</p>
               <p className="text-sm leading-relaxed" style={{ color: '#1e6fa0' }}>
-                Zuhause, im Garten, auf Geschäftsreise oder im Urlaub. Der Anzug passt in jeden Rucksack
-                und das Training passt in jeden Alltag. Deine Kunden brauchen keinen festen Ort.
+                Ob im Studio, zuhause oder unterwegs – der Anzug passt in jeden Rucksack und das Training in jeden Alltag. Du bietest beides, dein Kunde wählt, was zu seinem Leben passt.
               </p>
             </div>
           </motion.div>
