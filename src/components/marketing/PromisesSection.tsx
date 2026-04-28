@@ -131,7 +131,7 @@ export default function PromisesSection() {
             <div className="relative">
               <p
                 className="gradient-text-slow font-semibold leading-none"
-                style={{ fontSize: 'clamp(80px, 15vw, 130px)', lineHeight: 0.85 }}
+                style={{ fontSize: 'clamp(100px, 20vw, 180px)', lineHeight: 0.85 }}
               >
                 ∞
               </p>
@@ -201,7 +201,7 @@ export default function PromisesSection() {
                 Ohne Risiko starten
               </p>
               <p className="text-sm text-gray-500 leading-relaxed">
-                14 Tage Widerrufsrecht nach Vertragsabschluss.
+                14 Tage Widerrufsrecht nach Bestellung.
                 Passt die Größe nicht, hast du 30 Tage Zeit für den Umtausch.
               </p>
             </div>
@@ -233,7 +233,7 @@ export default function PromisesSection() {
               </p>
             </div>
             <p className="text-sm text-gray-500 leading-relaxed mt-4 relative">
-              Du mietest den EMS Anzug direkt bei deinem Trainer.
+              Du mietest den EMS Anzug zu Sonderkonditionen direkt bei deinem Ansprechpartner.
               Keine Anschaffungskosten. Kein Risiko.
             </p>
           </BentoCard>
