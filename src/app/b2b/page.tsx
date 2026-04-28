@@ -823,11 +823,11 @@ const CHECKLIST_GROUPS = [
   {
     label: 'Dein Smart Office',
     items: [
-      'Digitale Kundenübersicht: alle Verträge, Pakete und Kontakte auf einen Blick',
-      'Automatische Erinnerungen bei auslaufenden Verträgen, damit du nichts verpasst',
-      'Individuell zuweisbare Preispakete pro Kunde, flexibel anpassbar',
-      'Transparenter Zahlungsplan für jeden Kunden, ohne Papierchaos',
-      'Direkt startklar, keine Installation, kein Setup, einfach einloggen und loslegen',
+      'Digitale Kundenübersicht: alle Verträge und Kontakte auf einen Blick',
+      'Automatische Erinnerungen bei auslaufenden Verträgen',
+      'Flexibel anpassbare Preispakete pro Kunde',
+      'Direkt startklar, kein Setup, kein Schnickschnack',
+      'Smartphone-optimiert, einfach zu bedienen',
     ],
   },
   {
