@@ -821,6 +821,16 @@ const CHECKLIST_GROUPS = [
     ],
   },
   {
+    label: 'Dein Smart Office',
+    items: [
+      'Digitale Kundenübersicht: alle Verträge, Pakete und Kontakte auf einen Blick',
+      'Automatische Erinnerungen bei auslaufenden Verträgen, damit du nichts verpasst',
+      'Individuell zuweisbare Preispakete pro Kunde, flexibel anpassbar',
+      'Transparenter Zahlungsplan für jeden Kunden, ohne Papierchaos',
+      'Direkt startklar, keine Installation, kein Setup, einfach einloggen und loslegen',
+    ],
+  },
+  {
     label: 'Know-how und Sicherheit',
     items: [
       '20 Jahre EMS-Expertise direkt auf dich übertragen',
