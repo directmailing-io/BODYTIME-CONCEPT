@@ -233,7 +233,7 @@ export default function PromisesSection() {
               </p>
             </div>
             <p className="text-sm text-gray-500 leading-relaxed mt-4 relative">
-              Du mietest den EMS Anzug zu Sonderkonditionen direkt bei deinem Ansprechpartner.
+              Du mietest den EMS Anzug zu <span className="underline decoration-[#25A8E0] underline-offset-2">Sonderkonditionen</span> direkt bei deinem Ansprechpartner.
               Keine Anschaffungskosten. Kein Risiko.
             </p>
           </BentoCard>
