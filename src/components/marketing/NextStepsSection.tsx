@@ -218,7 +218,7 @@ export default function NextStepsSection() {
               </p>
               {[
                 'EMS-Anzug zur Miete, direkt von ANTELOPE by beurer',
-                'Persönlicher EMS-Experte, immer erreichbar, kein Terminstress',
+                'Persönlicher Ansprechpartner, immer erreichbar, kein Terminstress',
                 'Persönliches Einführungsgespräch und individuelles Onboarding',
                 'Alltagsintegration: Wann, wie und wo du am besten trainierst',
                 'Regelmäßige Check-in-Calls und Anpassung bei Zieländerungen',

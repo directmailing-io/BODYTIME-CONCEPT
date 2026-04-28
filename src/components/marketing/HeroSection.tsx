@@ -4,7 +4,7 @@ import { ButtonColorful } from '@/components/ui/ButtonColorful';
 const BENEFITS = [
   'Trainieren wann und wo du willst - perfekt als Ergänzung zu deinem Sport.',
   'Sofortlösung bei Beschwerden, Verspannungen, Muskelaufbau und mehr.',
-  'Dein persönlicher EMS-Experte, immer an deiner Seite.',
+  'Dein persönlicher Ansprechpartner, immer an deiner Seite.',
 ];
 
 export default function HeroSection() {

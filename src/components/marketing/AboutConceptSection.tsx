@@ -6,8 +6,8 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const CARDS = [
   {
-    title: 'Du hast einen persönlichen EMS-Experten',
-    text: 'Zertifizierte EMS-Experten begleiten dich von Anfang an, egal ob du zuhause, unterwegs oder in der Mittagspause trainierst. Immer erreichbar, immer für dich da.',
+    title: 'Du hast einen persönlichen Ansprechpartner',
+    text: 'Zertifizierte Ansprechpartner begleiten dich von Anfang an, egal ob du zuhause, unterwegs oder in der Mittagspause trainierst. Immer erreichbar, immer für dich da.',
   },
   {
     title: 'Du bleibst flexibel',
@@ -66,10 +66,6 @@ export default function AboutConceptSection() {
                 EMS-Training,{' '}
                 <span className="text-white/40">das sich deinem Leben anpasst.</span>
               </h2>
-              <p className="text-base sm:text-lg text-white/60 leading-relaxed font-light mb-8">
-                BODYTIME concept verbindet zertifizierte EMS-Experten mit Menschen,
-                die das Training an ihren Alltag anpassen wollen und nicht den Alltag an ihr Training.
-              </p>
             </FadeUp>
 
             {/* Positive tags */}
