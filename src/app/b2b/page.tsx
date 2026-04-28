@@ -1017,9 +1017,9 @@ function KundenerlebnisSection() {
               <MapPin className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-[17px] font-semibold text-gray-900 leading-snug mb-1.5">Studio oder flexibel – dein Kunde entscheidet.</p>
+              <p className="text-[17px] font-semibold text-gray-900 leading-snug mb-1.5">Dein Kunde will flexibel sein? Kein Problem.</p>
               <p className="text-sm leading-relaxed" style={{ color: '#1e6fa0' }}>
-                Ob im Studio, zuhause oder unterwegs – der Anzug passt in jeden Rucksack und das Training in jeden Alltag. Du bietest beides, dein Kunde wählt, was zu seinem Leben passt.
+                Manche Kunden wollen ins Studio, andere lieber zuhause oder unterwegs trainieren. Du bietest beides an, dein Kunde entscheidet. Der Anzug passt in jeden Rucksack, das Training in jeden Alltag.
               </p>
             </div>
           </motion.div>
@@ -1159,10 +1159,10 @@ function PreiseSection() {
       highlight: true,
     },
     {
-      label: 'Pro Endkunde',
-      price: '11 €',
-      name: 'Skalierbare Gebühr',
-      desc: 'Nur wenn du aktive Kunden hast. Wächst mit dir.',
+      label: 'Pro Kunde / Monat',
+      price: '1 €',
+      name: 'Pro aktivem Kunde / Monat',
+      desc: 'Nur solange der Kunde aktiv ist. Wächst mit dir, ohne dich zu belasten.',
       items: ['Nur bei aktiven Kunden', 'Transparent & nachvollziehbar', 'Kein Fixkostenrisiko'],
     },
   ];
