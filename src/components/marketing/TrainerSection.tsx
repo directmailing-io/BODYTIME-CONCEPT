@@ -150,7 +150,7 @@ export default function TrainerSection({ bios }: { bios: Bio[] }) {
           </p>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-semibold text-gray-900 leading-tight tracking-tight">
-              Unsere zertifizierten<br />EMS-Trainer
+              Unsere zertifizierten<br />Ansprechpartner
             </h2>
 
             {/* Filter controls */}

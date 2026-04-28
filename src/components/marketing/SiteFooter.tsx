@@ -37,7 +37,7 @@ export default function SiteFooter() {
               />
             </Link>
             <p className="text-sm text-white/40 leading-relaxed max-w-xs mb-5">
-              EMS Training für zuhause. Persönlich begleitet von zertifizierten Experten.
+              EMS Training für zuhause. Persönlich begleitet von zertifizierten Ansprechpartnern.
             </p>
             <div className="flex items-center gap-2">
               <span className="text-[11px] text-white/25 uppercase tracking-wider font-medium">Partner von</span>

@@ -4,7 +4,7 @@ import { ButtonColorful } from '@/components/ui/ButtonColorful';
 const BENEFITS = [
   'Trainieren wann und wo du willst - perfekt als Ergänzung zu deinem Sport.',
   'Sofortlösung bei Beschwerden, Verspannungen, Muskelaufbau und mehr.',
-  'Dein persönlicher Ansprechpartner, immer an deiner Seite.',
+  'Dein persönlicher Ansprechpartner - immer für dich da.',
 ];
 
 export default function HeroSection() {
