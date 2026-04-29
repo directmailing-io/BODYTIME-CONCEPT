@@ -4,8 +4,18 @@ import { Toaster } from 'sonner';
 import CookieConsent from '@/components/CookieConsent';
 
 export const metadata: Metadata = {
-  title: 'BODYTIME concept',
-  description: 'Dein EMS Training für zuhause – persönliche Begleitung von Experten.',
+  title: {
+    default: 'BODYTIME concept – EMS Training für zuhause',
+    template: '%s | BODYTIME concept',
+  },
+  description: 'Trainiere flexibel zuhause, unterwegs oder im Studio. Mit persönlichem Ansprechpartner, EMS-Anzug zur Miete und sofort startklar – ganz ohne Geräte.',
+  openGraph: {
+    title: 'BODYTIME concept – EMS Training für zuhause',
+    description: 'Trainiere flexibel zuhause, unterwegs oder im Studio. Mit persönlichem Ansprechpartner, EMS-Anzug zur Miete und sofort startklar – ganz ohne Geräte.',
+    siteName: 'BODYTIME concept',
+    locale: 'de_DE',
+    type: 'website',
+  },
 };
 
 // Runs synchronously before React hydration — redirects invite links instantly
