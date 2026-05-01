@@ -251,7 +251,7 @@ function HeroSection() {
           <ul className="space-y-3.5 mb-10">
             {[
               'Führe dein EMS-Business von überall und verdiene ohne Wachstumsgrenze.',
-              'Betreue Kunden aus dem gesamten DACH-Raum, ohne sie je vor Ort zu sehen.',
+              'Betreue Kunden in Deutschland und Österreich, ohne sie je vor Ort zu sehen.',
               'Starte ohne Ladenlokal, ohne Gerätekosten und ohne großes Startkapital.',
             ].map((b) => (
               <li
@@ -396,7 +396,7 @@ function StudioBetreiberSection() {
               <div className="p-5">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: '#07C8DB' }}>BODYTIME concept</p>
                 <ul className="flex flex-col gap-2.5">
-                  {['Kunden, die jederzeit und überall trainieren wollen', 'Einstieg ab 55 Euro pro Monat möglich', 'Kein Limit, egal wie viele Kunden du hast', 'Kunden aus ganz Deutschland erreichbar'].map(f => (
+                  {['Kunden, die jederzeit und überall trainieren wollen', 'Einstieg ab 55 Euro pro Monat möglich', 'Kein Limit, egal wie viele Kunden du hast', 'Kunden in Deutschland und Österreich erreichbar'].map(f => (
                     <li key={f} className="flex items-start gap-2.5 text-[12px] text-white/50 leading-snug"><span className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-[5px]" style={{ background: '#25A8E0' }} />{f}</li>
                   ))}
                 </ul>
@@ -469,7 +469,7 @@ function StudioBetreiberSection() {
               <div className="p-6 flex flex-col flex-1">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] mb-4" style={{ color: '#07C8DB' }}>BODYTIME concept</p>
                 <ul className="flex flex-col gap-3 flex-1">
-                  {['Kunden, die jederzeit und überall trainieren wollen', 'Einstieg ab 55 Euro pro Monat möglich', 'Kein Limit, egal wie viele Kunden du hast', 'Kunden aus ganz Deutschland erreichbar'].map(f => (
+                  {['Kunden, die jederzeit und überall trainieren wollen', 'Einstieg ab 55 Euro pro Monat möglich', 'Kein Limit, egal wie viele Kunden du hast', 'Kunden in Deutschland und Österreich erreichbar'].map(f => (
                     <li key={f} className="flex items-start gap-2.5 text-[12px] text-white/50 leading-snug"><span className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-[5px]" style={{ background: '#25A8E0' }} />{f}</li>
                   ))}
                 </ul>
@@ -696,20 +696,20 @@ function KonzeptSection() {
                         <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: '#25A8E0' }}>Du</span>
                       </div>
                       <div className="flex-1 flex flex-col gap-2.5">
-                        {['Deutschland', 'Österreich', 'Schweiz'].map((country, ci) => (
-                          <div key={country} className="flex items-center gap-2">
+                        {[{ flag: '🇩🇪', name: 'Deutschland' }, { flag: '🇦🇹', name: 'Österreich' }].map(({ flag, name }, ci) => (
+                          <div key={name} className="flex items-center gap-2">
                             <div className="flex-1 border-t border-dashed" style={{ borderColor: `rgba(37,168,224,${0.55 - ci * 0.1})` }} />
                             <div
-                              className="px-2 py-0.5 rounded-md text-[10px] font-medium text-gray-600"
+                              className="px-2 py-0.5 rounded-md text-[10px] font-medium text-gray-600 flex items-center gap-1"
                               style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(37,168,224,0.18)' }}
                             >
-                              {country}
+                              <span>{flag}</span>{name}
                             </div>
                           </div>
                         ))}
                       </div>
                       <div className="flex-shrink-0 flex flex-col gap-2">
-                        {[0, 1, 2].map(j => (
+                        {[0, 1].map(j => (
                           <div
                             key={j}
                             className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
@@ -721,7 +721,7 @@ function KonzeptSection() {
                       </div>
                     </div>
                     <p className="text-[10px] text-center font-medium" style={{ color: 'rgba(37,168,224,0.65)' }}>
-                      Kunden aus dem gesamten DACH-Raum betreuen
+                      Kunden in Deutschland und Österreich betreuen
                     </p>
                   </div>
                 )}
@@ -1315,7 +1315,7 @@ const B2B_FAQS = [
   },
   {
     q: 'Muss ich ein Studio oder Ladenlokal haben?',
-    a: 'Nein, das ist gerade der Kern des Konzepts. Deine Kunden trainieren zuhause mit dem EMS-Suit. Du kannst Kunden in ganz Deutschland betreuen, egal wo du selbst wohnst. Wenn du in München bist und dein Kunde in Hannover, funktioniert das genauso.',
+    a: 'Nein, das ist gerade der Kern des Konzepts. Deine Kunden trainieren zuhause mit dem EMS-Suit. Du kannst Kunden in Deutschland und Österreich betreuen, egal wo du selbst wohnst. Wenn du in München bist und dein Kunde in Hannover, funktioniert das genauso.',
   },
   {
     q: 'Wann fange ich an zu verdienen?',
