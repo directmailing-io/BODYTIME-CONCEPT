@@ -33,22 +33,25 @@ export default function ImpressumPage() {
           <section>
             <h2 className="text-base font-semibold text-gray-900 mb-3">Anbieter</h2>
             <p>
-              BODYTIME concept GmbH <em>(Musterunternehmen – Platzhalter)</em><br />
-              Musterstraße 1<br />
-              12345 Musterstadt<br />
+              BODYTIME Concept GmbH <em>(in Gründung)</em><br />
+              Alte Kissinger Straße 7<br />
+              97688 Bad Kissingen<br />
               Deutschland
             </p>
           </section>
 
           <section>
             <h2 className="text-base font-semibold text-gray-900 mb-3">Vertreten durch</h2>
-            <p>Max Mustermann (Geschäftsführer)</p>
+            <p>
+              Christoph Schmitt (Geschäftsführer)<br />
+              Oliver Pfannes (Geschäftsführer)
+            </p>
           </section>
 
           <section>
             <h2 className="text-base font-semibold text-gray-900 mb-3">Kontakt</h2>
             <p>
-              Telefon: +49 (0) 123 456789<br />
+              Telefon: <a href="tel:+491713024479" className="text-blue-600 hover:underline">+49 171 3024479</a><br />
               E-Mail: <a href="mailto:info@bodytime-concept.de" className="text-blue-600 hover:underline">info@bodytime-concept.de</a>
             </p>
           </section>
@@ -56,8 +59,8 @@ export default function ImpressumPage() {
           <section>
             <h2 className="text-base font-semibold text-gray-900 mb-3">Handelsregister</h2>
             <p>
-              Registergericht: Amtsgericht Musterstadt<br />
-              Registernummer: HRB 00000
+              Registergericht: Amtsgericht Schweinfurt<br />
+              Registernummer: <em>(folgt nach Eintragung)</em>
             </p>
           </section>
 
@@ -65,16 +68,16 @@ export default function ImpressumPage() {
             <h2 className="text-base font-semibold text-gray-900 mb-3">Umsatzsteuer-ID</h2>
             <p>
               Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
-              DE 000 000 000
+              <em>(folgt nach Erteilung)</em>
             </p>
           </section>
 
           <section>
             <h2 className="text-base font-semibold text-gray-900 mb-3">Verantwortlich für den Inhalt (§ 55 Abs. 2 RStV)</h2>
             <p>
-              Max Mustermann<br />
-              Musterstraße 1<br />
-              12345 Musterstadt
+              Christoph Schmitt<br />
+              Alte Kissinger Straße 7<br />
+              97688 Bad Kissingen
             </p>
           </section>
 
@@ -116,9 +119,6 @@ export default function ImpressumPage() {
 
         </div>
 
-        <p className="mt-12 text-xs text-gray-400">
-          * Diese Seite enthält Platzhalterdaten zu Demonstrationszwecken.
-        </p>
 
       </main>
 

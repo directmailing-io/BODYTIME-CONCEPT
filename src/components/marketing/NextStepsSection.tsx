@@ -217,7 +217,7 @@ export default function NextStepsSection() {
                 Darüber hinaus bekommst du:
               </p>
               {[
-                'EMS-Anzug zur Miete, direkt von ANTELOPE by beurer',
+                'EMS-Anzug zur Miete zu Sonderkonditionen, direkt von ANTELOPE by beurer',
                 'Persönlicher Ansprechpartner, immer erreichbar, kein Terminstress',
                 'Persönliches Einführungsgespräch und individuelles Onboarding',
                 'Alltagsintegration: Wann, wie und wo du am besten trainierst',

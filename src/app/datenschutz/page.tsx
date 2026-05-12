@@ -35,7 +35,7 @@ export default function DatenschutzPage() {
       <main className="max-w-3xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
 
         <h1 className="text-3xl font-semibold text-gray-900 mb-2">Datenschutzerklärung</h1>
-        <p className="text-sm text-gray-400 mb-10">Stand: Januar 2025</p>
+        <p className="text-sm text-gray-400 mb-10">Stand: Mai 2026</p>
 
         <div className="space-y-8">
 
@@ -44,10 +44,11 @@ export default function DatenschutzPage() {
               Verantwortlich für die Datenverarbeitung auf dieser Website ist:
             </p>
             <p>
-              BODYTIME concept GmbH <em>(Platzhalter)</em><br />
-              Musterstraße 1, 12345 Musterstadt<br />
-              E-Mail: <a href="mailto:datenschutz@bodytime-concept.de" className="text-blue-600 hover:underline">datenschutz@bodytime-concept.de</a><br />
-              Telefon: +49 (0) 123 456789
+              BODYTIME Concept GmbH (i. G.)<br />
+              Alte Kissinger Straße 7<br />
+              97688 Bad Kissingen<br />
+              E-Mail: <a href="mailto:info@bodytime-concept.de" className="text-blue-600 hover:underline">info@bodytime-concept.de</a><br />
+              Telefon: <a href="tel:+491713024479" className="text-blue-600 hover:underline">+49 171 3024479</a>
             </p>
           </Section>
 
@@ -199,14 +200,16 @@ export default function DatenschutzPage() {
               zuständige Aufsichtsbehörde ist:
             </p>
             <p>
-              <em>(Hier die zuständige Landesbehörde eintragen, z. B. Bayerisches Landesamt
-              für Datenschutzaufsicht – BayLDA, Promenade 18, 91522 Ansbach)</em>
+              Bayerisches Landesamt für Datenschutzaufsicht (BayLDA)<br />
+              Promenade 18<br />
+              91522 Ansbach<br />
+              <a href="https://www.lda.bayern.de" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.lda.bayern.de</a>
             </p>
           </Section>
 
           <Section title="10. Aktualität und Änderung dieser Datenschutzerklärung">
             <p>
-              Diese Datenschutzerklärung ist aktuell gültig und hat den Stand Januar 2025.
+              Diese Datenschutzerklärung ist aktuell gültig und hat den Stand Mai 2026.
               Durch die Weiterentwicklung unserer Website oder aufgrund geänderter gesetzlicher
               oder behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung
               zu ändern. Die jeweils aktuelle Version ist jederzeit auf dieser Seite abrufbar.
@@ -215,9 +218,6 @@ export default function DatenschutzPage() {
 
         </div>
 
-        <p className="mt-12 text-xs text-gray-400">
-          * Diese Seite enthält Platzhalterdaten zu Demonstrationszwecken.
-        </p>
 
       </main>
 
