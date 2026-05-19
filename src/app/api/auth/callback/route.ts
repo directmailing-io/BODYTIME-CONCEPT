@@ -12,8 +12,12 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code');
   const next = searchParams.get('next') ?? '/';
 
+  // No PKCE code – Supabase used implicit flow (generateLink with type=recovery).
+  // Redirect to the target page; the client-side Supabase listener will pick up
+  // the #access_token fragment and establish the session automatically.
   if (!code) {
-    return NextResponse.redirect(new URL('/login?error=missing_code', request.url));
+    const target = new URL(next, `https://${request.headers.get('host') ?? 'bodytime-concept.de'}`);
+    return NextResponse.redirect(target);
   }
 
   const cookieStore = await cookies();
