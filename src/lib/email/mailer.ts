@@ -5,7 +5,7 @@
  */
 import { Resend } from 'resend';
 
-const FROM_ADDRESS = 'onboarding@resend.dev';
+const FROM_ADDRESS = process.env.EMAIL_FROM ?? 'onboarding@resend.dev';
 
 /** Send a pre-built mail options object; throws on failure */
 export async function sendMail(options: {

@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['nodemailer'],
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
