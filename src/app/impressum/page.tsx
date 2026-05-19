@@ -33,7 +33,7 @@ export default function ImpressumPage() {
           <section>
             <h2 className="text-base font-semibold text-gray-900 mb-3">Anbieter</h2>
             <p>
-              BODYTIME Concept GmbH <em>(in Gründung)</em><br />
+              BODYTIME Concept GmbH<br />
               Alte Kissinger Straße 7<br />
               97688 Bad Kissingen<br />
               Deutschland
@@ -60,7 +60,7 @@ export default function ImpressumPage() {
             <h2 className="text-base font-semibold text-gray-900 mb-3">Handelsregister</h2>
             <p>
               Registergericht: Amtsgericht Schweinfurt<br />
-              Registernummer: <em>(folgt nach Eintragung)</em>
+              Registernummer: HRB 10067
             </p>
           </section>
 
