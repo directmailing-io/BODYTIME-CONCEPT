@@ -92,29 +92,44 @@ export async function forgotPasswordAction(formData: FormData): Promise<ActionRe
     return { success: false, error: 'Ungültige E-Mail-Adresse.' };
   }
 
-  // Generate reset link via admin API, then send via our custom mailer (Resend)
+  const redirectTo = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?next=/reset-password`;
+
+  // Try sending via Resend (custom mailer) first; fall back to Supabase built-in email
+  // if Resend domain is not yet verified.
   const adminClient = createAdminClient();
-  const { data: linkData, error } = await adminClient.auth.admin.generateLink({
+  const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
     type: 'recovery',
     email: parsed.data.email,
-    options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?next=/reset-password`,
-    },
+    options: { redirectTo },
   });
 
-  // Always return success to prevent email enumeration
-  if (error) {
-    console.error('[forgotPassword] generateLink error:', error);
-  } else if (linkData?.properties?.action_link) {
+  if (!linkError && linkData?.properties?.action_link) {
     const template = resetPasswordEmail({ firstName: '', resetUrl: linkData.properties.action_link });
-    sendMail({ to: parsed.data.email, subject: template.subject, html: template.html })
-      .catch(err => console.error('[forgotPassword] sendMail error:', err));
+    const { sendMail } = await import('@/lib/email/mailer');
+    const mailResult = await sendMail({
+      to: parsed.data.email,
+      subject: template.subject,
+      html: template.html,
+    }).catch(() => null);
+
+    // If Resend succeeded, we're done
+    if (mailResult) {
+      return { success: true, data: undefined };
+    }
   }
 
-  return {
-    success: true,
-    data: undefined,
-  };
+  // Fallback: let Supabase send the reset email via its built-in system
+  const supabase = await createClient();
+  const { error: resetError } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo,
+  });
+
+  if (resetError) {
+    console.error('[forgotPassword] fallback resetPasswordForEmail error:', resetError);
+  }
+
+  // Always return success to prevent email enumeration
+  return { success: true, data: undefined };
 }
 
 export async function resetPasswordAction(formData: FormData): Promise<ActionResult> {
