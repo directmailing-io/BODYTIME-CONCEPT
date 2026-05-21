@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BODYTIME concept – Partner-Handbuch</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --app-bg: #f5f5f7;
+      --gray-50:  #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --blue-50:  #eff6ff;
+      --blue-100: #dbeafe;
+      --blue-600: #2563eb;
+      --green-50: #f0fdf4;
+      --amber-50: #fffbeb;
+      --amber-200: #fde68a;
+      --red-50:   #fef2f2;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f0f2;
+      color: var(--gray-800);
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    /* ── Page layout ── */
+    .page { display: flex; min-height: 100vh; }
+
+    /* ── Handbook sidebar ── */
+    .sidenav {
+      width: 210px; flex-shrink: 0;
+      background: white;
+      border-right: 1px solid var(--gray-200);
+      position: sticky; top: 0; height: 100vh;
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    .sidenav-brand {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sidenav-brand img { height: 36px; width: auto; display: block; }
+    .sidenav-label { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); padding: 12px 16px 4px; }
+    .sidenav a { display: flex; align-items: center; gap: 8px; padding: 6px 16px; font-size: 12.5px; color: var(--gray-600); text-decoration: none; transition: background 0.1s, color 0.1s; }
+    .sidenav a:hover { background: var(--gray-50); color: var(--gray-900); }
+    .sidenav a.active { background: var(--gray-100); color: var(--gray-900); font-weight: 600; }
+
+    /* ── Main ── */
+    .main { flex: 1; min-width: 0; }
+    .topbar { background: white; border-bottom: 1px solid var(--gray-200); padding: 18px 44px 14px; position: sticky; top: 0; z-index: 10; }
+    .topbar-eye { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 2px; }
+    .topbar-title { font-size: 19px; font-weight: 700; color: var(--gray-900); }
+    .content { max-width: 800px; margin: 0 auto; padding: 48px 44px 88px; }
+
+    /* ── Chapter ── */
+    .chapter { margin-bottom: 80px; }
+    .chapter-head { display: flex; align-items: center; gap: 13px; padding-bottom: 16px; border-bottom: 2px solid var(--gray-100); margin-bottom: 24px; }
+    .chapter-icon { width: 42px; height: 42px; border-radius: 11px; background: var(--gray-900); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 19px; }
+    .chapter-num { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 2px; }
+    .chapter h2 { font-size: 19px; font-weight: 700; color: var(--gray-900); }
+
+    p { color: var(--gray-600); line-height: 1.65; margin-bottom: 13px; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--gray-800); }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; margin: 20px 0; }
+    .step { display: flex; gap: 14px; position: relative; }
+    .step:not(:last-child)::after { content: ''; position: absolute; left: 15px; top: 38px; bottom: 0; width: 2px; background: var(--gray-100); }
+    .step-n { width: 32px; height: 32px; border-radius: 50%; background: var(--gray-900); color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .step-body { flex: 1; padding-bottom: 20px; }
+    .step-body h4 { font-size: 13.5px; font-weight: 600; color: var(--gray-900); margin-bottom: 3px; }
+    .step-body p { font-size: 13px; color: var(--gray-500); margin: 0; line-height: 1.55; }
+
+    /* ── Callout ── */
+    .callout { display: flex; gap: 10px; padding: 14px 15px; border-radius: 11px; margin: 16px 0; font-size: 13.5px; }
+    .callout.blue  { background: var(--blue-50);  border: 1px solid var(--blue-100); color: #1e40af; }
+    .callout.green { background: var(--green-50); border: 1px solid #bbf7d0;          color: #14532d; }
+    .callout.amber { background: var(--amber-50); border: 1px solid var(--amber-200); color: #92400e; }
+    .callout.red   { background: var(--red-50);   border: 1px solid #fecaca;           color: #7f1d1d; }
+    .callout-em { font-size: 15px; flex-shrink: 0; }
+    .callout p { margin: 0; font-size: 13.5px; line-height: 1.55; color: inherit; }
+    .callout strong { color: inherit; }
+
+    /* ── Feature cards ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 11px; margin: 16px 0; }
+    .card { background: white; border: 1px solid var(--gray-200); border-radius: 11px; padding: 15px; }
+    .card-em { font-size: 19px; margin-bottom: 8px; }
+    .card h4 { font-size: 13px; font-weight: 600; color: var(--gray-900); margin-bottom: 4px; }
+    .card p  { font-size: 12px; color: var(--gray-500); margin: 0; line-height: 1.45; }
+
+    /* ── Check list ── */
+    .checks { list-style: none; display: flex; flex-direction: column; gap: 7px; margin: 13px 0; }
+    .checks li { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: var(--gray-700); line-height: 1.5; }
+    .chk { width: 17px; height: 17px; background: var(--gray-900); color: white; border-radius: 50%; font-size: 8px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+    /* ── Screenshot ── */
+    .screenshot { border-radius: 13px; overflow: hidden; border: 1px solid var(--gray-200); box-shadow: 0 3px 20px rgba(0,0,0,0.07); margin: 20px 0; }
+    .screenshot img { width: 100%; display: block; }
+    .screenshot-cap { font-size: 11.5px; color: var(--gray-400); text-align: center; margin: -12px 0 18px; font-style: italic; }
+
+    /* ══════════════════════════════════════════════════
+       APP MOCKUP STYLES — pixel-accurate to real UI
+    ══════════════════════════════════════════════════ */
+    .browser {
+      border: 1px solid var(--gray-200);
+      border-radius: 13px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin: 20px 0;
+      background: var(--app-bg);
+    }
+    .browser-bar {
+      background: #ebebeb;
+      border-bottom: 1px solid #d4d4d4;
+      padding: 8px 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .wd { width: 12px; height: 12px; border-radius: 50%; }
+    .wd.r { background: #ff5f57; } .wd.y { background: #febc2e; } .wd.g { background: #28c840; }
+    .browser-url {
+      flex: 1;
+      background: white;
+      border: 1px solid #cfcfcf;
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 11.5px;
+      color: #555;
+      margin: 0 10px;
+    }
+
+    /* App shell */
+    .app { display: flex; height: 440px; }
+
+    /* App sidebar — exact match */
+    .asb {
+      width: 240px;
+      background: white;
+      border-right: 1px solid #f3f4f6;
+      display: flex; flex-direction: column;
+      flex-shrink: 0;
+    }
+    .asb-logo {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 58px;
+    }
+    .asb-logo img { height: 40px; width: auto; display: block; }
+    .asb-nav { flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+    .an {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--gray-500);
+      cursor: default;
+      white-space: nowrap;
+    }
+    .an.on { background: var(--gray-100); color: var(--gray-900); font-weight: 500; }
+    .an svg { flex-shrink: 0; }
+    .an.on svg { color: var(--gray-900); }
+    .an:not(.on) svg { color: var(--gray-400); }
+    .asb-foot {
+      padding: 10px 12px;
+      border-top: 1px solid #f3f4f6;
+    }
+    .asb-user {
+      display: flex; align-items: center; gap: 9px;
+      padding: 7px 10px;
+      border-radius: 10px;
+      margin-bottom: 1px;
+    }
+    .asb-av {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--gray-900); color: white;
+      font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .asb-uname { font-size: 12px; font-weight: 500; color: var(--gray-900); }
+    .asb-uemail { font-size: 10.5px; color: var(--gray-400); }
+    .asb-logout {
+      display: flex; align-items: center; gap: 9px;
+      padding: 7px 10px; border-radius: 10px;
+      font-size: 12.5px; color: var(--gray-500);
+      cursor: default;
+    }
+
+    /* App main content */
+    .amain { flex: 1; overflow: hidden; padding: 22px 22px 16px; background: var(--app-bg); }
+    .amain-title { font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 18px; }
+
+    /* ── KPI cards ── */
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+    .kpi { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; }
+    .kpi-v { font-size: 28px; font-weight: 700; color: var(--gray-900); line-height: 1; }
+    .kpi-l { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+
+    /* ── Alert widget ── */
+    .widget { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; }
+    .widget-hdr { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); margin-bottom: 10px; }
+    .widget-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f9fafb; }
+    .widget-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .widget-name { font-size: 13px; font-weight: 500; color: var(--gray-800); }
+    .widget-sub  { font-size: 10.5px; color: var(--gray-400); }
+
+    /* ── Badges/Chips — small, exact match ── */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 11.5px; font-weight: 500;
+      white-space: nowrap;
+    }
+    .badge.danger  { background: #fee2e2; color: #991b1b; }
+    .badge.warning { background: #fef3c7; color: #92400e; }
+    .badge.success { background: #dcfce7; color: #166534; }
+    .badge.neutral { background: var(--gray-100); color: var(--gray-600); }
+
+    /* ── Table ── */
+    .tbl-controls { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .tbl-search {
+      flex: 1; min-width: 160px;
+      background: white; border: 1px solid #e5e7eb; border-radius: 10px;
+      padding: 7px 10px 7px 30px;
+      font-size: 12.5px; color: var(--gray-400);
+      position: relative;
+    }
+    .tbl-search-wrap { position: relative; flex: 1; }
+    .tbl-search-wrap::before { content: ''; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' fill='none' stroke='%239ca3af' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat center; }
+    .tbl-filters { display: flex; gap: 6px; }
+    .tf { padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: default; background: white; border: 1px solid var(--gray-200); color: var(--gray-600); }
+    .tf.on { background: var(--gray-900); border-color: var(--gray-900); color: white; }
+    .tbl-card { background: white; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+    .tbl-thead { display: grid; padding: 8px 14px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+    .tbl-thead span { font-size: 10.5px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; }
+    .tbl-row { display: grid; padding: 11px 14px; border-bottom: 1px solid #f9fafb; align-items: center; }
+    .tbl-row:last-child { border-bottom: none; }
+    .tc-name { font-size: 13px; font-weight: 500; color: var(--gray-900); }
+    .tc-email { font-size: 11.5px; color: var(--gray-500); }
+    .tc-date { font-size: 12.5px; }
+    .tc-sub  { font-size: 10.5px; margin-top: 1px; }
+
+    /* ── Form mockup ── */
+    .form-card { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 10px; }
+    .form-card-title { font-size: 13px; font-weight: 600; color: var(--gray-900); margin-bottom: 12px; }
+    .fg { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .ff { display: flex; flex-direction: column; gap: 3px; }
+    .fl { font-size: 11px; font-weight: 600; color: var(--gray-700); }
+    .fi { height: 32px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0 9px; font-size: 12.5px; color: var(--gray-400); display: flex; align-items: center; }
+    .fi.active { border-color: #111827; background: white; color: var(--gray-900); }
+    .fi.select { justify-content: space-between; }
+    .fi.select::after { content: '▾'; font-size: 10px; color: var(--gray-400); }
+    .fcol2 { grid-column: 1 / -1; }
+    .btn-dark { background: #111827; color: white; border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 600; text-align: center; margin-top: 2px; }
+
+    /* ── Order mockup ── */
+    .ocard { border: 2px solid #e5e7eb; border-radius: 11px; overflow: hidden; margin-bottom: 9px; }
+    .ocard.hot { border-color: #fde68a; }
+    .ocard-hdr { display: flex; align-items: center; gap: 9px; padding: 11px 14px; background: white; border-bottom: 1px solid #e5e7eb; }
+    .ocard.hot .ocard-hdr { background: #fffbeb; border-bottom-color: #fde68a; }
+    .on2 { width: 26px; height: 26px; border-radius: 50%; background: #111827; color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ocard.hot .on2 { background: #f59e0b; }
+    .ot { font-size: 12.5px; font-weight: 600; color: var(--gray-800); }
+    .ocard.hot .ot { color: #92400e; }
+    .ocard-body { padding: 12px 14px; background: white; }
+    .ocard.hot .ocard-body { background: #fffbeb; }
+    .voucher-box { background: white; border: 1px solid #fde68a; border-radius: 9px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+    .vcode { font-size: 22px; font-weight: 800; font-family: 'SF Mono', 'Menlo', 'Courier New', monospace; letter-spacing: 0.09em; color: #111827; }
+    .vcopy { background: white; border: 1px solid #fde68a; border-radius: 7px; padding: 5px 11px; font-size: 11.5px; font-weight: 600; color: #92400e; cursor: default; }
+    .shop-row { display: flex; gap: 9px; }
+    .shop-btn { flex: 1; background: white; border: 1px solid #e5e7eb; border-radius: 9px; padding: 10px; text-align: center; }
+    .shop-icon { font-size: 17px; margin-bottom: 3px; }
+    .shop-lbl { font-size: 12px; font-weight: 600; color: var(--gray-800); }
+    .shop-sub { font-size: 10.5px; color: var(--gray-400); margin-top: 2px; }
+
+    /* ── Status flow ── */
+    .sflow { display: flex; align-items: center; gap: 7px; margin: 18px 0; flex-wrap: wrap; }
+    .sbox { flex: 1; min-width: 105px; border-radius: 10px; padding: 12px; text-align: center; }
+    .sarr { color: var(--gray-300); font-size: 16px; flex-shrink: 0; }
+
+    /* ── Doc items ── */
+    .doc-section { margin-bottom: 16px; }
+    .doc-lbl { font-size: 12px; font-weight: 700; color: var(--gray-700); padding-bottom: 7px; border-bottom: 1px solid var(--gray-200); margin-bottom: 8px; }
+    .doc-item { background: white; border: 1px solid #e5e7eb; border-radius: 9px; padding: 10px 13px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .doc-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .doc-name { font-size: 12.5px; font-weight: 500; color: var(--gray-900); }
+    .doc-sub2  { font-size: 10.5px; color: var(--gray-400); margin-top: 1px; }
+    .doc-btn  { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; flex-shrink: 0; cursor: default; }
+
+    /* ── Hero ── */
+    .hero { background: var(--gray-900); border-radius: 17px; padding: 34px; margin-bottom: 38px; color: white; }
+    .hero-eye { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #6b7280; margin-bottom: 7px; }
+    .hero h1 { font-size: 27px; font-weight: 800; line-height: 1.2; margin-bottom: 9px; }
+    .hero p { font-size: 14px; color: #9ca3af; line-height: 1.6; max-width: 480px; margin-bottom: 0; }
+    .hero-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 18px; }
+    .hero-chip { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: #d1d5db; font-size: 12px; padding: 4px 11px; border-radius: 99px; }
+
+    /* ── TOC ── */
+    .toc { background: white; border: 1px solid var(--gray-200); border-radius: 13px; padding: 20px; margin-bottom: 42px; }
+    .toc-title { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--gray-500); margin-bottom: 11px; }
+    .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .toc a { display: flex; align-items: center; gap: 8px; padding: 6px 9px; border-radius: 8px; text-decoration: none; font-size: 13px; color: var(--gray-700); transition: background 0.1s; }
+    .toc a:hover { background: var(--gray-50); }
+    .toc-n { width: 19px; height: 19px; background: var(--gray-900); color: white; border-radius: 4px; font-size: 9.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    hr { border: none; border-top: 1px solid var(--gray-100); margin: 36px 0; }
+
+    /* ── Mobile nav bar ── */
+    .mobile-nav {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+    .mobile-nav::-webkit-scrollbar { display: none; }
+    .mobile-nav a {
+      display: inline-block;
+      padding: 9px 10px;
+      font-size: 11.5px;
+      color: var(--gray-600);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .mobile-nav a:hover { color: var(--gray-900); }
+
+    @media (max-width: 840px) {
+      .sidenav { display: none; }
+      .mobile-nav { display: block; }
+      .content { padding: 22px 18px 60px; }
+      .topbar { display: none; }
+      .toc-grid, .kpi-row { grid-template-columns: 1fr 1fr; }
+      .app { flex-direction: column; height: auto; }
+      .asb { width: 100%; border-right: none; border-bottom: 1px solid #f3f4f6; }
+      .hero { padding: 28px 22px 24px; }
+      .hero h1 { font-size: 26px; }
+      .cards { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .browser { margin: 14px 0; }
+      .shop-row { flex-direction: column; }
+      .fg { grid-template-columns: 1fr; }
+      .fcol2 { grid-column: auto; }
+      .sflow { justify-content: flex-start; }
+      .kpi-row .kpi-val { font-size: 22px; }
+    }
+
+    @media (max-width: 540px) {
+      .topbar-title { font-size: 15px; }
+      .topbar-eye { display: none; }
+      .toc-grid { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: 1fr 1fr; }
+      .chapter-head { gap: 10px; }
+      .chapter-icon { font-size: 26px; }
+      .chapter-head h2 { font-size: 20px; }
+      .chapter-num { font-size: 10px; }
+      .step { gap: 12px; }
+      .step-n { width: 28px; height: 28px; font-size: 13px; flex-shrink: 0; }
+      .hero h1 { font-size: 22px; }
+      .hero-chips { gap: 5px; }
+      .hero-chip { font-size: 11px; padding: 5px 10px; }
+      .browser-url { font-size: 10px; }
+      .content { padding: 16px 14px 60px; }
+      /* Mockup app shell on phone */
+      .app { font-size: 11px; }
+      .asb { display: none; }
+      .tbl-thead { display: none; }
+      .tbl-row { grid-template-columns: 1fr 1fr !important; gap: 4px; }
+      .tbl-row > *:nth-child(2) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile navigation (only visible on small screens) -->
+  <nav class="mobile-nav">
+    <a href="#willkommen">👋 Willkommen</a>
+    <a href="#anmelden">🔐 Anmelden</a>
+    <a href="#dashboard">📊 Dashboard</a>
+    <a href="#kunden">👥 Kunden</a>
+    <a href="#neukunde">➕ Kunden anlegen</a>
+    <a href="#bestellung">🛒 Bestellung</a>
+    <a href="#steckbrief">🪪 Steckbrief</a>
+    <a href="#dokumente">📂 Dokumente</a>
+    <a href="#empfehlung">🎁 Empfehlung</a>
+    <a href="#einstellungen">⚙️ Einstellungen</a>
+    <a href="#kontakt">✉️ Kontakt</a>
+  </nav>
+
+<div class="page">
+
+  <!-- Handbook sidebar -->
+  <aside class="sidenav">
+    <div class="sidenav-brand">
+      <img src="/hilfe-assets/logo.svg" alt="BODYTIME concept" />
+    </div>
+    <div class="sidenav-label">Kapitel</div>
+    <nav>
+      <a href="#willkommen">👋&nbsp; Willkommen</a>
+      <a href="#anmelden">🔐&nbsp; 1 – Anmelden</a>
+      <a href="#dashboard">📊&nbsp; 2 – Dashboard</a>
+      <a href="#kunden">👥&nbsp; 3 – Kunden</a>
+      <a href="#neukunde">➕&nbsp; 4 – Kunden anlegen</a>
+      <a href="#bestellung">🛒&nbsp; 5 – Bestellung</a>
+      <a href="#steckbrief">🪪&nbsp; 6 – Steckbrief</a>
+      <a href="#dokumente">📂&nbsp; 7 – Dokumente</a>
+      <a href="#empfehlung">🎁&nbsp; 8 – Empfehlung</a>
+      <a href="#einstellungen">⚙️&nbsp; 9 – Einstellungen</a>
+      <a href="#kontakt">✉️&nbsp; Kontakt</a>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-eye">BODYTIME concept · Stand Mai 2026</div>
+      <div class="topbar-title">Partner-Handbuch</div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══ WILLKOMMEN ═══════════════════════════════════ -->
+      <section class="chapter" id="willkommen">
+        <div class="hero">
+          <div class="hero-eye">Dein persönliches Handbuch</div>
+          <h1>Willkommen bei<br>BODYTIME concept</h1>
+          <p>Hier findest du alles, was du im Alltag als Partner brauchst. Schritt für Schritt erklärt, verständlich für jeden.</p>
+          <div class="hero-chips">
+            <span class="hero-chip">🔐 Anmelden</span>
+            <span class="hero-chip">👥 Kunden verwalten</span>
+            <span class="hero-chip">🛒 Bestellungen</span>
+            <span class="hero-chip">🪪 Profil erstellen</span>
+            <span class="hero-chip">📂 Dokumente</span>
+            <span class="hero-chip">🎁 Partner empfehlen</span>
+          </div>
+        </div>
+
+        <div class="toc">
+          <div class="toc-title">Was dich erwartet</div>
+          <div class="toc-grid">
+            <a href="#anmelden"><span class="toc-n">1</span> Anmelden</a>
+            <a href="#dashboard"><span class="toc-n">2</span> Das Dashboard</a>
+            <a href="#kunden"><span class="toc-n">3</span> Kunden verwalten</a>
+            <a href="#neukunde"><span class="toc-n">4</span> Neuen Kunden anlegen</a>
+            <a href="#bestellung"><span class="toc-n">5</span> Bestellung aufgeben</a>
+            <a href="#steckbrief"><span class="toc-n">6</span> Mein Steckbrief</a>
+            <a href="#dokumente"><span class="toc-n">7</span> Dokumente &amp; Videos</a>
+            <a href="#empfehlung"><span class="toc-n">8</span> Partner empfehlen</a>
+            <a href="#einstellungen"><span class="toc-n">9</span> Einstellungen</a>
+            <a href="#kontakt"><span class="toc-n">10</span> Kontakt &amp; Hilfe</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ 1 ANMELDEN ═══════════════════════════════════ -->
+      <section class="chapter" id="anmelden">
+        <div class="chapter-head">
+          <div class="chapter-icon">🔐</div>
+          <div><div class="chapter-num">Kapitel 1</div><h2>Anmelden</h2></div>
+        </div>
+
+        <p>Gehe in deinem Browser auf <strong>bodytime-concept.de/login</strong>. Dort kannst du dich mit deiner E-Mail-Adresse und deinem Passwort einloggen.</p>
+
+        <div class="screenshot">
+          <img src="/hilfe-assets/01-login-clean.png" alt="Login-Seite" />
+        </div>
+        <p class="screenshot-cap">Anmeldemaske unter bodytime-concept.de/login</p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div class="step-body">
+              <h4>E-Mail eingeben</h4>
+              <p>Trage die E-Mail-Adresse ein, mit der du als Partner angemeldet wurdest.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div class="step-body">
+              <h4>Passwort eingeben</h4>
+              <p>Gib dein Passwort ein. Mit dem kleinen Augen-Symbol rechts kannst du es sichtbar machen.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div class="step-body">
+              <h4>Auf „Anmelden" klicken</h4>
+              <p>Du wirst direkt zu deinem persönlichen Dashboard weitergeleitet.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout amber">
+          <span class="callout-em">🔑</span>
+          <p><strong>Passwort vergessen?</strong> Kein Problem. Klicke auf den Link „Passwort vergessen?" unter dem Passwortfeld. Du bekommst dann eine E-Mail mit einem Link zum Zurücksetzen. Schau auch im Spam-Ordner nach, falls die E-Mail nicht ankommt.</p>
+        </div>
+      </section>
+
+      <!-- ═══ 2 DASHBOARD ══════════════════════════════════ -->
+      <section class="chapter" id="dashboard">
+        <div class="chapter-head">
+          <div class="chapter-icon">📊</div>
+          <div><div class="chapter-num">Kapitel 2</div><h2>Das Dashboard</h2></div>
+        </div>
+
+        <p>Das Dashboard ist das Erste, was du nach dem Einloggen siehst. Es zeigt dir die wichtigsten Informationen zu deinen Kunden auf einen Blick.</p>
+
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
+            <div class="browser-url">bodytime-concept.de/partner/dashboard</div>
+          </div>
+          <div class="app">
+            <!-- Sidebar -->
+            <div class="asb">
+              <div class="asb-logo">
+                <img src="/hilfe-assets/logo.svg" alt="BODYTIME concept" />
+              </div>
+              <div class="asb-nav">
+                <div class="an on">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                  Dashboard
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Kunden
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  Pakete
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                  Neue Bestellung
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                  Empfehlung
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><line x1="14" y1="10" x2="21" y2="10"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="2" y1="14" x2="14" y2="14"/></svg>
+                  Profil
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  Dokumente
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  Einstellungen
+                </div>
+              </div>
+              <div class="asb-foot">
+                <div class="asb-user">
+                  <div class="asb-av">AK</div>
+                  <div>
+                    <div class="asb-uname">Anna Klein</div>
+                    <div class="asb-uemail">anna@beispiel.de</div>
+                  </div>
+                </div>
+                <div class="asb-logout">
+                  <svg width="13" height="13" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                  Abmelden
+                </div>
+              </div>
+            </div>
+            <!-- Dashboard content -->
+            <div class="amain">
+              <div class="amain-title">Willkommen zurück, Anna 👋</div>
+              <div class="kpi-row">
+                <div class="kpi">
+                  <div class="kpi-v">12</div>
+                  <div class="kpi-l">Aktive Kunden</div>
+                </div>
+                <div class="kpi">
+                  <div class="kpi-v" style="color:#d97706;">3</div>
+                  <div class="kpi-l">Läuft bald ab</div>
+                </div>
+                <div class="kpi">
+                  <div class="kpi-v" style="color:#dc2626;">1</div>
+                  <div class="kpi-l">Geburtstag heute</div>
+                </div>
+                <div class="kpi">
+                  <div class="kpi-v" style="font-size:20px;">624 €</div>
+                  <div class="kpi-l">Kundenwert/Monat</div>
+                </div>
+              </div>
+              <div class="widget">
+                <div class="widget-hdr">Auslaufende Verträge</div>
+                <div class="widget-row">
+                  <div>
+                    <div class="widget-name">Maria Muster</div>
+                    <div class="widget-sub">Vertrag endet 28.05.2026</div>
+                  </div>
+                  <span class="badge danger">7 Tage</span>
+                </div>
+                <div class="widget-row">
+                  <div>
+                    <div class="widget-name">Hans Beispiel</div>
+                    <div class="widget-sub">Vertrag endet 12.06.2026</div>
+                  </div>
+                  <span class="badge warning">22 Tage</span>
+                </div>
+                <div class="widget-row">
+                  <div>
+                    <div class="widget-name">Lisa Testmann</div>
+                    <div class="widget-sub">Vertrag endet 10.07.2026</div>
+                  </div>
+                  <span class="badge warning">50 Tage</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card"><div class="card-em">👥</div><h4>Aktive Kunden</h4><p>Wie viele Kunden du gerade aktiv betreust.</p></div>
+          <div class="card"><div class="card-em">⏰</div><h4>Läuft bald ab</h4><p>Kunden, deren Vertrag in weniger als 60 Tagen endet.</p></div>
+          <div class="card"><div class="card-em">🎂</div><h4>Geburtstage</h4><p>Kunden, die heute oder bald Geburtstag haben.</p></div>
+          <div class="card"><div class="card-em">📈</div><h4>Kundenwert</h4><p>Der monatliche Gesamtwert aller aktiven Kunden.</p></div>
+        </div>
+
+        <div class="callout blue">
+          <span class="callout-em">💡</span>
+          <p><strong>Tipp zu den Farben:</strong> Rot bedeutet, der Vertrag läuft in weniger als 30 Tagen ab. Gelb bedeutet 30 bis 60 Tage. Sprich diese Kunden rechtzeitig an und besprich eine Verlängerung.</p>
+        </div>
+      </section>
+
+      <!-- ═══ 3 KUNDEN ═════════════════════════════════════ -->
+      <section class="chapter" id="kunden">
+        <div class="chapter-head">
+          <div class="chapter-icon">👥</div>
+          <div><div class="chapter-num">Kapitel 3</div><h2>Kunden verwalten</h2></div>
+        </div>
+
+        <p>Hier siehst du alle deine Kunden auf einen Blick. Klicke auf einen Kunden, um seine Details einzusehen oder Notizen hinzuzufügen.</p>
+
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
+            <div class="browser-url">bodytime-concept.de/partner/customers</div>
+          </div>
+          <div class="app">
+            <div class="asb">
+              <div class="asb-logo"><img src="/hilfe-assets/logo.svg" alt="BODYTIME concept" /></div>
+              <div class="asb-nav">
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                  Dashboard
+                </div>
+                <div class="an on">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Kunden
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                  Neue Bestellung
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                  Empfehlung
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><line x1="14" y1="10" x2="21" y2="10"/><line x1="14" y1="14" x2="21" y2="14"/></svg>
+                  Profil
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Dokumente
+                </div>
+                <div class="an">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  Einstellungen
+                </div>
+              </div>
+              <div class="asb-foot">
+                <div class="asb-user">
+                  <div class="asb-av">AK</div>
+                  <div><div class="asb-uname">Anna Klein</div><div class="asb-uemail">anna@beispiel.de</div></div>
+                </div>
+                <div class="asb-logout">
+                  <svg width="13" height="13" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                  Abmelden
+                </div>
+              </div>
+            </div>
+            <!-- Customers content -->
+            <div class="amain" style="padding:18px 20px 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                <div>
+                  <div style="font-size:18px; font-weight:700; color:#111827;">Meine Kunden</div>
+                  <div style="font-size:11.5px; color:#9ca3af; margin-top:2px;">12 Kunden gesamt</div>
+                </div>
+                <div style="background:#111827; color:white; font-size:12px; font-weight:600; padding:7px 12px; border-radius:9px; display:flex; align-items:center; gap:5px;">
+                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Kunde anlegen
+                </div>
+              </div>
+
+              <div class="tbl-controls">
+                <div class="tbl-search-wrap" style="flex:1;">
+                  <div class="tbl-search">Name oder E-Mail suchen…</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:6px; margin-bottom:10px;">
+                <div class="tf on">Alle</div>
+                <div class="tf">Aktiv</div>
+                <div class="tf">Bald ablaufend</div>
+                <div class="tf">Abgelaufen</div>
+              </div>
+
+              <div class="tbl-card">
+                <div class="tbl-thead" style="grid-template-columns: 1.8fr 1.5fr 1.2fr 0.9fr;">
+                  <span>Kunde</span>
+                  <span>E-Mail</span>
+                  <span>Vertragsende</span>
+                  <span>Status</span>
+                </div>
+                <div class="tbl-row" style="grid-template-columns: 1.8fr 1.5fr 1.2fr 0.9fr;">
+                  <div class="tc-name">Maria Muster</div>
+                  <div class="tc-email">maria@beispiel.de</div>
+                  <div>
+                    <div class="tc-date" style="color:#dc2626; font-weight:500;">28.05.2026</div>
+                    <div class="tc-sub" style="color:#f87171;">in 7 Tagen</div>
+                  </div>
+                  <div><span class="badge danger">Läuft ab</span></div>
+                </div>
+                <div class="tbl-row" style="grid-template-columns: 1.8fr 1.5fr 1.2fr 0.9fr;">
+                  <div class="tc-name">Hans Beispiel</div>
+                  <div class="tc-email">hans@beispiel.de</div>
+                  <div>
+                    <div class="tc-date" style="color:#d97706; font-weight:500;">12.06.2026</div>
+                    <div class="tc-sub" style="color:#fbbf24;">in 22 Tagen</div>
+                  </div>
+                  <div><span class="badge warning">Bald</span></div>
+                </div>
+                <div class="tbl-row" style="grid-template-columns: 1.8fr 1.5fr 1.2fr 0.9fr;">
+                  <div class="tc-name">Lisa Testmann</div>
+                  <div class="tc-email">lisa@beispiel.de</div>
+                  <div class="tc-date" style="color:#374151;">31.12.2026</div>
+                  <div><span class="badge success">Aktiv</span></div>
+                </div>
+                <div class="tbl-row" style="grid-template-columns: 1.8fr 1.5fr 1.2fr 0.9fr;">
+                  <div class="tc-name">Peter Mustermann</div>
+                  <div class="tc-email">peter@beispiel.de</div>
+                  <div class="tc-date" style="color:#374151;">15.11.2026</div>
+                  <div><span class="badge success">Aktiv</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p>Klicke auf eine Zeile, um den Kunden zu öffnen. Dort kannst du alle Daten sehen und Notizen hinzufügen.</p>
+        <ul class="checks">
+          <li><span class="chk">✓</span> Persönliche Daten (Name, Geburtstag, Adresse)</li>
+          <li><span class="chk">✓</span> Kontakt (E-Mail, Telefon)</li>
+          <li><span class="chk">✓</span> Vertragsbeginn, Vertragsdauer und Vertragsende</li>
+          <li><span class="chk">✓</span> Gebuchtes Paket mit Preisaufstellung</li>
+          <li><span class="chk">✓</span> Notizen hinzufügen (nur du kannst diese sehen)</li>
+          <li><span class="chk">✓</span> Kundendaten ändern oder Kunden deaktivieren</li>
+        </ul>
+      </section>
+
+      <!-- ═══ 4 NEUEN KUNDEN ANLEGEN ═══════════════════════ -->
+      <section class="chapter" id="neukunde">
+        <div class="chapter-head">
+          <div class="chapter-icon">➕</div>
+          <div><div class="chapter-num">Kapitel 4</div><h2>Neuen Kunden anlegen</h2></div>
+        </div>
+        <p>Klicke in der Kundenliste auf „Kunde anlegen". Du gelangst dann zu einem Formular, in dem du alle Kundendaten einträgst.</p>
+        <div class="callout amber">
+          <span class="callout-em">⚠️</span>
+          <p><strong>Wichtig:</strong> Lege den Kunden erst an, nachdem er seinen EMS-Anzug erfolgreich bestellt hat. So passt das Startdatum des Vertrags von Anfang an.</p>
+        </div>
+
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
+            <div class="browser-url">bodytime-concept.de/partner/customers/new</div>
+          </div>
+          <div style="background: var(--app-bg); padding: 20px 22px;">
+            <div style="font-size:12px; color:#6b7280; margin-bottom:4px; display:flex; align-items:center; gap:5px; cursor:default;">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              Zurück
+            </div>
+            <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:2px;">Neuen Kunden anlegen</div>
+            <div style="font-size:12px; color:#9ca3af; margin-bottom:16px;">Nur du siehst diese Informationen.</div>
+
+            <div class="form-card">
+              <div class="form-card-title">Persönliche Daten</div>
+              <div class="fg">
+                <div class="ff"><div class="fl">Anrede</div><div class="fi select">Herr</div></div>
+                <div></div>
+                <div class="ff"><div class="fl">Vorname *</div><div class="fi active">Max</div></div>
+                <div class="ff"><div class="fl">Nachname *</div><div class="fi active">Mustermann</div></div>
+                <div class="ff"><div class="fl">Geburtsdatum</div><div class="fi">15.03.1985</div></div>
+              </div>
+            </div>
+            <div class="form-card">
+              <div class="form-card-title">Kontakt</div>
+              <div class="fg">
+                <div class="ff fcol2"><div class="fl">E-Mail *</div><div class="fi active">max@mustermann.de</div></div>
+                <div class="ff"><div class="fl">Telefon</div><div class="fi">0171 1234567</div></div>
+                <div class="ff"><div class="fl">PLZ</div><div class="fi">97688</div></div>
+                <div class="ff"><div class="fl">Stadt</div><div class="fi">Bad Kissingen</div></div>
+              </div>
+            </div>
+            <div class="form-card">
+              <div class="form-card-title">Vertrag &amp; Paket</div>
+              <div class="fg">
+                <div class="ff"><div class="fl">Vertragsbeginn *</div><div class="fi active">01.06.2026</div></div>
+                <div class="ff"><div class="fl">Laufzeit in Monaten</div><div class="fi">12</div></div>
+                <div class="ff fcol2"><div class="fl">Paket auswählen</div><div class="fi select">Starter</div></div>
+              </div>
+            </div>
+            <div class="btn-dark">Kunden anlegen</div>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div class="step-body">
+              <h4>Persönliche Daten eingeben</h4>
+              <p>Anrede, Vorname und Nachname sind Pflichtfelder. Das Geburtsdatum ist freiwillig, wird aber für Geburtstags-Hinweise genutzt.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div class="step-body">
+              <h4>Kontaktdaten eintragen</h4>
+              <p>E-Mail-Adresse ist Pflicht. Telefonnummer und Adresse sind freiwillig und nur für dich sichtbar.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div class="step-body">
+              <h4>Vertragsdaten festlegen</h4>
+              <p>Wann startet der Vertrag? Wie lange läuft er? Standard sind 12 Monate. Das Vertragsende wird automatisch berechnet.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">4</div>
+            <div class="step-body">
+              <h4>Paket auswählen</h4>
+              <p>Wähle das vereinbarte Paket aus der Liste. Du kannst auch ein eigenes Paket erstellen.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">5</div>
+            <div class="step-body">
+              <h4>Auf „Kunden anlegen" klicken</h4>
+              <p>Du wirst automatisch zur Detailseite des neuen Kunden weitergeleitet.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ 5 BESTELLUNG ═════════════════════════════════ -->
+      <section class="chapter" id="bestellung">
+        <div class="chapter-head">
+          <div class="chapter-icon">🛒</div>
+          <div><div class="chapter-num">Kapitel 5</div><h2>Neue Bestellung aufgeben</h2></div>
+        </div>
+        <p>Bevor ein Kunde loslegen kann, muss er seinen EMS-Anzug bestellen. Diese Seite führt dich Schritt für Schritt durch den Bestellprozess.</p>
+        <div class="callout red">
+          <span class="callout-em">🚨</span>
+          <p><strong>Ohne den Gutschein-Code geht es nicht!</strong> Dein Kunde muss den Code beim Bezahlen im Warenkorb eintragen. Ohne Code wird er nicht dir zugeordnet und verliert seinen Preisvorteil. Begleite deinen Kunden beim Bestellen oder erkläre ihm den Schritt sehr genau.</p>
+        </div>
+
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
+            <div class="browser-url">bodytime-concept.de/partner/order</div>
+          </div>
+          <div style="background: var(--app-bg); padding: 20px 22px;">
+            <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:2px;">Neue Bestellung</div>
+            <div style="font-size:12.5px; color:#6b7280; margin-bottom:16px;">Folge diesen 3 Schritten, um eine Bestellung für deinen Kunden aufzugeben.</div>
+
+            <!-- ShareOrderLink -->
+            <div style="border-radius: 16px; border: 1px solid #e5e7eb; background: white; padding: 12px 16px; margin-bottom: 12px;">
+              <p style="font-size: 11px; font-weight: 600; color: #9ca3af; margin: 0 0 7px 0; text-transform: none; letter-spacing: 0;">Dein Bestelllink für Kunden</p>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="flex: 1; padding: 7px 12px; border-radius: 10px; background: #f9fafb; border: 1px solid #e5e7eb; min-width: 0; overflow: hidden;">
+                  <span style="font-size: 11px; color: #6b7280; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">bodytime-concept.de/bestellung/a3f8...</span>
+                </div>
+                <button style="flex-shrink: 0; background: #111827; color: white; border: none; border-radius: 10px; padding: 7px 12px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Kopieren
+                </button>
+              </div>
+            </div>
+
+            <div class="ocard hot">
+              <div class="ocard-hdr">
+                <div class="on2">1</div>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13" stroke="white" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="white" stroke-width="2"/></svg>
+                <span class="ot">Gutschein-Code UNBEDINGT eintragen!</span>
+              </div>
+              <div class="ocard-body">
+                <p style="font-size:12.5px; color:#92400e; margin-bottom:11px;">Trage diesen Code beim Checkout im Warenkorb ein. <strong style="color:#78350f;">Ohne Code verliert dein Kunde seinen Vorteil!</strong></p>
+                <div class="voucher-box">
+                  <span class="vcode">BODYCONCEPT1</span>
+                  <span class="vcopy">Kopieren</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ocard">
+              <div class="ocard-hdr">
+                <div class="on2">2</div>
+                <span class="ot">Produkt auswählen und bestellen</span>
+              </div>
+              <div class="ocard-body">
+                <p style="font-size:12.5px; color:#6b7280; margin-bottom:10px;">Wähle den richtigen EMS-Anzug und öffne den Shop.</p>
+                <div class="shop-row">
+                  <div class="shop-btn">
+                    <div class="shop-icon">♀</div>
+                    <div class="shop-lbl">Für Frauen</div>
+                    <div class="shop-sub">Zum Antelope Shop →</div>
+                  </div>
+                  <div class="shop-btn">
+                    <div class="shop-icon">♂</div>
+                    <div class="shop-lbl">Für Männer</div>
+                    <div class="shop-sub">Zum Antelope Shop →</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ocard">
+              <div class="ocard-hdr">
+                <div class="on2">3</div>
+                <span class="ot">Kunden im System anlegen</span>
+              </div>
+              <div class="ocard-body">
+                <p style="font-size:12.5px; color:#6b7280; margin:0;">Nach der Bestellung im Shop: Kunden in der Kundenverwaltung anlegen (Kapitel 4).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div class="step-body">
+              <h4>Gutschein-Code kopieren</h4>
+              <p>Klicke auf „Kopieren" neben dem Code. Dieser Code ist für alle deine Kunden gleich und verknüpft jede Bestellung mit dir.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div class="step-body">
+              <h4>Richtigen Shop-Button klicken</h4>
+              <p>Klicke auf „Für Frauen" oder „Für Männer". Du wirst direkt zum Antelope Shop weitergeleitet. Der Link enthält bereits deine Partnerkennung.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div class="step-body">
+              <h4>Code im Warenkorb eintragen</h4>
+              <p>Im Shop gibt es ein Feld für Gutschein-Codes. Dort trägt dein Kunde den Code ein, bevor er bezahlt.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">4</div>
+            <div class="step-body">
+              <h4>Kunden anlegen</h4>
+              <p>Nach der Bestellung gehst du zurück zur Kundenverwaltung und legst den Kunden dort an (Kapitel 4).</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 32px; border: 1.5px solid #e5e7eb; border-radius: 14px; overflow: hidden;">
+          <div style="background: #f9fafb; padding: 14px 18px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">🔗</span>
+            <div>
+              <div style="font-size: 13px; font-weight: 700; color: #111827;">Bestelllink – wenn der Kunde nicht vor Ort ist</div>
+              <div style="font-size: 11.5px; color: #6b7280; margin-top: 1px;">Nutze diesen Weg, wenn dein Kunde die Bestellung selbst von zuhause aus macht.</div>
+            </div>
+          </div>
+          <div style="padding: 16px 18px; background: white; display: flex; flex-direction: column; gap: 12px;">
+            <p style="margin: 0; font-size: 13px; color: #374151;">Oben auf der Bestellseite findest du deinen persönlichen <strong>Bestelllink</strong>. Den schickst du einfach per WhatsApp, SMS oder E-Mail an deinen Kunden. Deine Partnerkennung ist bereits im Link enthalten – du musst also nichts weiter einstellen.</p>
+            <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 14px; font-size: 12.5px; color: #92400e;">
+              <strong>Wichtig: Den Gutschein-Code immer mitschicken!</strong> Dein Kunde muss den Code beim Checkout eintragen. Ohne Code verliert er seinen Preisvorteil und die Bestellung wird dir nicht korrekt zugeordnet.
+            </div>
+
+            <div style="border-top: 1px solid #f3f4f6; padding-top: 12px;">
+              <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #9ca3af; margin-bottom: 8px;">Was passiert danach automatisch?</div>
+              <div style="display: flex; flex-direction: column; gap: 7px;">
+                <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: #374151;">
+                  <span style="background: #d1fae5; color: #065f46; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;">1</span>
+                  <span>Dein Kunde öffnet den Link, bestellt im Shop und gibt den Gutschein-Code ein.</span>
+                </div>
+                <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: #374151;">
+                  <span style="background: #d1fae5; color: #065f46; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;">2</span>
+                  <span><strong>Der Kunde wird automatisch in deiner Kundenliste angelegt</strong> – du musst ihn nicht manuell einpflegen.</span>
+                </div>
+                <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: #374151;">
+                  <span style="background: #d1fae5; color: #065f46; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;">3</span>
+                  <span>Du bekommst eine Benachrichtigung, sobald die Bestellung eingegangen ist.</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 12px 14px; font-size: 12.5px; color: #991b1b; display: flex; gap: 8px; align-items: flex-start;">
+              <span style="font-size: 16px; flex-shrink: 0;">⚠️</span>
+              <div>
+                <strong>Daten unbedingt prüfen!</strong> Auch wenn der Kunde automatisch angelegt wird, solltest du danach in der Kundenverwaltung (Kapitel 3) nachschauen, ob alle Angaben vollständig und korrekt sind – z. B. Name, E-Mail-Adresse und Vertragsstart. Fehlende Daten kannst du dort direkt nachtragen.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ 6 STECKBRIEF ═════════════════════════════════ -->
+      <section class="chapter" id="steckbrief">
+        <div class="chapter-head">
+          <div class="chapter-icon">🪪</div>
+          <div><div class="chapter-num">Kapitel 6</div><h2>Mein Steckbrief</h2></div>
+        </div>
+        <p>Dein Steckbrief ist deine Visitenkarte auf der BODYTIME-Website. Interessierte Kunden sehen dort dein Foto, deine Leistungen und deine Kontaktdaten, und können dich direkt auswählen.</p>
+        <div class="callout blue">
+          <span class="callout-em">👁️</span>
+          <p><strong>So funktioniert es:</strong> Du füllst den Steckbrief aus und reichst ihn ein. Dann prüft ein Admin den Inhalt. Nach der Freigabe ist dein Steckbrief live auf der Website sichtbar.</p>
+        </div>
+
+        <div class="sflow">
+          <div class="sbox" style="background:#f9fafb; border:1px solid #e5e7eb;">
+            <div style="font-size:19px; margin-bottom:4px;">✏️</div>
+            <div style="font-size:12px; font-weight:600; color:#374151;">Entwurf</div>
+            <div style="font-size:10.5px; color:#9ca3af; margin-top:2px;">Du füllst das Formular aus</div>
+          </div>
+          <div class="sarr">→</div>
+          <div class="sbox" style="background:#fffbeb; border:1px solid #fde68a;">
+            <div style="font-size:19px; margin-bottom:4px;">⏳</div>
+            <div style="font-size:12px; font-weight:600; color:#92400e;">Wird geprüft</div>
+            <div style="font-size:10.5px; color:#a16207; margin-top:2px;">Nach dem Einreichen</div>
+          </div>
+          <div class="sarr">→</div>
+          <div class="sbox" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+            <div style="font-size:19px; margin-bottom:4px;">✅</div>
+            <div style="font-size:12px; font-weight:600; color:#166534;">Freigegeben</div>
+            <div style="font-size:10.5px; color:#15803d; margin-top:2px;">Auf der Website sichtbar</div>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card"><div class="card-em">📸</div><h4>Profilfoto</h4><p>Ein professionelles Foto von dir. Wird automatisch zugeschnitten.</p></div>
+          <div class="card"><div class="card-em">🏷️</div><h4>Leistungen</h4><p>Tags wie „Abnehmen" oder „Rückentraining" zeigen deine Stärken.</p></div>
+          <div class="card"><div class="card-em">📍</div><h4>Trainingsort</h4><p>Online, vor Ort oder beides. Du bestimmst das selbst.</p></div>
+          <div class="card"><div class="card-em">💬</div><h4>Deine Philosophie</h4><p>Ein paar Sätze darüber, wer du bist und wie du trainierst.</p></div>
+          <div class="card"><div class="card-em">📞</div><h4>Kontakt</h4><p>E-Mail, Telefon, PLZ und Stadt für Kunden.</p></div>
+          <div class="card"><div class="card-em">📱</div><h4>Social Media</h4><p>Instagram, Facebook, YouTube, LinkedIn, TikTok.</p></div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div class="step-body"><h4>Foto hochladen</h4><p>Klicke auf das Kamerasymbol und lade ein Bild von dir hoch. Du kannst es danach zuschneiden.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div class="step-body"><h4>Kontaktdaten eintragen</h4><p>E-Mail, Telefonnummer (freiwillig), PLZ und Stadt.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div class="step-body"><h4>Leistungen hinzufügen</h4><p>Schreibe einen Begriff in das Feld (z.B. „Kraftaufbau") und drücke Enter. Beliebig viele Tags möglich.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">4</div>
+            <div class="step-body"><h4>Trainingsform auswählen</h4><p>Online, vor Ort oder beides.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">5</div>
+            <div class="step-body"><h4>Deine Philosophie schreiben</h4><p>2 bis 4 Sätze darüber, wie du trainierst und was dich besonders macht.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">6</div>
+            <div class="step-body"><h4>Einreichen</h4><p>Klicke auf „Zur Prüfung einreichen". Du wirst benachrichtigt, sobald dein Steckbrief freigegeben wurde.</p></div>
+          </div>
+        </div>
+
+        <div class="callout amber">
+          <span class="callout-em">✏️</span>
+          <p><strong>Änderungen später:</strong> Du kannst deinen Steckbrief jederzeit ändern. Wenn du Änderungen speicherst, wird er automatisch erneut zur Prüfung geschickt. Er bleibt in der Zwischenzeit auf der Website sichtbar.</p>
+        </div>
+      </section>
+
+      <!-- ═══ 7 DOKUMENTE ══════════════════════════════════ -->
+      <section class="chapter" id="dokumente">
+        <div class="chapter-head">
+          <div class="chapter-icon">📂</div>
+          <div><div class="chapter-num">Kapitel 7</div><h2>Dokumente &amp; Videos</h2></div>
+        </div>
+        <p>Hier findest du alle Unterlagen und Schulungsmaterialien von BODYTIME concept. PDFs kannst du herunterladen, Videos direkt anschauen.</p>
+
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
+            <div class="browser-url">bodytime-concept.de/partner/documents</div>
+          </div>
+          <div style="background: var(--app-bg); padding: 20px 22px;">
+            <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:2px;">Dokumente &amp; Videos</div>
+            <div style="font-size:12.5px; color:#6b7280; margin-bottom:16px;">Schulungsmaterialien und wichtige Informationen.</div>
+
+            <div class="doc-section">
+              <div class="doc-lbl">📁 Onboarding</div>
+              <div class="doc-item">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div class="doc-icon" style="background:#fef2f2;">📄</div>
+                  <div><div class="doc-name">Partnervertrag &amp; AGB</div><div class="doc-sub2">PDF · 2,4 MB</div></div>
+                </div>
+                <div class="doc-btn" style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b;">Download</div>
+              </div>
+              <div class="doc-item">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div class="doc-icon" style="background:#eff6ff;">🎬</div>
+                  <div><div class="doc-name">Produktvorstellung EMS-Anzug</div><div class="doc-sub2">Video</div></div>
+                </div>
+                <div class="doc-btn" style="background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8;">Öffnen</div>
+              </div>
+            </div>
+
+            <div class="doc-section">
+              <div class="doc-lbl">📁 Marketing</div>
+              <div class="doc-item">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div class="doc-icon" style="background:#f0fdf4;">🔗</div>
+                  <div><div class="doc-name">Social Media Vorlagen</div><div class="doc-sub2">Externer Link</div></div>
+                </div>
+                <div class="doc-btn" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#166534;">Öffnen</div>
+              </div>
+            </div>
+
+            <div class="doc-section">
+              <div class="doc-lbl">📁 Schulung</div>
+              <div class="doc-item">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div class="doc-icon" style="background:#fef2f2;">📄</div>
+                  <div><div class="doc-name">Trainingsanleitung für Kunden</div><div class="doc-sub2">PDF · 1,1 MB</div></div>
+                </div>
+                <div class="doc-btn" style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b;">Download</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card"><div class="card-em">📄</div><h4>PDF</h4><p>Klicke auf „Download", um die Datei herunterzuladen.</p></div>
+          <div class="card"><div class="card-em">🎬</div><h4>Video</h4><p>Klicke auf „Öffnen", um das Video direkt anzuschauen.</p></div>
+          <div class="card"><div class="card-em">🔗</div><h4>Link</h4><p>Klicke auf „Öffnen", um zu einer externen Seite zu gelangen.</p></div>
+        </div>
+
+        <div class="callout blue">
+          <span class="callout-em">ℹ️</span>
+          <p>Neue Dokumente werden von BODYTIME concept bereitgestellt und erscheinen hier automatisch. Schau regelmäßig rein, um nichts zu verpassen.</p>
+        </div>
+      </section>
+
+      <!-- ═══ 8 EMPFEHLUNG ═════════════════════════════════ -->
+      <section class="chapter" id="empfehlung">
+        <div class="chapter-head">
+          <div class="chapter-icon">🎁</div>
+          <div><div class="chapter-num">Kapitel 8</div><h2>Partner empfehlen</h2></div>
+        </div>
+        <p>Kennst du jemanden, der gut als BODYTIME-Partner passen würde? Zum Beispiel einen Personal Trainer, Physiotherapeuten oder Coach? Empfehle ihn und erhalte einen Bonus, wenn die Person Partner wird.</p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div class="step-body"><h4>Namen eingeben</h4><p>Vorname und Nachname sind Pflicht. Mindestens Telefonnummer oder E-Mail angeben, damit BODYTIME contact Kontakt aufnehmen kann.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div class="step-body"><h4>Kurze Notiz schreiben (freiwillig)</h4><p>Erkläre kurz, warum du diese Person empfiehlst.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div class="step-body"><h4>Auf „Empfehlung absenden" klicken</h4><p>Die Person erscheint danach in der Liste „Meine Empfehlungen". Dort kannst du den Status jederzeit verfolgen.</p></div>
+          </div>
+        </div>
+
+        <div class="callout green">
+          <span class="callout-em">💰</span>
+          <p><strong>Dein Bonus:</strong> Den aktuellen Bonus-Betrag siehst du direkt oben auf der Empfehlungsseite. Er wird dir gutgeschrieben, sobald die empfohlene Person aktiv als Partner tätig ist.</p>
+        </div>
+
+        <p>Den Status deiner Empfehlungen siehst du jederzeit:</p>
+        <div style="display:flex; gap:7px; flex-wrap:wrap; margin:10px 0;">
+          <span class="badge neutral" style="font-size:12px; padding:4px 10px;">In Prüfung</span>
+          <span class="badge warning" style="font-size:12px; padding:4px 10px;">Kontaktiert</span>
+          <span class="badge success" style="font-size:12px; padding:4px 10px;">Partner geworden</span>
+        </div>
+      </section>
+
+      <!-- ═══ 9 EINSTELLUNGEN ══════════════════════════════ -->
+      <section class="chapter" id="einstellungen">
+        <div class="chapter-head">
+          <div class="chapter-icon">⚙️</div>
+          <div><div class="chapter-num">Kapitel 9</div><h2>Einstellungen</h2></div>
+        </div>
+        <p>Hier kannst du dein Passwort ändern.</p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div class="step-body"><h4>Aktuelles Passwort eingeben</h4><p>Zur Sicherheit bestätigst du zunächst dein bisheriges Passwort.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div class="step-body"><h4>Neues Passwort eingeben</h4><p>Wähle ein sicheres Passwort mit mindestens 8 Zeichen. Eine kleine Anzeige zeigt dir, wie sicher es ist.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div class="step-body"><h4>Passwort bestätigen und speichern</h4><p>Gib das neue Passwort ein zweites Mal ein und klicke auf „Speichern".</p></div>
+          </div>
+        </div>
+
+        <div class="callout amber">
+          <span class="callout-em">🔐</span>
+          <p><strong>Sichere Passwörter:</strong> Nutze Großbuchstaben, Kleinbuchstaben, Zahlen und ein Sonderzeichen. Teile dein Passwort nie mit anderen.</p>
+        </div>
+      </section>
+
+      <!-- ═══ KONTAKT ═══════════════════════════════════════ -->
+      <section class="chapter" id="kontakt">
+        <div class="chapter-head">
+          <div class="chapter-icon">✉️</div>
+          <div><div class="chapter-num">Kapitel 10</div><h2>Kontakt und Hilfe</h2></div>
+        </div>
+        <p>Hast du Fragen oder ein Problem? Melde dich einfach bei uns.</p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0;">
+          <div style="background:white; border:1px solid var(--gray-200); border-radius:13px; padding:20px;">
+            <div style="font-size:24px; margin-bottom:9px;">📧</div>
+            <div style="font-size:13.5px; font-weight:600; color:var(--gray-900); margin-bottom:4px;">E-Mail</div>
+            <p style="font-size:12.5px; color:var(--gray-500); margin-bottom:9px;">Für alle Fragen und Anliegen</p>
+            <a href="mailto:info@bodytime-concept.de" style="font-size:13px; font-weight:600; color:#2563eb; text-decoration:none;">info@bodytime-concept.de</a>
+          </div>
+          <div style="background:white; border:1px solid var(--gray-200); border-radius:13px; padding:20px;">
+            <div style="font-size:24px; margin-bottom:9px;">📱</div>
+            <div style="font-size:13.5px; font-weight:600; color:var(--gray-900); margin-bottom:4px;">Telefon</div>
+            <p style="font-size:12.5px; color:var(--gray-500); margin-bottom:9px;">Bei dringenden Fragen</p>
+            <a href="tel:+491713024479" style="font-size:13px; font-weight:600; color:#2563eb; text-decoration:none;">+49 171 3024479</a>
+          </div>
+        </div>
+
+        <div class="callout green">
+          <span class="callout-em">⚡</span>
+          <p><strong>Tipp:</strong> Beschreibe das Problem möglichst genau und erwähne, welche Fehlermeldung du gesehen hast. Das macht die Hilfe viel schneller.</p>
+        </div>
+
+        <hr />
+
+        <div style="text-align:center; padding:20px 0;">
+          <div style="font-size:24px; margin-bottom:9px;">💪</div>
+          <div style="font-size:18px; font-weight:700; color:var(--gray-900); margin-bottom:6px;">Viel Erfolg als BODYTIME-Partner!</div>
+          <p style="font-size:13.5px; color:var(--gray-500); max-width:360px; margin:0 auto;">Wir freuen uns, dich dabei zu haben. Bei Fragen sind wir immer für dich da.</p>
+          <div style="margin-top:16px; display:inline-block; font-size:12px; font-weight:600; color:var(--gray-600); border:1px solid var(--gray-200); background:white; padding:7px 16px; border-radius:8px;">BODYTIME concept GmbH · bodytime-concept.de</div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  const secs = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.sidenav a');
+  function upd() {
+    let cur = '';
+    secs.forEach(s => { if (s.getBoundingClientRect().top <= 100) cur = s.id; });
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+  }
+  window.addEventListener('scroll', upd, { passive: true });
+  upd();
+</script>
+</body>
+</html>
