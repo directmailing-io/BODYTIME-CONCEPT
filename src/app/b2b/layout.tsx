@@ -9,6 +9,21 @@ export const metadata: Metadata = {
     siteName: 'BODYTIME concept',
     locale: 'de_DE',
     type: 'website',
+    url: 'https://bodytime-concept.de/b2b',
+    images: [
+      {
+        url: '/bodytime-concept-b2b.png',
+        width: 2752,
+        height: 1536,
+        alt: 'BODYTIME concept – Partner werden & EMS-Business starten',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BODYTIME concept – Partner werden & EMS-Business starten',
+    description: 'Starte dein eigenes EMS-Business ohne Studio und ohne Gerätekosten. Jetzt unverbindlich informieren.',
+    images: ['/bodytime-concept-b2b.png'],
   },
 };
 
