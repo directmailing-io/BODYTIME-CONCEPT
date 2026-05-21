@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developer Guide – BODYTIME concept</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #222535;
+      --border: #2a2e42;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --accent: #4f8ef7;
+      --accent2: #7c5cfc;
+      --green: #34d399;
+      --yellow: #fbbf24;
+      --red: #f87171;
+      --orange: #fb923c;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo {
+      padding: 18px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .sidebar-logo span { color: var(--accent); }
+    .sidebar-section {
+      padding: 14px 16px 4px;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      opacity: 0.6;
+    }
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 16px;
+      font-size: 12.5px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.1s, background 0.1s;
+    }
+    .sidebar nav a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .sidebar nav a .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--border); flex-shrink: 0;
+    }
+    .sidebar nav a:hover .dot { background: var(--accent); }
+
+    /* Main */
+    main {
+      flex: 1;
+      min-width: 0;
+      padding: 48px 56px 100px;
+      max-width: 900px;
+    }
+
+    section { margin-bottom: 64px; }
+
+    h1 { font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 40px; }
+    h2 {
+      font-size: 18px; font-weight: 700; color: #fff;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { font-size: 13.5px; font-weight: 700; color: #fff; margin-bottom: 8px; margin-top: 20px; }
+    p { color: var(--muted); margin-bottom: 10px; line-height: 1.7; }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .badge-blue { background: rgba(79,142,247,0.15); color: var(--accent); }
+    .badge-green { background: rgba(52,211,153,0.15); color: var(--green); }
+    .badge-yellow { background: rgba(251,191,36,0.15); color: var(--yellow); }
+    .badge-red { background: rgba(248,113,113,0.15); color: var(--red); }
+    .badge-purple { background: rgba(124,92,252,0.15); color: var(--accent2); }
+    .badge-orange { background: rgba(251,146,60,0.15); color: var(--orange); }
+
+    /* Service cards */
+    .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .service-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .service-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .service-name { font-size: 13px; font-weight: 700; color: #fff; }
+    .service-purpose { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .service-link {
+      font-size: 11.5px; color: var(--accent); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .service-link:hover { text-decoration: underline; }
+
+    /* Code block */
+    pre, code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    }
+    pre {
+      background: #0a0c14;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      font-size: 12.5px;
+      line-height: 1.7;
+      margin: 12px 0;
+      color: #c9d1d9;
+    }
+    code {
+      background: rgba(79,142,247,0.1);
+      color: var(--accent);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    pre code { background: none; color: inherit; padding: 0; border-radius: 0; }
+
+    /* Comment in code */
+    .cm { color: #555e70; }
+    .ky { color: #ff7b72; }
+    .st { color: #a5d6ff; }
+    .fn { color: #d2a8ff; }
+    .va { color: #ffa657; }
+    .nu { color: #79c0ff; }
+
+    /* Table */
+    .data-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12.5px; }
+    .data-table th {
+      text-align: left; padding: 8px 12px;
+      background: var(--surface2); color: var(--muted);
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .data-table th:first-child { border-radius: 8px 0 0 0; }
+    .data-table th:last-child { border-radius: 0 8px 0 0; }
+    .data-table td {
+      padding: 9px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text); vertical-align: top;
+    }
+    .data-table td:first-child { font-family: 'SF Mono', monospace; font-size: 12px; color: var(--accent); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* Route table – first col NOT mono */
+    .route-table td:first-child { font-family: 'SF Mono', monospace; color: var(--green); }
+
+    /* Callout */
+    .callout {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 16px; border-radius: 10px; margin: 16px 0;
+      font-size: 13px; line-height: 1.6;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout-blue { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.2); color: #93c5fd; }
+    .callout-yellow { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); color: #fde68a; }
+    .callout-red { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+    .callout-green { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: #6ee7b7; }
+
+    /* Flow steps */
+    .flow { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
+    .flow-step {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 0;
+      border-left: 2px solid var(--border);
+      padding-left: 20px;
+      position: relative;
+    }
+    .flow-step::before {
+      content: '';
+      position: absolute; left: -5px; top: 17px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--bg);
+    }
+    .flow-step:last-child { border-color: transparent; }
+    .flow-label { font-size: 13px; color: #fff; font-weight: 600; }
+    .flow-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* Env var table */
+    .env-table td:first-child { color: var(--yellow); }
+
+    /* File tree */
+    .tree {
+      background: #0a0c14;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-family: 'SF Mono', monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      color: #c9d1d9;
+      margin: 12px 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .tree .dir { color: var(--accent); }
+    .tree .file { color: var(--muted); }
+    .tree .note { color: #555e70; }
+
+    /* Version badge */
+    .version-bar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .version-tag {
+      background: var(--accent2); color: white;
+      padding: 4px 12px; border-radius: 6px;
+      font-size: 13px; font-weight: 800; letter-spacing: 0.02em;
+    }
+    .version-date {
+      font-size: 12px; color: var(--muted);
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 3px 10px; border-radius: 6px;
+    }
+    .version-warning {
+      font-size: 11.5px; color: var(--red);
+      background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2);
+      padding: 3px 10px; border-radius: 6px;
+    }
+
+    @media (max-width: 860px) {
+      .sidebar { display: none; }
+      main { padding: 28px 22px 60px; }
+      .service-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">BODYTIME<br><span>Developer Guide</span></div>
+  <div class="sidebar-section">Einstieg</div>
+  <nav>
+    <a href="#dienste"><span class="dot"></span> Dienste & Zugriff</a>
+    <a href="#setup"><span class="dot"></span> Lokales Setup</a>
+    <a href="#envvars"><span class="dot"></span> Umgebungsvariablen</a>
+  </nav>
+  <div class="sidebar-section">Code</div>
+  <nav>
+    <a href="#architektur"><span class="dot"></span> Architektur</a>
+    <a href="#struktur"><span class="dot"></span> Verzeichnisstruktur</a>
+    <a href="#routen"><span class="dot"></span> Alle Routen</a>
+    <a href="#middleware"><span class="dot"></span> Middleware / Auth</a>
+    <a href="#datenbank"><span class="dot"></span> Datenbank</a>
+    <a href="#patterns"><span class="dot"></span> Code-Patterns</a>
+  </nav>
+  <div class="sidebar-section">Betrieb</div>
+  <nav>
+    <a href="#deployment"><span class="dot"></span> Deployment</a>
+    <a href="#email"><span class="dot"></span> E-Mail & Cron</a>
+    <a href="#workflows"><span class="dot"></span> Admin-Workflows</a>
+  </nav>
+</aside>
+
+<main>
+
+  <h1>Developer Guide</h1>
+  <div class="version-bar">
+    <span class="version-tag">v1.0</span>
+    <span class="version-date">Stand: Mai 2026</span>
+    <span class="version-warning">⚠ Nur intern – nicht veröffentlichen</span>
+  </div>
+
+  <!-- ═══ DIENSTE ════════════════════════════════════════════ -->
+  <section id="dienste">
+    <h2>Dienste &amp; Zugriff</h2>
+    <p>Das Projekt nutzt folgende externe Dienste. Zugangsdaten befinden sich beim Auftraggeber – nie im Code oder in diesem Dokument.</p>
+
+    <div class="service-grid">
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="service-icon" style="background:#1a1a2e;">🐙</div>
+          <div>
+            <div class="service-name">GitHub</div>
+            <span class="badge badge-blue">Code-Repository</span>
+          </div>
+        </div>
+        <div class="service-purpose">Versionskontrolle und CI/CD. Jeder Push auf <code>main</code> startet automatisch ein Deployment via GitHub Actions.</div>
+        <a class="service-link" href="https://github.com/directmailing-io/BODYTIME-CONCEPT" target="_blank">github.com/directmailing-io/BODYTIME-CONCEPT ↗</a>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="service-icon" style="background:#0a1628;">🚀</div>
+          <div>
+            <div class="service-name">Coolify</div>
+            <span class="badge badge-purple">Deployment</span>
+          </div>
+        </div>
+        <div class="service-purpose">Self-hosted PaaS auf dem Hetzner VPS. Verwaltet Docker-Container, Umgebungsvariablen, SSL-Zertifikate und Reverse Proxy. Alle Produktions-Env-Vars sind <strong>nur hier</strong> gespeichert.</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:6px;">Zugang: VPS-IP:8000 im Browser (Zugangsdaten beim Auftraggeber)</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="service-icon" style="background:#1a0a00;">🖥</div>
+          <div>
+            <div class="service-name">Hetzner VPS</div>
+            <span class="badge badge-orange">Server</span>
+          </div>
+        </div>
+        <div class="service-purpose">CPX22 VPS in Deutschland (IPv4: <code>178.105.172.209</code>). Darauf laufen Coolify und der Next.js Docker-Container. SSH-Zugang nur mit hinterlegtem Key.</div>
+        <a class="service-link" href="https://console.hetzner.cloud" target="_blank">console.hetzner.cloud ↗</a>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="service-icon" style="background:#0a1a0a;">🗄</div>
+          <div>
+            <div class="service-name">Supabase</div>
+            <span class="badge badge-green">Datenbank &amp; Auth</span>
+          </div>
+        </div>
+        <div class="service-purpose">PostgreSQL-Datenbank mit Row Level Security, Supabase Auth (Magic Links, Passwort), Storage (Profilbilder). Einziges aktives Projekt: <code>cdjvjzlwzinrcymmgsfh</code></div>
+        <a class="service-link" href="https://supabase.com/dashboard/project/cdjvjzlwzinrcymmgsfh" target="_blank">Dashboard ↗</a>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="service-icon" style="background:#0d0d1a;">📧</div>
+          <div>
+            <div class="service-name">Resend</div>
+            <span class="badge badge-blue">E-Mail</span>
+          </div>
+        </div>
+        <div class="service-purpose">Transaktionale E-Mails (Einladungen, Passwortreset, Vertragserinnerungen). Wird via SMTP angesprochen. API-Key und SMTP-Daten als Env-Vars in Coolify.</div>
+        <a class="service-link" href="https://resend.com/overview" target="_blank">resend.com ↗</a>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="service-icon" style="background:#1a1000;">🛒</div>
+          <div>
+            <div class="service-name">Antelope Shop</div>
+            <span class="badge badge-yellow">Externer Shop</span>
+          </div>
+        </div>
+        <div class="service-purpose">Externer EMS-Anzug-Shop. Partner-Zuordnung erfolgt via UTM-Parameter (<code>utm_source=bodytime-concept</code> + <code>utm_term=[partner-slug]</code>). Kein API-Zugang notwendig.</div>
+        <a class="service-link" href="https://www.antelope-shop.com/de/" target="_blank">antelope-shop.com ↗</a>
+      </div>
+
+    </div>
+
+    <div class="callout callout-yellow">
+      <span class="callout-icon">⚠️</span>
+      <div>Zugangsdaten (Passwörter, API-Keys, Service-Role-Key) niemals in den Code committen. Alle Secrets ausschliesslich als Umgebungsvariablen in Coolify pflegen.</div>
+    </div>
+  </section>
+
+  <!-- ═══ LOKALES SETUP ═══════════════════════════════════════ -->
+  <section id="setup">
+    <h2>Lokales Setup</h2>
+
+    <h3>Voraussetzungen</h3>
+    <p>Node.js 20+, npm oder pnpm, Git. Kein Docker notwendig fur lokale Entwicklung.</p>
+
+    <h3>Repository klonen &amp; installieren</h3>
+    <pre><code>git clone https://github.com/directmailing-io/BODYTIME-CONCEPT.git
+cd BODYTIME-CONCEPT
+npm install</code></pre>
+
+    <h3>.env.local anlegen</h3>
+    <p>Die Datei <code>.env.local</code> liegt im Gitignore und muss lokal manuell angelegt werden. Werte vom Auftraggeber erfragen.</p>
+    <pre><code><span class="cm"># Supabase (Produktion oder lokale Instanz)</span>
+NEXT_PUBLIC_SUPABASE_URL=https://[projekt-id].supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+
+<span class="cm"># App-URL (lokal)</span>
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+<span class="cm"># E-Mail via Resend</span>
+SMTP_HOST=smtp.resend.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=resend
+SMTP_PASS=re_...
+SMTP_FROM_NAME=BODYTIME concept
+SMTP_FROM_EMAIL=onboarding@resend.dev
+RESEND_API_KEY=re_...
+
+<span class="cm"># Cron-Job Absicherung</span>
+CRON_SECRET=...</code></pre>
+
+    <h3>Entwicklungsserver starten</h3>
+    <pre><code>npm run dev
+<span class="cm"># → http://localhost:3000</span></code></pre>
+
+    <h3>Build prüfen</h3>
+    <pre><code>npm run build
+npm run start</code></pre>
+  </section>
+
+  <!-- ═══ ENV VARS ════════════════════════════════════════════ -->
+  <section id="envvars">
+    <h2>Umgebungsvariablen</h2>
+    <p>In Produktion ausschliesslich in Coolify gesetzt. Lokal in <code>.env.local</code>.</p>
+
+    <table class="data-table env-table">
+      <thead>
+        <tr>
+          <th>Variable</th>
+          <th>Sichtbarkeit</th>
+          <th>Bedeutung</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>NEXT_PUBLIC_SUPABASE_URL</td>
+          <td><span class="badge badge-yellow">Client + Server</span></td>
+          <td>Supabase Projekt-URL (öffentlich, kein Secret)</td>
+        </tr>
+        <tr>
+          <td>NEXT_PUBLIC_SUPABASE_ANON_KEY</td>
+          <td><span class="badge badge-yellow">Client + Server</span></td>
+          <td>Supabase Anon Key (öffentlich, durch RLS abgesichert)</td>
+        </tr>
+        <tr>
+          <td>SUPABASE_SERVICE_ROLE_KEY</td>
+          <td><span class="badge badge-red">Nur Server</span></td>
+          <td>Umgeht RLS komplett – nur in Server Actions / Route Handlers verwenden</td>
+        </tr>
+        <tr>
+          <td>NEXT_PUBLIC_APP_URL</td>
+          <td><span class="badge badge-yellow">Client + Server</span></td>
+          <td>Basis-URL der App (z.B. https://bodytime-concept.de) – wird für Bestelllinks genutzt</td>
+        </tr>
+        <tr>
+          <td>SMTP_HOST / PORT / USER / PASS</td>
+          <td><span class="badge badge-red">Nur Server</span></td>
+          <td>Nodemailer-Konfiguration für Resend SMTP</td>
+        </tr>
+        <tr>
+          <td>SMTP_FROM_NAME / FROM_EMAIL</td>
+          <td><span class="badge badge-red">Nur Server</span></td>
+          <td>Absender-Name und -Adresse in ausgehenden E-Mails</td>
+        </tr>
+        <tr>
+          <td>RESEND_API_KEY</td>
+          <td><span class="badge badge-red">Nur Server</span></td>
+          <td>Resend API-Key (redundant zu SMTP – für direkten API-Zugriff)</td>
+        </tr>
+        <tr>
+          <td>CRON_SECRET</td>
+          <td><span class="badge badge-red">Nur Server</span></td>
+          <td>Bearer-Token zur Absicherung des Cron-Endpoints <code>/api/cron/reminders</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══ ARCHITEKTUR ═════════════════════════════════════════ -->
+  <section id="architektur">
+    <h2>Architektur</h2>
+
+    <h3>Tech-Stack</h3>
+    <table class="data-table">
+      <thead><tr><th>Schicht</th><th>Technologie</th><th>Version</th></tr></thead>
+      <tbody>
+        <tr><td>Framework</td><td>Next.js App Router</td><td>15 (React 19)</td></tr>
+        <tr><td>Styling</td><td>Tailwind CSS</td><td>v4</td></tr>
+        <tr><td>UI-Komponenten</td><td>shadcn/ui (Radix UI Primitives)</td><td>–</td></tr>
+        <tr><td>Datenbank</td><td>PostgreSQL via Supabase</td><td>–</td></tr>
+        <tr><td>Auth</td><td>Supabase Auth (SSR-Mode)</td><td>@supabase/ssr</td></tr>
+        <tr><td>Formulare</td><td>react-hook-form + zod</td><td>–</td></tr>
+        <tr><td>Animationen</td><td>Framer Motion + GSAP</td><td>– (Landingpage)</td></tr>
+        <tr><td>E-Mail</td><td>Nodemailer via Resend SMTP</td><td>–</td></tr>
+        <tr><td>Sprache</td><td>TypeScript (strict)</td><td>5.x</td></tr>
+        <tr><td>Hosting</td><td>Docker Container via Coolify auf Hetzner</td><td>–</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Wichtige Architektur-Prinzipien</h3>
+    <p>Das Projekt folgt dem Next.js App Router-Modell strikt:</p>
+    <ul style="color:var(--muted); padding-left:18px; line-height:2;">
+      <li>Server Components sind der Standard – kein <code>"use client"</code> ohne Grund</li>
+      <li>Alle Datenmutationen laufen über <strong>Server Actions</strong> in <code>src/actions/</code></li>
+      <li>Client Components nur für Interaktivität (Formulare, Modals, Animationen)</li>
+      <li>Supabase RLS schützt alle Daten auf Datenbankebene</li>
+      <li>Der Service-Role-Key wird nur in vertrauenswürdigen Server-Kontexten genutzt</li>
+    </ul>
+  </section>
+
+  <!-- ═══ VERZEICHNISSTRUKTUR ═════════════════════════════════ -->
+  <section id="struktur">
+    <h2>Verzeichnisstruktur</h2>
+
+    <div class="tree">
+<span class="dir">src/</span>
+├── <span class="dir">app/</span>                      <span class="note"># Next.js App Router – alle Seiten und API-Routen</span>
+│   ├── <span class="dir">(auth)/</span>               <span class="note"># Auth-Seiten mit eigenem Layout (kein Sidebar)</span>
+│   │   ├── login/, register/, forgot-password/
+│   │   ├── reset-password/, invite/
+│   │   └── layout.tsx
+│   ├── <span class="dir">admin/</span>                <span class="note"># Admin-Dashboard (role=admin geschützt)</span>
+│   │   ├── customers/, partners/, documents/
+│   │   ├── freigabezentrale/, empfehlungszentrale/
+│   │   ├── settings/, profile/
+│   │   └── layout.tsx                <span class="note"># AdminSidebar eingebunden</span>
+│   ├── <span class="dir">partner/</span>              <span class="note"># Partner-Dashboard (role=partner geschützt)</span>
+│   │   ├── customers/, order/, pakete/
+│   │   ├── empfehlung/, steckbrief/
+│   │   ├── documents/, profile/
+│   │   └── layout.tsx                <span class="note"># PartnerSidebar eingebunden</span>
+│   ├── <span class="dir">b2b/</span>                  <span class="note"># B2B-Landingpage (Partner-Akquise)</span>
+│   ├── <span class="dir">bestellung/[partnerId]/</span>  <span class="note"># Oeffentlicher Order-Flow fuer Kunden</span>
+│   ├── <span class="dir">api/</span>
+│   │   ├── auth/callback/route.ts    <span class="note"># Supabase OAuth Callback</span>
+│   │   └── cron/reminders/route.ts   <span class="note"># Vertrags-Erinnerungen (Bearer-gesichert)</span>
+│   ├── hilfe/route.ts                <span class="note"># Serviert public/hilfe/index.html</span>
+│   ├── page.tsx                      <span class="note"># B2C-Landingpage (/)</span>
+│   ├── layout.tsx                    <span class="note"># Root-Layout (CookieConsent, Toaster)</span>
+│   └── not-found.tsx                 <span class="note"># Custom 404</span>
+│
+├── <span class="dir">actions/</span>                  <span class="note"># Server Actions (alle Datenmutationen)</span>
+│   ├── auth.ts                       <span class="note"># Login, Register, Passwort</span>
+│   ├── customers.ts                  <span class="note"># Kunden anlegen/bearbeiten</span>
+│   ├── steckbrief.ts                 <span class="note"># Partner-Steckbrief</span>
+│   ├── referrals.ts                  <span class="note"># Empfehlungsprogramm</span>
+│   ├── documents.ts                  <span class="note"># Dokumente verwalten</span>
+│   ├── admin-partners.ts             <span class="note"># Admin: Partner verwalten, einladen</span>
+│   ├── admin-steckbrief.ts           <span class="note"># Admin: Steckbrief freigeben/ablehnen</span>
+│   ├── admin-settings.ts             <span class="note"># Admin: App-Einstellungen</span>
+│   ├── contact.ts                    <span class="note"># Kontaktformular</span>
+│   ├── public-order.ts               <span class="note"># Oeffentlicher Bestellflow</span>
+│   ├── partner-packages.ts           <span class="note"># Pakete</span>
+│   ├── customer-pricing.ts           <span class="note"># Preise pro Kunde</span>
+│   └── profile.ts                    <span class="note"># Profil bearbeiten</span>
+│
+├── <span class="dir">components/</span>
+│   ├── <span class="dir">marketing/</span>            <span class="note"># Landingpage-Sections (B2C + B2B)</span>
+│   │   ├── HeroSection, TrainerGrid, TrainerModal
+│   │   ├── FAQSection, ProductSection, SiteFooter...
+│   ├── <span class="dir">partner/</span>             <span class="note"># Partner-Dashboard-Komponenten</span>
+│   │   ├── PartnerSidebar.tsx
+│   │   ├── CustomersTable.tsx        <span class="note"># Kunden-Tabelle mit Filter/Suche</span>
+│   │   ├── SteckbriefForm.tsx        <span class="note"># Steckbrief-Formular mit Bildcropper</span>
+│   │   ├── ShareOrderLink.tsx        <span class="note"># Bestelllink-Box</span>
+│   │   └── ...
+│   ├── <span class="dir">admin/</span>               <span class="note"># Admin-Dashboard-Komponenten</span>
+│   │   ├── AdminSidebar.tsx
+│   │   ├── FreigabezentraleClient.tsx
+│   │   └── ...
+│   └── <span class="dir">ui/</span>                  <span class="note"># shadcn/ui Basis-Komponenten</span>
+│       ├── button, input, dialog, select, badge...
+│
+├── <span class="dir">lib/</span>
+│   ├── <span class="dir">supabase/</span>
+│   │   ├── server.ts                 <span class="note"># createClient() + createAdminClient()</span>
+│   │   ├── client.ts                 <span class="note"># createBrowserClient()</span>
+│   │   └── middleware.ts             <span class="note"># updateSession() fuer Middleware</span>
+│   ├── <span class="dir">email/</span>
+│   │   ├── mailer.ts                 <span class="note"># Nodemailer-Konfiguration</span>
+│   │   └── templates.ts              <span class="note"># HTML-E-Mail-Templates</span>
+│   ├── <span class="dir">validations/</span>          <span class="note"># Zod-Schemas (auth, customer, partner, steckbrief)</span>
+│   └── constants.ts                  <span class="note"># Sentinel-Keys fuer Einstellungen</span>
+│
+├── <span class="dir">types/</span>
+│   └── index.ts                      <span class="note"># Alle globalen TypeScript-Interfaces</span>
+│
+└── proxy.ts                          <span class="note"># Next.js Middleware: Auth + Routing</span>
+    </div>
+
+    <div class="callout callout-blue">
+      <span class="callout-icon">ℹ️</span>
+      <div>Die <code>supabase/migrations/</code> Ordner im Root enthalt alle SQL-Migrationen (001–011). Bei Schema-Aenderungen immer eine neue Migration anlegen, nie bestehende editieren.</div>
+    </div>
+  </section>
+
+  <!-- ═══ ROUTEN ══════════════════════════════════════════════ -->
+  <section id="routen">
+    <h2>Alle Routen</h2>
+
+    <h3>Öffentlich (kein Login nötig)</h3>
+    <table class="data-table route-table">
+      <thead><tr><th>Route</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>/</td><td>B2C-Landingpage – EMS Training für Endkunden</td></tr>
+        <tr><td>/b2b</td><td>B2B-Landingpage – Partner-Akquise</td></tr>
+        <tr><td>/b2b/beratung</td><td>B2B Beratungsanfrage-Formular</td></tr>
+        <tr><td>/beratung</td><td>B2C Kontakt/Beratungsformular</td></tr>
+        <tr><td>/bestellung/[partnerId]</td><td>Öffentlicher Bestell-Flow – Kunde kauft via Partner-Link</td></tr>
+        <tr><td>/danke</td><td>Bestätigungsseite nach Kontaktformular</td></tr>
+        <tr><td>/datenschutz</td><td>Datenschutzerklärung</td></tr>
+        <tr><td>/impressum</td><td>Impressum</td></tr>
+        <tr><td>/hilfe</td><td>Partner-Handbuch (statisches HTML)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Auth-Seiten (Weiterleitung wenn schon eingeloggt)</h3>
+    <table class="data-table route-table">
+      <thead><tr><th>Route</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>/login</td><td>E-Mail + Passwort Login</td></tr>
+        <tr><td>/register</td><td>Registrierung (nur über Einladungslink sinnvoll)</td></tr>
+        <tr><td>/forgot-password</td><td>Passwort vergessen</td></tr>
+        <tr><td>/reset-password</td><td>Neues Passwort setzen (via Magic Link)</td></tr>
+        <tr><td>/invite</td><td>Einladungs-Handler (verarbeitet Supabase Invite-Token)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Partner-Dashboard (role = partner)</h3>
+    <table class="data-table route-table">
+      <thead><tr><th>Route</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>/partner/dashboard</td><td>KPI-Übersicht: aktive Kunden, bald ablaufende Verträge</td></tr>
+        <tr><td>/partner/customers</td><td>Kundenliste mit Suche und Status-Filter</td></tr>
+        <tr><td>/partner/customers/new</td><td>Neuen Kunden manuell anlegen</td></tr>
+        <tr><td>/partner/customers/[id]</td><td>Kundendetail: Vertrag, CRM-Notizen, Historie</td></tr>
+        <tr><td>/partner/customers/[id]/edit</td><td>Kundendaten bearbeiten</td></tr>
+        <tr><td>/partner/order</td><td>Neue Bestellung: Gutschein-Code + Shop-Links + Bestelllink</td></tr>
+        <tr><td>/partner/pakete</td><td>Pakete für Kunden verwalten</td></tr>
+        <tr><td>/partner/empfehlung</td><td>Empfehlungsprogramm – Partner werben Partner</td></tr>
+        <tr><td>/partner/steckbrief</td><td>Öffentliches Partnerprofil pflegen + einreichen</td></tr>
+        <tr><td>/partner/documents</td><td>Dokumente, PDFs und Videos von Admin</td></tr>
+        <tr><td>/partner/profile</td><td>Eigene Profildaten und Passwort ändern</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Admin-Dashboard (role = admin)</h3>
+    <table class="data-table route-table">
+      <thead><tr><th>Route</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>/admin/dashboard</td><td>Admin-Übersicht: alle Partner, Kunden, Stats</td></tr>
+        <tr><td>/admin/partners</td><td>Alle Partner: suchen, filtern, einladen, deaktivieren</td></tr>
+        <tr><td>/admin/partners/[id]</td><td>Partnerdetail: Kunden, Notizen, Lizenz, Aktivierung</td></tr>
+        <tr><td>/admin/customers</td><td>Alle Kunden über alle Partner hinweg</td></tr>
+        <tr><td>/admin/freigabezentrale</td><td>Steckbriefe prüfen: freigeben oder ablehnen</td></tr>
+        <tr><td>/admin/empfehlungszentrale</td><td>Empfehlungen verwalten und bestätigen</td></tr>
+        <tr><td>/admin/documents</td><td>Dokumente für alle Partner verwalten</td></tr>
+        <tr><td>/admin/settings</td><td>Gutschein-Code und Empfehlungsbonus konfigurieren</td></tr>
+        <tr><td>/admin/profile</td><td>Admin-Profildaten und Passwort</td></tr>
+      </tbody>
+    </table>
+
+    <h3>API-Routen</h3>
+    <table class="data-table route-table">
+      <thead><tr><th>Route</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>/api/auth/callback</td><td>Supabase OAuth/Magic-Link Callback – nicht anfassen</td></tr>
+        <tr><td>/api/cron/reminders</td><td>Sendet Erinnerungs-E-Mails für ablaufende Verträge. Muss per HTTP GET mit <code>Authorization: Bearer [CRON_SECRET]</code> aufgerufen werden. Extern per Cron-Dienst (z.B. Coolify Cron) täglich triggern.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══ MIDDLEWARE ══════════════════════════════════════════ -->
+  <section id="middleware">
+    <h2>Middleware / Auth-Schutz</h2>
+    <p>Datei: <code>src/proxy.ts</code> (wird als Next.js Middleware über <code>middleware.ts</code> im Root eingebunden).</p>
+
+    <h3>Routing-Logik</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">MARKETING_ROUTES → immer durchlassen</div>
+          <div class="flow-desc"><code>/</code>, <code>/b2b</code>, <code>/bestellung</code>, <code>/beratung</code>, <code>/danke</code>, <code>/datenschutz</code>, <code>/impressum</code> – kein Auth-Check</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">PUBLIC_ROUTES + eingeloggt → Weiterleitung zum Dashboard</div>
+          <div class="flow-desc"><code>/login</code>, <code>/register</code> etc. – wenn Session aktiv, zum passenden Dashboard</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">PROTECTED_ROUTES + kein Login → /login</div>
+          <div class="flow-desc"><code>/partner/*</code>, <code>/admin/*</code> – ohne Session redirect zu Login mit <code>?redirect=</code></div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">Role-Check → falsches Dashboard → redirect</div>
+          <div class="flow-desc">Partner auf <code>/admin/*</code> → <code>/partner/dashboard</code> und umgekehrt</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">Deaktivierter Account → ausloggen + /login?deactivated=1</div>
+          <div class="flow-desc">Session wird gelöscht, alle <code>sb-*</code> Cookies entfernt</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-blue">
+      <span class="callout-icon">ℹ️</span>
+      <div>Neue öffentliche Routen müssen zu <code>MARKETING_ROUTES</code> in <code>src/proxy.ts</code> hinzugefügt werden, sonst werden sie als "unbekannte Route" behandelt (404 oder Auth-Redirect).</div>
+    </div>
+  </section>
+
+  <!-- ═══ DATENBANK ═══════════════════════════════════════════ -->
+  <section id="datenbank">
+    <h2>Datenbank</h2>
+    <p>PostgreSQL via Supabase. Alle Tabellen haben Row Level Security (RLS) aktiv. Migrationen in <code>supabase/migrations/</code>.</p>
+
+    <h3>Tabellen</h3>
+    <table class="data-table">
+      <thead><tr><th>Tabelle</th><th>Inhalt</th><th>RLS</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>bt_profiles</td>
+          <td>Alle User-Profile. Felder: <code>role</code> (admin/partner), <code>is_active</code>, Name, E-Mail, Avatar. Wird bei Auth-Signup automatisch per Trigger angelegt.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_customers</td>
+          <td>Kunden der Partner. Jeder Kunde gehört einem Partner (<code>partner_id</code>). Felder: Name, Kontakt, Bestelldatum, Mietdauer, Vertragsenddatum, EMS-Anzug-Daten.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_contract_history</td>
+          <td>Auditlog für Vertragsänderungen eines Kunden (initial, renewal, modification).</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_crm_notes</td>
+          <td>CRM-Notizen eines Partners zu einem Kunden. Freitext, Timestamp, Autor.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_steckbriefe</td>
+          <td>Öffentliche Partnerprofile. Status-Flow: draft → pending → approved/rejected. Enthält Foto-URL (Supabase Storage), Leistungen, Philosophie, Social Links.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_documents</td>
+          <td>Dokumente, PDFs und Links für Partner. Wird auch als Settings-Speicher missbraucht: Sentinel-Keys <code>__setting:voucher_code__</code> und <code>__setting:referral_bonus__</code> speichern App-Einstellungen.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_referrals</td>
+          <td>Empfehlungen: welcher Partner hat wen geworben. Status: pending/confirmed.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_partner_notes</td>
+          <td>Admin-interne Notizen zu Partnern (für Partner nicht sichtbar).</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_partner_licenses</td>
+          <td>Lizenz-Informationen eines Partners (Laufzeit, Typ etc.).</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_packages</td>
+          <td>Trainings-Pakete, die ein Partner seinen Kunden anbietet.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_customer_pricing</td>
+          <td>Individuelle Preisgestaltung pro Kunde.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_audit_logs</td>
+          <td>Systemweites Audit-Log für kritische Aktionen.</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+        <tr>
+          <td>bt_reminder_logs</td>
+          <td>Protokoll gesendeter Vertrags-Erinnerungs-E-Mails (verhindert doppelten Versand).</td>
+          <td><span class="badge badge-green">Aktiv</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Supabase Storage</h3>
+    <p>Bucket <code>bt_steckbriefe</code> – Profilbilder der Partner (werden vor dem Upload zugeschnitten). Zugriff nur für eingeloggte Partner auf ihre eigene Datei, plus öffentliche Leseberechtigung für freigegebene Steckbriefe.</p>
+
+    <h3>Schema-Änderungen</h3>
+    <div class="callout callout-yellow">
+      <span class="callout-icon">⚠️</span>
+      <div>Immer neue Migration anlegen: <code>supabase/migrations/012_beschreibung.sql</code>. Niemals bestehende Migrationen editieren – das bricht die Migrationskette. Die Migration muss danach manuell im Supabase Dashboard unter SQL-Editor ausgeführt werden (kein automatisches Deployment konfiguriert).</div>
+    </div>
+  </section>
+
+  <!-- ═══ PATTERNS ════════════════════════════════════════════ -->
+  <section id="patterns">
+    <h2>Code-Patterns</h2>
+
+    <h3>Supabase-Client – welcher wann?</h3>
+    <table class="data-table">
+      <thead><tr><th>Funktion</th><th>Wo nutzen</th><th>Datei</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>createClient()</code></td>
+          <td>Server Components, Server Actions, Route Handlers</td>
+          <td><code>lib/supabase/server.ts</code></td>
+        </tr>
+        <tr>
+          <td><code>createAdminClient()</code></td>
+          <td>Server Actions die RLS umgehen müssen (z.B. Admin-Aktionen)</td>
+          <td><code>lib/supabase/server.ts</code></td>
+        </tr>
+        <tr>
+          <td><code>createBrowserClient()</code></td>
+          <td>Client Components (<code>"use client"</code>) – nur lesen</td>
+          <td><code>lib/supabase/client.ts</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Server Action Beispiel</h3>
+    <pre><code><span class="st">'use server'</span>;
+<span class="ky">import</span> { createClient } <span class="ky">from</span> <span class="st">'@/lib/supabase/server'</span>;
+<span class="ky">import</span> { revalidatePath } <span class="ky">from</span> <span class="st">'next/cache'</span>;
+<span class="ky">import</span> type { ActionResult } <span class="ky">from</span> <span class="st">'@/types'</span>;
+
+<span class="ky">export async function</span> <span class="fn">updateSomething</span>(data: FormData): Promise&lt;ActionResult&gt; {
+  <span class="ky">const</span> supabase = <span class="ky">await</span> <span class="fn">createClient</span>();
+  <span class="ky">const</span> { data: { user } } = <span class="ky">await</span> supabase.auth.<span class="fn">getUser</span>();
+  <span class="ky">if</span> (!user) <span class="ky">return</span> { success: <span class="nu">false</span>, error: <span class="st">'Nicht eingeloggt'</span> };
+
+  <span class="ky">const</span> { error } = <span class="ky">await</span> supabase
+    .from(<span class="st">'bt_table'</span>)
+    .<span class="fn">update</span>({ field: data.<span class="fn">get</span>(<span class="st">'field'</span>) })
+    .eq(<span class="st">'id'</span>, user.id);
+
+  <span class="ky">if</span> (error) <span class="ky">return</span> { success: <span class="nu">false</span>, error: error.message };
+
+  <span class="fn">revalidatePath</span>(<span class="st">'/partner/...'</span>);
+  <span class="ky">return</span> { success: <span class="nu">true</span> };
+}</code></pre>
+
+    <h3>Formular-Validierung mit Zod</h3>
+    <p>Schemas in <code>src/lib/validations/</code>. Werden sowohl client-seitig (react-hook-form) als auch server-seitig (in Server Actions) genutzt.</p>
+    <pre><code><span class="cm">// lib/validations/customer.ts</span>
+<span class="ky">export const</span> customerSchema = z.<span class="fn">object</span>({
+  first_name: z.<span class="fn">string</span>().<span class="fn">min</span>(<span class="nu">1</span>),
+  email: z.<span class="fn">string</span>().<span class="fn">email</span>(),
+  rental_duration_months: z.<span class="fn">union</span>([
+    z.<span class="fn">literal</span>(<span class="nu">3</span>), z.<span class="fn">literal</span>(<span class="nu">6</span>),
+    z.<span class="fn">literal</span>(<span class="nu">12</span>), z.<span class="fn">literal</span>(<span class="nu">24</span>)
+  ]),
+});</code></pre>
+  </section>
+
+  <!-- ═══ DEPLOYMENT ══════════════════════════════════════════ -->
+  <section id="deployment">
+    <h2>Deployment</h2>
+
+    <h3>Automatischer Deployment-Flow</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">1. git push origin main</div>
+          <div class="flow-desc">Jeder Push auf den <code>main</code>-Branch startet den Prozess</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">2. GitHub Actions (.github/workflows/)</div>
+          <div class="flow-desc">CI/CD-Pipeline: Build-Check + Webhook-Call an Coolify API</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">3. Coolify zieht den Code</div>
+          <div class="flow-desc">Coolify klont das Repository, baut das Docker-Image mit <code>npm run build</code></div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div>
+          <div class="flow-label">4. Container-Neustart</div>
+          <div class="flow-desc">Alter Container wird gestoppt, neuer gestartet. Zero-Downtime durch Coolify-Proxy</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Manuelles Deployment (Notfall)</h3>
+    <p>Im Coolify-Dashboard auf "Redeploy" klicken. Oder via SSH auf dem Server:</p>
+    <pre><code>ssh root@178.105.172.209
+<span class="cm"># Coolify-Container-ID herausfinden und manuell redeployen</span>
+docker ps</code></pre>
+
+    <h3>Umgebungsvariablen ändern</h3>
+    <p>Nur in Coolify unter dem jeweiligen Service. Nach jeder Änderung muss ein Redeploy ausgelöst werden, damit die neuen Werte geladen werden.</p>
+
+    <div class="callout callout-red">
+      <span class="callout-icon">🚨</span>
+      <div>Die <code>.env.local</code> im Projekt enthält veraltete Supabase-Credentials (altes Projekt <code>mvqkvmtptsmdhgcrahrg</code>). Diese Datei ist nur für lokale Entwicklung. Produktion nutzt ausschliesslich die Werte aus Coolify mit dem aktiven Projekt <code>cdjvjzlwzinrcymmgsfh</code>.</div>
+    </div>
+
+    <h3>Domain &amp; SSL</h3>
+    <p>Domain <code>bodytime-concept.de</code> bei Hostinger. DNS zeigt auf den Hetzner VPS. SSL-Zertifikat wird automatisch von Coolify via Let's Encrypt ausgestellt und erneuert.</p>
+  </section>
+
+  <!-- ═══ EMAIL & CRON ═════════════════════════════════════════ -->
+  <section id="email">
+    <h2>E-Mail &amp; Cron</h2>
+
+    <h3>E-Mail-Versand</h3>
+    <p>Alle E-Mails laufen über Resend via SMTP (<code>smtp.resend.com:587</code>). Der Versand-Code liegt in <code>src/lib/email/mailer.ts</code>, Templates in <code>src/lib/email/templates.ts</code>.</p>
+
+    <p>Folgende E-Mails werden versendet:</p>
+    <table class="data-table">
+      <thead><tr><th>Auslöser</th><th>Empfänger</th><th>Template</th></tr></thead>
+      <tbody>
+        <tr><td>Partner einladen (Admin)</td><td>Neuer Partner</td><td>Einladungslink</td></tr>
+        <tr><td>Passwort vergessen</td><td>User</td><td>Magic Link (Supabase nativ)</td></tr>
+        <tr><td>Kontaktformular ausgefüllt</td><td>Admin</td><td>Kontaktanfrage</td></tr>
+        <tr><td>Vertrag läuft in 30/14 Tagen ab</td><td>Partner</td><td>Erinnerungs-E-Mail (via Cron)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cron-Job: Vertragserinnerungen</h3>
+    <p>Endpoint: <code>GET /api/cron/reminders</code> – muss täglich mit dem korrekten Bearer-Token aufgerufen werden.</p>
+    <pre><code><span class="cm"># Aufruf (z.B. via Coolify Cron oder externem Dienst)</span>
+curl -H "Authorization: Bearer [CRON_SECRET]" \
+  https://bodytime-concept.de/api/cron/reminders</code></pre>
+    <p>Der Job prüft alle Kunden auf Vertragsenden in den nächsten 30 und 14 Tagen und sendet je eine E-Mail an den zuständigen Partner. Gesendete Erinnerungen werden in <code>bt_reminder_logs</code> gespeichert.</p>
+  </section>
+
+  <!-- ═══ WORKFLOWS ═══════════════════════════════════════════ -->
+  <section id="workflows">
+    <h2>Admin-Workflows</h2>
+
+    <h3>Neuen Partner anlegen</h3>
+    <div class="flow">
+      <div class="flow-step"><div><div class="flow-label">/admin/partners → "Partner einladen"</div><div class="flow-desc">Name + E-Mail-Adresse eingeben</div></div></div>
+      <div class="flow-step"><div><div class="flow-label">Supabase sendet Invite-E-Mail</div><div class="flow-desc">Partner erhält Link, setzt Passwort über <code>/invite</code></div></div></div>
+      <div class="flow-step"><div><div class="flow-label">Partner kann sich einloggen</div><div class="flow-desc">Profil in <code>bt_profiles</code> mit <code>role=partner, is_active=true</code></div></div></div>
+    </div>
+
+    <h3>Steckbrief freigeben</h3>
+    <div class="flow">
+      <div class="flow-step"><div><div class="flow-label">Partner reicht Steckbrief ein</div><div class="flow-desc">Status wechselt auf <code>pending</code></div></div></div>
+      <div class="flow-step"><div><div class="flow-label">/admin/freigabezentrale</div><div class="flow-desc">Admin sieht alle pending Steckbriefe</div></div></div>
+      <div class="flow-step"><div><div class="flow-label">Freigabe oder Ablehnung mit Begründung</div><div class="flow-desc">Status → <code>approved</code> (sichtbar auf Landingpage) oder <code>rejected</code> (mit Feedback)</div></div></div>
+    </div>
+
+    <h3>Gutschein-Code ändern</h3>
+    <p>/admin/settings – der Code wird als Sentinel-Eintrag in <code>bt_documents</code> mit dem Key <code>__setting:voucher_code__</code> gespeichert. Alle Partner sehen sofort den neuen Code auf ihrer Bestellseite.</p>
+
+    <h3>Partner deaktivieren</h3>
+    <p>/admin/partners/[id] → "Deaktivieren". Setzt <code>is_active=false</code> in <code>bt_profiles</code>. Der Partner wird beim nächsten Request automatisch ausgeloggt (Middleware prüft <code>is_active</code> bei jeder Anfrage).</p>
+  </section>
+
+</main>
+
+</body>
+</html>
