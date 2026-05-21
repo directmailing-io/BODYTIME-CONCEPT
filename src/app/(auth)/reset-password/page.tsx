@@ -18,25 +18,46 @@ export default function ResetPasswordPage() {
   const [serverError, setServerError] = useState<string | null>(null);
   // true once a valid auth session is detected (from hash fragment or cookie)
   const [sessionReady, setSessionReady] = useState(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
 
-    // Case 1: Implicit flow – Supabase appends #access_token to the redirect URL.
-    // The browser Supabase client detects this and fires PASSWORD_RECOVERY.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
-        setSessionReady(true);
-      }
-    });
+    // Parse URL fragment manually – the most reliable approach.
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get('access_token');
+    const refreshToken = params.get('refresh_token');
 
-    // Case 2: PKCE flow – /api/auth/callback already exchanged the code and set
-    // session cookies before redirecting here.
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setSessionReady(true);
-    });
-
-    return () => subscription.unsubscribe();
+    if (accessToken) {
+      // Implicit flow: Supabase placed the recovery tokens directly in the
+      // URL fragment. Establish the session explicitly from these tokens.
+      supabase.auth
+        .setSession({ access_token: accessToken, refresh_token: refreshToken ?? '' })
+        .then(({ data, error }) => {
+          if (!error && data.session) {
+            setSessionReady(true);
+            // Remove tokens from the URL so they can't be reused via back-button.
+            window.history.replaceState(null, '', window.location.pathname);
+          } else {
+            console.error('[reset-password] setSession error:', error?.message);
+            setSessionError(
+              'Dieser Link ist abgelaufen oder ungültig. Bitte fordere einen neuen an.',
+            );
+          }
+        });
+    } else {
+      // PKCE flow: /api/auth/callback exchanged the code and set session cookies.
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          setSessionReady(true);
+        } else {
+          setSessionError(
+            'Kein gültiger Reset-Link gefunden. Bitte fordere einen neuen an.',
+          );
+        }
+      });
+    }
   }, []);
 
   const {
@@ -60,8 +81,10 @@ export default function ResetPasswordPage() {
       const { error } = await supabase.auth.updateUser({ password: data.password });
 
       if (error) {
-        setServerError('Passwort konnte nicht geändert werden.');
-        toast.error('Passwort konnte nicht geändert werden.');
+        console.error('[reset-password] updateUser error:', error.message);
+        const msg = `Passwort konnte nicht geändert werden. (${error.message})`;
+        setServerError(msg);
+        toast.error(msg);
       } else {
         setIsSuccess(true);
         await supabase.auth.signOut();
@@ -75,16 +98,29 @@ export default function ResetPasswordPage() {
     }
   };
 
-  // While waiting for session detection, show a neutral loading state
+  // Session error: link expired or invalid
+  if (sessionError) {
+    return (
+      <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
+        <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 mb-5">
+          <p className="text-sm text-red-600">{sessionError}</p>
+        </div>
+        <Link
+          href="/forgot-password"
+          className="inline-flex items-center justify-center w-full bg-gray-900 text-white text-sm font-medium py-2.5 rounded-xl hover:bg-gray-800 transition-colors"
+        >
+          Neuen Link anfordern
+        </Link>
+      </div>
+    );
+  }
+
+  // While waiting for session detection show a neutral loading state
   if (!sessionReady && !isSuccess) {
     return (
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
         <Loader2 size={24} className="animate-spin mx-auto text-gray-400 mb-3" />
         <p className="text-sm text-gray-500">Sitzung wird geladen…</p>
-        <p className="text-xs text-gray-400 mt-4">
-          Falls diese Ansicht hängen bleibt, nutze bitte den Link in der E-Mail erneut oder{' '}
-          <Link href="/forgot-password" className="underline">fordere einen neuen an</Link>.
-        </p>
       </div>
     );
   }
