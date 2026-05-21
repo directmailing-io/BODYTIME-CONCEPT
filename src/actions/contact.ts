@@ -3,7 +3,7 @@
 import { sendMail } from '@/lib/email/mailer';
 import { b2cContactEmail, b2bContactEmail } from '@/lib/email/templates';
 
-const CONTACT_EMAIL = 'info@daniel-kurzeja.de'; // TODO: change to info@bodytime-fitness.de once domain is verified in Resend
+const CONTACT_EMAIL = process.env.EMAIL_FROM ?? 'info@bodytime-concept.de';
 
 export interface ContactResult {
   success: boolean;
