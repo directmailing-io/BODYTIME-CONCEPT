@@ -92,7 +92,12 @@ export async function forgotPasswordAction(formData: FormData): Promise<ActionRe
     return { success: false, error: 'Ungültige E-Mail-Adresse.' };
   }
 
-  const redirectTo = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?next=/reset-password`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://bodytime-concept.de';
+  // generateLink uses implicit flow (#access_token fragment) – send directly to
+  // /reset-password so the client can pick up the fragment. No callback needed.
+  const directRedirect = `${appUrl}/reset-password`;
+  // PKCE fallback still goes through the callback to exchange the code.
+  const pkceRedirect = `${appUrl}/api/auth/callback?next=/reset-password`;
 
   // Try sending via Resend (custom mailer) first; fall back to Supabase built-in email
   // if Resend domain is not yet verified.
@@ -100,7 +105,7 @@ export async function forgotPasswordAction(formData: FormData): Promise<ActionRe
   const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
     type: 'recovery',
     email: parsed.data.email,
-    options: { redirectTo },
+    options: { redirectTo: directRedirect },
   });
 
   if (!linkError && linkData?.properties?.action_link) {
@@ -118,10 +123,10 @@ export async function forgotPasswordAction(formData: FormData): Promise<ActionRe
     }
   }
 
-  // Fallback: let Supabase send the reset email via its built-in system
+  // Fallback: let Supabase send the reset email via its built-in system (PKCE flow)
   const supabase = await createClient();
   const { error: resetError } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo,
+    redirectTo: pkceRedirect,
   });
 
   if (resetError) {

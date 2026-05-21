@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, startTransition } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { resetPasswordSchema, type ResetPasswordInput } from '@/lib/validations/auth';
-import { resetPasswordAction } from '@/actions/auth';
+import { createClient } from '@/lib/supabase/client';
 import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
 
 export default function ResetPasswordPage() {
@@ -16,6 +16,28 @@ export default function ResetPasswordPage() {
   const [isPending, setIsPending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  // true once a valid auth session is detected (from hash fragment or cookie)
+  const [sessionReady, setSessionReady] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    // Case 1: Implicit flow – Supabase appends #access_token to the redirect URL.
+    // The browser Supabase client detects this and fires PASSWORD_RECOVERY.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+        setSessionReady(true);
+      }
+    });
+
+    // Case 2: PKCE flow – /api/auth/callback already exchanged the code and set
+    // session cookies before redirecting here.
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setSessionReady(true);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const {
     register,
@@ -29,32 +51,43 @@ export default function ResetPasswordPage() {
 
   const passwordValue = watch('password') ?? '';
 
-  const onSubmit = (data: ResetPasswordInput) => {
+  const onSubmit = async (data: ResetPasswordInput) => {
     setServerError(null);
     setIsPending(true);
 
-    startTransition(async () => {
-      try {
-        const fd = new FormData();
-        fd.append('password', data.password);
-        fd.append('confirmPassword', data.confirmPassword);
-        const result = await resetPasswordAction(fd);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.updateUser({ password: data.password });
 
-        if (result?.error) {
-          setServerError(result.error);
-          toast.error(result.error);
-        } else {
-          setIsSuccess(true);
-        }
-      } catch {
-        const message = 'Ein unerwarteter Fehler ist aufgetreten.';
-        setServerError(message);
-        toast.error(message);
-      } finally {
-        setIsPending(false);
+      if (error) {
+        setServerError('Passwort konnte nicht geändert werden.');
+        toast.error('Passwort konnte nicht geändert werden.');
+      } else {
+        setIsSuccess(true);
+        await supabase.auth.signOut();
       }
-    });
+    } catch {
+      const message = 'Ein unerwarteter Fehler ist aufgetreten.';
+      setServerError(message);
+      toast.error(message);
+    } finally {
+      setIsPending(false);
+    }
   };
+
+  // While waiting for session detection, show a neutral loading state
+  if (!sessionReady && !isSuccess) {
+    return (
+      <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
+        <Loader2 size={24} className="animate-spin mx-auto text-gray-400 mb-3" />
+        <p className="text-sm text-gray-500">Sitzung wird geladen…</p>
+        <p className="text-xs text-gray-400 mt-4">
+          Falls diese Ansicht hängen bleibt, nutze bitte den Link in der E-Mail erneut oder{' '}
+          <Link href="/forgot-password" className="underline">fordere einen neuen an</Link>.
+        </p>
+      </div>
+    );
+  }
 
   if (isSuccess) {
     return (
