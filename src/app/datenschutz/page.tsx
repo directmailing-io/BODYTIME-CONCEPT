@@ -44,7 +44,7 @@ export default function DatenschutzPage() {
               Verantwortlich für die Datenverarbeitung auf dieser Website ist:
             </p>
             <p>
-              BODYTIME Concept GmbH (i. G.)<br />
+              BODYTIME Concept GmbH<br />
               Alte Kissinger Straße 7<br />
               97688 Bad Kissingen<br />
               E-Mail: <a href="mailto:info@bodytime-concept.de" className="text-blue-600 hover:underline">info@bodytime-concept.de</a><br />
