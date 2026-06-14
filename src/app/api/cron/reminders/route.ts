@@ -38,8 +38,8 @@ export async function GET(request: NextRequest) {
       .from('bt_customers')
       .select(`
         id, first_name, last_name, email, contract_end_date, partner_id,
-        partner:profiles!partner_id(id, first_name, last_name, email),
-        reminder_logs(id)
+        partner:bt_profiles!partner_id(id, first_name, last_name, email),
+        bt_reminder_logs(id)
       `)
       .eq('is_active', true)
       .gte('contract_end_date', today.toISOString().split('T')[0])
