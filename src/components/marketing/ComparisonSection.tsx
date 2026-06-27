@@ -21,7 +21,7 @@ interface Row {
 const ROWS: Row[] = [
   {
     label: 'Preis pro Monat',
-    bodytime: { type: 'text', text: 'ab 55 €' },
+    bodytime: { type: 'text', text: 'ab 59 €' },
     ems:      { type: 'text', text: '80-150 €' },
     gym:      { type: 'text', text: '30-90 €' },
   },

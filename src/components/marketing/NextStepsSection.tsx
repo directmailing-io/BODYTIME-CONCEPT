@@ -204,7 +204,7 @@ export default function NextStepsSection() {
                   className="font-semibold leading-none tracking-tighter text-gray-900"
                   style={{ fontSize: 'clamp(36px, 10vw, 72px)' }}
                 >
-                  55 €
+                  59 €
                 </span>
                 <span className="text-sm text-gray-400 font-medium">/ Monat</span>
               </div>
