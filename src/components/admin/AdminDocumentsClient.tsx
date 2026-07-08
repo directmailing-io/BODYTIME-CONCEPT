@@ -2,7 +2,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Plus, Pencil, Trash2, Eye, EyeOff, FileText, Video, Link as LinkIcon, ExternalLink, FolderOpen } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, EyeOff, FileText, Video, Link as LinkIcon, ExternalLink, FolderOpen, FileSpreadsheet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -14,6 +14,7 @@ import { createDocumentAction, updateDocumentAction, deleteDocumentAction, toggl
 
 const typeIcons: Record<string, React.ReactNode> = {
   pdf: <FileText className="h-5 w-5 text-red-500" />,
+  word: <FileSpreadsheet className="h-5 w-5 text-blue-600" />,
   video: <Video className="h-5 w-5 text-blue-500" />,
   link: <LinkIcon className="h-5 w-5 text-green-500" />,
 };
@@ -44,13 +45,14 @@ function DocumentForm({ initial, onSubmit, isPending }: {
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="pdf">PDF</SelectItem>
+              <SelectItem value="word">Word-Dokument</SelectItem>
               <SelectItem value="video">Video</SelectItem>
               <SelectItem value="link">Link</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
-      {(docType === 'pdf' || docType === 'link') && (
+      {(docType === 'pdf' || docType === 'word' || docType === 'link') && (
         <Input name="file_url" label="URL" type="url" placeholder="https://..." defaultValue={initial?.file_url ?? ''} />
       )}
       {docType === 'video' && (

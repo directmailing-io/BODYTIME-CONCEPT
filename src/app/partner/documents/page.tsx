@@ -1,12 +1,17 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { FileText, Video, Link as LinkIcon, ExternalLink, Download, FolderOpen } from 'lucide-react';
+import { FileText, Video, Link as LinkIcon, ExternalLink, Download, FolderOpen, FileSpreadsheet } from 'lucide-react';
 
 const typeConfig: Record<string, { icon: React.ReactNode; label: string; color: string }> = {
   pdf: {
     icon: <FileText className="h-5 w-5 text-red-500" />,
     label: 'Download',
     color: 'bg-red-50 border-red-100 text-red-700 hover:bg-red-100',
+  },
+  word: {
+    icon: <FileSpreadsheet className="h-5 w-5 text-blue-600" />,
+    label: 'Download',
+    color: 'bg-blue-50 border-blue-100 text-blue-700 hover:bg-blue-100',
   },
   video: {
     icon: <Video className="h-5 w-5 text-blue-500" />,
@@ -19,6 +24,15 @@ const typeConfig: Record<string, { icon: React.ReactNode; label: string; color: 
     color: 'bg-green-50 border-green-100 text-green-700 hover:bg-green-100',
   },
 };
+
+/** Converts a Google Drive share URL to a direct force-download URL */
+function toDownloadUrl(url: string): string {
+  const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileMatch) return `https://drive.google.com/uc?export=download&id=${fileMatch[1]}`;
+  const openMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (openMatch) return `https://drive.google.com/uc?export=download&id=${openMatch[1]}`;
+  return url;
+}
 
 export default async function PartnerDocumentsPage() {
   const supabase = await createClient();
@@ -70,9 +84,10 @@ export default async function PartnerDocumentsPage() {
               {/* Document list */}
               <div className="space-y-2">
                 {grouped[category].map((doc: any) => {
-                  const url = doc.file_url || doc.video_url;
+                  const rawUrl = doc.file_url || doc.video_url;
                   const config = typeConfig[doc.type] ?? typeConfig.link;
-                  const isDownload = doc.type === 'pdf';
+                  const isDownload = doc.type === 'pdf' || doc.type === 'word';
+                  const url = doc.type === 'word' && rawUrl ? toDownloadUrl(rawUrl) : rawUrl;
                   return (
                     <div
                       key={doc.id}
