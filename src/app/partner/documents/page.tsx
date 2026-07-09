@@ -27,9 +27,9 @@ const typeConfig: Record<string, { icon: React.ReactNode; label: string; color: 
 
 /** Converts a Google Docs/Drive share URL to a direct PDF download URL */
 function toDownloadUrl(url: string): string {
-  // docs.google.com/document/d/{ID}/... → export as PDF
+  // docs.google.com/document/d/{ID}/... → read-only preview (opens inline in browser)
   const docsMatch = url.match(/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/);
-  if (docsMatch) return `https://docs.google.com/document/d/${docsMatch[1]}/export?format=pdf`;
+  if (docsMatch) return `https://docs.google.com/document/d/${docsMatch[1]}/preview`;
   // drive.google.com/file/d/{ID}/...
   const driveFileMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (driveFileMatch) return `https://drive.google.com/uc?export=download&id=${driveFileMatch[1]}`;
