@@ -25,17 +25,14 @@ const typeConfig: Record<string, { icon: React.ReactNode; label: string; color: 
   },
 };
 
-/** Converts a Google Docs/Drive share URL to a direct PDF download URL */
-function toDownloadUrl(url: string): string {
-  // docs.google.com/document/d/{ID}/... → read-only preview (opens inline in browser)
-  const docsMatch = url.match(/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/);
-  if (docsMatch) return `https://docs.google.com/document/d/${docsMatch[1]}/preview`;
-  // drive.google.com/file/d/{ID}/...
-  const driveFileMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (driveFileMatch) return `https://drive.google.com/uc?export=download&id=${driveFileMatch[1]}`;
-  // drive.google.com/open?id={ID}
-  const driveOpenMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (driveOpenMatch) return `https://drive.google.com/uc?export=download&id=${driveOpenMatch[1]}`;
+/** Routes Google Docs/Drive URLs through the inline PDF proxy */
+function toDocUrl(url: string): string {
+  if (
+    url.match(/docs\.google\.com\/document\/d\//) ||
+    url.match(/drive\.google\.com\/file\/d\//)
+  ) {
+    return `/api/doc-preview?url=${encodeURIComponent(url)}`;
+  }
   return url;
 }
 
@@ -92,7 +89,7 @@ export default async function PartnerDocumentsPage() {
                   const rawUrl = doc.file_url || doc.video_url;
                   const config = typeConfig[doc.type] ?? typeConfig.link;
                   const isDownload = doc.type === 'pdf' || doc.type === 'word';
-                  const url = doc.type === 'word' && rawUrl ? toDownloadUrl(rawUrl) : rawUrl;
+                  const url = doc.type === 'word' && rawUrl ? toDocUrl(rawUrl) : rawUrl;
                   return (
                     <div
                       key={doc.id}
