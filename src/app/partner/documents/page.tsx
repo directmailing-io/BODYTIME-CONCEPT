@@ -25,12 +25,17 @@ const typeConfig: Record<string, { icon: React.ReactNode; label: string; color: 
   },
 };
 
-/** Converts a Google Drive share URL to a direct force-download URL */
+/** Converts a Google Docs/Drive share URL to a direct PDF download URL */
 function toDownloadUrl(url: string): string {
-  const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (fileMatch) return `https://drive.google.com/uc?export=download&id=${fileMatch[1]}`;
-  const openMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (openMatch) return `https://drive.google.com/uc?export=download&id=${openMatch[1]}`;
+  // docs.google.com/document/d/{ID}/... → export as PDF
+  const docsMatch = url.match(/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/);
+  if (docsMatch) return `https://docs.google.com/document/d/${docsMatch[1]}/export?format=pdf`;
+  // drive.google.com/file/d/{ID}/...
+  const driveFileMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (driveFileMatch) return `https://drive.google.com/uc?export=download&id=${driveFileMatch[1]}`;
+  // drive.google.com/open?id={ID}
+  const driveOpenMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (driveOpenMatch) return `https://drive.google.com/uc?export=download&id=${driveOpenMatch[1]}`;
   return url;
 }
 
