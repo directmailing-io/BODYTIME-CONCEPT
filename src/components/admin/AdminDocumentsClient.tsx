@@ -156,7 +156,9 @@ export default function AdminDocumentsClient({ documents }: { documents: any[] }
                 <div className="flex items-center gap-1 shrink-0">
                   {(doc.file_url || doc.video_url) && (
                     <a
-                      href={doc.file_url || doc.video_url}
+                      href={doc.type === 'word' && (doc.file_url || doc.video_url)
+                        ? `/api/doc-preview?url=${encodeURIComponent(doc.file_url || doc.video_url)}`
+                        : (doc.file_url || doc.video_url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2.5 rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"

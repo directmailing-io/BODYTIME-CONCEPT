@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
   return new NextResponse(pdf, {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': 'inline; filename="dokument.pdf"',
+      'Content-Disposition': 'attachment; filename="dokument.pdf"',
       'Cache-Control': 'private, max-age=300',
     },
   });
