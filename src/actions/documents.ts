@@ -8,7 +8,7 @@ const documentSchema = z.object({
   title: z.string().min(1, 'Titel ist erforderlich').max(200),
   description: z.string().max(500).optional().or(z.literal('')),
   category: z.string().max(100).optional().or(z.literal('')),
-  type: z.enum(['pdf', 'video', 'link']),
+  type: z.enum(['pdf', 'word', 'video', 'link']),
   file_url: z.string().url().optional().or(z.literal('')),
   video_url: z.string().url().optional().or(z.literal('')),
   is_published: z.coerce.boolean().default(false),
