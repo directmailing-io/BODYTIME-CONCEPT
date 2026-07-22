@@ -98,19 +98,19 @@ export default function HeroSection() {
               href={INFO_CALL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2.5 py-2.5 px-5
-                         rounded-xl border border-white/[0.18] bg-white/[0.06]
-                         hover:border-[#25A8E0]/50 hover:bg-[#25A8E0]/10
-                         transition-all duration-200 whitespace-nowrap"
+              className="group flex flex-col items-start gap-1"
             >
-              <CalendarDays className="w-[15px] h-[15px] flex-shrink-0 text-[#25A8E0] mt-px" />
-              <span className="flex flex-col items-start leading-tight">
-                <span className="text-[14px] font-medium text-white/80 group-hover:text-white transition-colors">
+              <span className="inline-flex items-center gap-2 h-12 px-5
+                               rounded-xl border border-white/[0.18] bg-white/[0.06]
+                               group-hover:border-[#25A8E0]/50 group-hover:bg-[#25A8E0]/10
+                               transition-all duration-200 whitespace-nowrap">
+                <CalendarDays className="w-4 h-4 flex-shrink-0 text-[#25A8E0]" />
+                <span className="text-[14px] font-medium text-white/75 group-hover:text-white transition-colors">
                   Kostenloser Info-Call
                 </span>
-                <span className="text-[10px] text-white/38 tracking-wide mt-0.5">
-                  {INFO_CALL_DATE}
-                </span>
+              </span>
+              <span className="text-[11px] text-white/35 tracking-wide pl-1">
+                {INFO_CALL_DATE}
               </span>
             </a>
           </div>
