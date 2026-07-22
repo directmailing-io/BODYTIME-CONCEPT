@@ -86,7 +86,7 @@ export default function HeroSection() {
           </ul>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <ButtonColorful
               href="/beratung"
               label="Jetzt kostenlose Beratung sichern"
@@ -94,29 +94,26 @@ export default function HeroSection() {
             />
 
             {/* Secondary – Info-Call */}
-            <div className="flex flex-col items-start gap-1.5">
-              <a
-                href={INFO_CALL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative inline-flex items-center gap-2.5 h-12 px-5
-                           rounded-xl border border-white/20 bg-white/[0.07]
-                           backdrop-blur-sm text-white/80 text-[14px] font-medium
-                           hover:border-white/35 hover:bg-white/[0.13] hover:text-white
-                           transition-all duration-200 whitespace-nowrap"
-              >
-                <CalendarDays className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                Kostenloser Info-Call
-              </a>
-              <p className="flex items-center gap-1.5 pl-1 text-[11px] text-white/35 tracking-wide">
-                <span className="w-1 h-1 rounded-full bg-[#25A8E0] inline-block" />
-                Nächster Termin: {INFO_CALL_DATE}
-              </p>
-            </div>
+            <a
+              href={INFO_CALL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2.5 h-12 px-5
+                         rounded-xl border border-white/[0.18] bg-white/[0.06]
+                         text-white/75 text-[14px] font-medium
+                         hover:border-[#25A8E0]/50 hover:bg-[#25A8E0]/10 hover:text-white
+                         transition-all duration-200 whitespace-nowrap"
+            >
+              <CalendarDays className="w-[15px] h-[15px] flex-shrink-0 text-[#25A8E0]" />
+              <span>Kostenloser Info-Call</span>
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-white/10 text-white/45 tracking-wide leading-none">
+                {INFO_CALL_DATE}
+              </span>
+            </a>
           </div>
 
           {/* Micro trust */}
-          <p className="mt-3 text-[11px] text-white/30 tracking-widest uppercase">
+          <p className="mt-4 text-[11px] text-white/30 tracking-widest uppercase">
             Unverbindlich · Kostenlos · In 30 Minuten
           </p>
         </div>
