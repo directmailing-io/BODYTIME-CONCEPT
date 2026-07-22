@@ -1,4 +1,4 @@
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, CalendarDays } from 'lucide-react';
 import { ButtonColorful } from '@/components/ui/ButtonColorful';
 
 const BENEFITS = [
@@ -6,6 +6,10 @@ const BENEFITS = [
   'Sofortlösung bei Beschwerden, Verspannungen, Muskelaufbau und mehr.',
   'Dein persönlicher Ansprechpartner - immer für dich da.',
 ];
+
+// Naechsten Info-Call Termin hier aktualisieren:
+const INFO_CALL_DATE = 'Mi. 23.07. · 19:15 Uhr';
+const INFO_CALL_URL = 'https://us02web.zoom.us/meeting/register/p7wYrIHdSu2gEDwTo-Y28w#/registration';
 
 export default function HeroSection() {
   return (
@@ -81,15 +85,38 @@ export default function HeroSection() {
             ))}
           </ul>
 
-          {/* CTA */}
-          <ButtonColorful
-            href="/beratung"
-            label="Jetzt kostenlose Beratung sichern"
-            className="h-12 px-7 text-[15px]"
-          />
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+            <ButtonColorful
+              href="/beratung"
+              label="Jetzt kostenlose Beratung sichern"
+              className="h-12 px-7 text-[15px]"
+            />
+
+            {/* Secondary – Info-Call */}
+            <div className="flex flex-col items-start gap-1.5">
+              <a
+                href={INFO_CALL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center gap-2.5 h-12 px-5
+                           rounded-xl border border-white/20 bg-white/[0.07]
+                           backdrop-blur-sm text-white/80 text-[14px] font-medium
+                           hover:border-white/35 hover:bg-white/[0.13] hover:text-white
+                           transition-all duration-200 whitespace-nowrap"
+              >
+                <CalendarDays className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                Kostenloser Info-Call
+              </a>
+              <p className="flex items-center gap-1.5 pl-1 text-[11px] text-white/35 tracking-wide">
+                <span className="w-1 h-1 rounded-full bg-[#25A8E0] inline-block" />
+                Nächster Termin: {INFO_CALL_DATE}
+              </p>
+            </div>
+          </div>
 
           {/* Micro trust */}
-          <p className="mt-4 text-[11px] text-white/30 tracking-widest uppercase">
+          <p className="mt-3 text-[11px] text-white/30 tracking-widest uppercase">
             Unverbindlich · Kostenlos · In 30 Minuten
           </p>
         </div>
