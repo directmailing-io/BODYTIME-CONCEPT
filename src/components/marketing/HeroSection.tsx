@@ -86,11 +86,11 @@ export default function HeroSection() {
           </ul>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-stretch gap-3">
             <ButtonColorful
               href="/beratung"
               label="Jetzt kostenlose Beratung sichern"
-              className="h-12 px-7 text-[15px]"
+              className="h-14 px-7 text-[15px]"
             />
 
             {/* Secondary – Info-Call */}
@@ -98,18 +98,18 @@ export default function HeroSection() {
               href={INFO_CALL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-col items-start gap-1"
+              className="group inline-flex flex-col items-center justify-center gap-0.5 h-14 px-6
+                         rounded-xl border border-white/[0.18] bg-white/[0.06]
+                         hover:border-[#25A8E0]/50 hover:bg-[#25A8E0]/10
+                         transition-all duration-200 whitespace-nowrap"
             >
-              <span className="inline-flex items-center gap-2 h-12 px-5
-                               rounded-xl border border-white/[0.18] bg-white/[0.06]
-                               group-hover:border-[#25A8E0]/50 group-hover:bg-[#25A8E0]/10
-                               transition-all duration-200 whitespace-nowrap">
-                <CalendarDays className="w-4 h-4 flex-shrink-0 text-[#25A8E0]" />
-                <span className="text-[14px] font-medium text-white/75 group-hover:text-white transition-colors">
+              <span className="inline-flex items-center gap-1.5">
+                <CalendarDays className="w-[14px] h-[14px] flex-shrink-0 text-[#25A8E0]" />
+                <span className="text-[14px] font-medium text-white/80 group-hover:text-white transition-colors">
                   Kostenloser Info-Call
                 </span>
               </span>
-              <span className="text-[11px] text-white/35 tracking-wide pl-1">
+              <span className="text-[10px] text-white/35 tracking-wide">
                 {INFO_CALL_DATE}
               </span>
             </a>
