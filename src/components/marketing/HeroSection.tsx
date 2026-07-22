@@ -8,7 +8,7 @@ const BENEFITS = [
 ];
 
 // Naechsten Info-Call Termin hier aktualisieren:
-const INFO_CALL_DATE = 'Mi. 23.07. · 19:15 Uhr';
+const INFO_CALL_DATE = '23.07. · 19:15 Uhr';
 const INFO_CALL_URL = 'https://us02web.zoom.us/meeting/register/p7wYrIHdSu2gEDwTo-Y28w#/registration';
 
 export default function HeroSection() {
