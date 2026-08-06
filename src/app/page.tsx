@@ -20,6 +20,10 @@ export const metadata = {
   robots: { index: true, follow: true },
 };
 
+// Damit der Info-Call-Termin im Hero taeglich (nicht erst beim naechsten Deploy)
+// auf den kommenden Donnerstag umspringt.
+export const revalidate = 1800;
+
 async function getApprovedBios() {
   const adminClient = createAdminClient();
   const { data } = await adminClient

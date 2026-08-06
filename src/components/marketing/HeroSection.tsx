@@ -7,11 +7,35 @@ const BENEFITS = [
   'Dein persönlicher Ansprechpartner - immer für dich da.',
 ];
 
-// Naechsten Info-Call Termin hier aktualisieren:
-const INFO_CALL_DATE = '23.07. · 19:15 Uhr';
 const INFO_CALL_URL = 'https://us02web.zoom.us/meeting/register/p7wYrIHdSu2gEDwTo-Y28w#/registration';
 
+// Info-Call: wiederkehrend jeden Donnerstag 19:15 Uhr (Europe/Berlin).
+// Zeigt den naechsten kommenden Termin (inkl. heute, falls Donnerstag).
+function getNextInfoCallDate(now: Date = new Date()): string {
+  const berlinParts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Berlin',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(now);
+  const y = Number(berlinParts.find((p) => p.type === 'year')!.value);
+  const m = Number(berlinParts.find((p) => p.type === 'month')!.value);
+  const d = Number(berlinParts.find((p) => p.type === 'day')!.value);
+
+  // Fixiert auf 12:00 UTC, damit getUTCDay() nicht durch Zeitzonenverschiebung kippt.
+  const berlinToday = new Date(Date.UTC(y, m - 1, d, 12));
+  const daysUntilThursday = (4 - berlinToday.getUTCDay() + 7) % 7;
+  const next = new Date(berlinToday);
+  next.setUTCDate(berlinToday.getUTCDate() + daysUntilThursday);
+
+  const dd = String(next.getUTCDate()).padStart(2, '0');
+  const mm = String(next.getUTCMonth() + 1).padStart(2, '0');
+  return `${dd}.${mm}. · 19:15 Uhr`;
+}
+
 export default function HeroSection() {
+  const infoCallDate = getNextInfoCallDate();
+
   return (
     <section
       id="hero"
@@ -110,7 +134,7 @@ export default function HeroSection() {
                 </span>
               </span>
               <span className="text-[10px] text-white/35 tracking-wide">
-                {INFO_CALL_DATE}
+                {infoCallDate}
               </span>
             </a>
           </div>
